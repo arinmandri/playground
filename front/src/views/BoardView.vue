@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { fetchBoardList } from "@/api/board";
 
 // 게시글 데이터 타입 정의
 interface Post {
@@ -14,8 +14,8 @@ const boardList = ref<Post[]>([]);
 
 onMounted(async () => {
   try {
-    const response = await axios.get<Post[]>("http://localhost:3000/api/board");
-    boardList.value = response.data;
+    const posts = await fetchBoardList();
+    boardList.value = posts
   } catch (error) {
     console.error("데이터를 불러오는데 실패했습니다.", error);
   }
