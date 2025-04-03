@@ -12,7 +12,7 @@ const boardData = [
   { id: 3, title: "세 번째 글", author: "사용자3", date: "2025-04-03" },
 ];
 
-app.get("/api/board", (req, res) => {
+app.get("/board", (req, res) => {
   res.json(boardData);
 });
 
