@@ -7,7 +7,7 @@ interface Post {
   id: number;
   title: string;
   author: string;
-  date: string;
+  created_at: string;
 }
 
 const boardList = ref<Post[]>([]);
@@ -30,14 +30,14 @@ onMounted(async () => {
         <tr>
           <th>제목</th>
           <th>작성자</th>
-          <th>작성일</th>
+          <th>작성일시</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="post in boardList" :key="post.id">
           <td>{{ post.title }}</td>
           <td>{{ post.author }}</td>
-          <td>{{ post.date }}</td>
+          <td>{{ post.created_at }}</td>
         </tr>
       </tbody>
     </table>

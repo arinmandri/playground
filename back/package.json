@@ -15,7 +15,9 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "back": "file:",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.14.1"
   }
 }
