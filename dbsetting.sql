@@ -1,3 +1,5 @@
+-- sudo -u postgres psql -d arinmandri
+
 CREATE SCHEMA playground;
 
 -- DROP USER "playground-backend";

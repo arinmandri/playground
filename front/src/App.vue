@@ -16,8 +16,14 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
+* {
+  margin: 0px;
+  padding: 0px;
+}
 nav {
+  background-color: #eee;
   margin-bottom: 20px;
+  padding: 10px;
 }
 </style>
