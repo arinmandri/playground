@@ -23,9 +23,15 @@ sudo cp -r dist/* "$FRONTEND_BUILD_DIR" || { echo "FAILED TO DEPLOY FRONTEND"; e
 echo "BUILDING BACKEND..."
 cd "$BACKEND_DIR" || exit
 # Maven 빌드
-./mvnw clean package -DskipTests || { echo "백엔드 빌드 실패"; exit 1; }
+./mvnw clean package -DskipTests || { echo "FAILED TO BUILD BACKEND"; exit 1; }
+# jar 파일 찾기
+JAR_PATH=$(find target -maxdepth 1 -type f -name "*.jar" | head -n 1)
+if [ -z "$JAR_PATH" ]; then
+  echo "JAR 파일을 찾을 수 없습니다."
+  exit 1
+fi
 # 백엔드 실행 중이면 종료
-PID=$(pgrep -f "$BACKEND_JAR_NAME")
+PID=$(pgrep -f "$(basename "$JAR_PATH")")
 if [ -n "$PID" ]; then
   echo "STOPPING EXISTING BACKEND PROCESS (PID: $PID)..."
   kill "$PID" || { echo "기존 백엔드 종료 실패"; exit 1; }
@@ -33,7 +39,8 @@ if [ -n "$PID" ]; then
 fi
 # 새 백엔드 실행
 echo "STARTING BACKEND SERVER..."
-nohup java -jar "target/$BACKEND_JAR_NAME" > "$BACKEND_LOG" 2>&1 &
+chmod u+x "$JAR_PATH"
+nohup java -jar "$JAR_PATH" > "$BACKEND_LOG" 2>&1 &
 
 echo "UPDATE DONE !"
 
@@ -48,6 +55,7 @@ echo "UPDATE DONE !"
 # playground 프론트엔드 서버 설정: /etc/nginx/sites-available/playground
 
 
+# python -m http.server 8080
 # sudo netstat -tulnp | grep :8080
 # sudo lsof -i :8080
 # sudo kill <PID>
