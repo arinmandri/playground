@@ -1,4 +1,5 @@
 -- sudo -u postgres psql -d arinmandri
+-- created_at 컬럼에 DEFAULT CURRENT_TIMESTAMP 대신 jpa에서
 
 CREATE SCHEMA playground;
 
@@ -8,16 +9,46 @@ GRANT USAGE ON SCHEMA "playground" TO "playground-backend";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "playground-backend";
 ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "playground-backend";
 
-
-CREATE TABLE "playground"."post"(
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    author VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+DROP TABLE IF EXISTS "playground"."member";
+CREATE TABLE "playground"."member"(
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    ,"nick" VARCHAR(20) NOT NULL
+    ,"email" VARCHAR(100) NULL
+    ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
-INSERT INTO "playground"."post" ("title", "author")
+DROP TABLE IF EXISTS "playground"."mkey_basic";
+CREATE TABLE "playground"."mkey_basic"(
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    ,"owner__m" INT NOT NULL
+        UNIQUE
+        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+    ,"keyname" VARCHAR(50) NOT NULL
+    ,"password" VARCHAR(50) NOT NULL
+    ,"created_at" TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX "mkey_basic__keyname" ON "playground"."mkey_basic" (keyname);
+
+DROP TABLE IF EXISTS "playground"."post";
+CREATE TABLE "playground"."post"(
+    "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    ,"author__m" INT NOT NULL
+        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+    ,"content" VARCHAR(255) NOT NULL
+    ,"updated_at" TIMESTAMPTZ NULL
+    ,"created_at" TIMESTAMPTZ NOT NULL
+);
+
+-- ---------------------------------
+
+INSERT INTO "playground"."member" ("nick", "email")
 VALUES
-('글제목 1', '작성자1'),
-('글제목 2', '작성자2'),
-('글제목 3', '작성자3');
+('김영선', 'arinmandri@gmail.com'),
+('홍길동', 'hong@naver.com'),
+('킹 세종', 'king@daum.net');
+
+INSERT INTO "playground"."post" ("content", "author__m")
+VALUES
+('글 1 가나다', 1),
+('글 2 홍길동', 2),
+('글 3 세종대왕', 3);

@@ -28,16 +28,16 @@ onMounted(async () => {
     <table border="1">
       <thead>
         <tr>
-          <th>제목</th>
+          <th>내용</th>
           <th>작성자</th>
           <th>작성일시</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="post in boardList" :key="post.id">
-          <td>{{ post.title }}</td>
-          <td>{{ post.author }}</td>
-          <td>{{ post.created_at }}</td>
+          <td>{{ post.content }}</td>
+          <td>{{ post.author.nick }}</td>
+          <td>{{ post.createdAt }}</td>
         </tr>
       </tbody>
     </table>

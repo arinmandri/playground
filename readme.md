@@ -16,7 +16,7 @@ XXX 관리자...?페이지같은 게 필요할까
 ## 기술스택
 
 * 프론트엔드: TypeScript, Vue 3
-* 백엔드: Spring Boot 3, Maven
+* 백엔드: Maven, Spring Boot 3, Hibernate
 * DB: PostgreSQL
 * 그외: Nginx, PM2
 
