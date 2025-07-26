@@ -39,6 +39,16 @@ CREATE TABLE "playground"."post"(
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
+DROP TABLE IF EXISTS "playground"."refresh_token";
+CREATE TABLE "playground"."refresh_token"(
+    "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    ,"owner__m" INT NOT NULL
+        REFERENCES "playground"."member"
+    ,"refresh_token" VARCHAR(90) NOT NULL
+    ,"expires_at" TIMESTAMPTZ NOT NULL
+);
+CREATE INDEX "refresh_token__refresh_token" ON "playground"."refresh_token" (refresh_token);
+
 -- ---------------------------------
 
 INSERT INTO "playground"."member" ("nick", "email")
@@ -46,6 +56,13 @@ VALUES
 ('김영선', 'arinmandri@gmail.com'),
 ('홍길동', 'hong@naver.com'),
 ('킹 세종', 'king@daum.net');
+
+INSERT INTO "playground"."mkey_basic" ("owner__m", "keyname", "password")
+VALUES
+ (1, 'abc', '123')
+,(3, 'www', '321')
+,(2, 'sss', '222')
+;
 
 INSERT INTO "playground"."post" ("content", "author__m")
 VALUES
