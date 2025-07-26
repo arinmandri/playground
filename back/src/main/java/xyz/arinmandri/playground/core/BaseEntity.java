@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.service;
+package xyz.arinmandri.playground.core;
 
 import java.time.Instant;
 

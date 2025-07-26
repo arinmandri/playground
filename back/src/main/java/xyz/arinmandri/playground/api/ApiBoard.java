@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.service.NoSuchEntity;
-import xyz.arinmandri.playground.service.board.Post;
-import xyz.arinmandri.playground.service.board.PostSer;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.board.Post;
+import xyz.arinmandri.playground.core.board.PostSer;
 
 
 @RestController

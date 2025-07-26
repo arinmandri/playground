@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.Getter;
-import xyz.arinmandri.playground.service.NoSuchEntity;
+import xyz.arinmandri.playground.core.NoSuchEntity;
 
 public class ApiA
 {

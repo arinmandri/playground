@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.service.NoSuchEntity;
-import xyz.arinmandri.playground.service.member.Member;
-import xyz.arinmandri.playground.service.member.MemberSer;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberSer;
 
 
 @RestController

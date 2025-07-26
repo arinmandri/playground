@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.service.member;
+package xyz.arinmandri.playground.core.member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import xyz.arinmandri.playground.service.BaseEntity;
+import xyz.arinmandri.playground.core.BaseEntity;
 
 
 @Entity

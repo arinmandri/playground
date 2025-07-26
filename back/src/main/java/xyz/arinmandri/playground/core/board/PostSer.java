@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.service.board;
+package xyz.arinmandri.playground.core.board;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.service.NoSuchEntity;
-import xyz.arinmandri.playground.service.member.Member;
-import xyz.arinmandri.playground.service.member.MemberSer;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberSer;
 
 
 @Service

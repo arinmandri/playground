@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.service;
+package xyz.arinmandri.playground.core;
 
 public class NoSuchEntity extends Exception
 {

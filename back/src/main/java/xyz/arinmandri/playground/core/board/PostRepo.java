@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.service.board;
+package xyz.arinmandri.playground.core.board;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
