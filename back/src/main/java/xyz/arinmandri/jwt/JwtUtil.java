@@ -52,6 +52,7 @@ public class JwtUtil
 	 * 토큰 유효성 검증
 	 */
 	public boolean validateToken ( String token ) {
+		if( token == null ) return false;
 		try{
 			Jwts.parser()
 			        .verifyWith( key )
@@ -60,10 +61,6 @@ public class JwtUtil
 			return true;
 		}
 		catch( SignatureException e ){
-			return false;
-		}
-		catch( Exception e ){
-			// TODO exception
 			return false;
 		}
 	}

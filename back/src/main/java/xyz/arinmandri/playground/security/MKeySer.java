@@ -57,12 +57,12 @@ public class MKeySer implements UserDetailsService
 		return new TokenResponse( accessToken, null, guestScope, expiAG );
 	}
 
-	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) {
+	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
 
 		//// 검증
 		MkeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
 		if( u == null || !u.getPassword().equals( password ) ){// TODO 비밀번호 암호화
-			throw new RuntimeException( "아디비번 안맞음" );// TODO exception
+			throw new LackAuthExcp( "아디비번 안맞음" );
 		}
 
 		//// 발급
@@ -72,11 +72,11 @@ public class MKeySer implements UserDetailsService
 	}
 
 	@Transactional
-	public TokenResponse issueAccessTokenByRefreshToken ( String refreshToken0 ) {
+	public TokenResponse issueAccessTokenByRefreshToken ( String refreshToken0 ) throws LackAuthExcp {
 
 		RefreshToken refreshTokenE0 = findByRefreshToken( refreshToken0 );
-		if( refreshTokenE0.getExpiresAt().isBefore( Instant.now() ) ){// 이미 만료
-			throw new RuntimeException();// TODO exception
+		if( refreshTokenE0 == null || refreshTokenE0.getExpiresAt().isBefore( Instant.now() ) ){// 이미 만료
+			throw new LackAuthExcp( "refresh token invalid" );
 		}
 		Member member = refreshTokenE0.getOwner();
 
@@ -120,8 +120,7 @@ public class MKeySer implements UserDetailsService
 	 * 리프레시토큰 --> 리프레시토큰 엔터티
 	 */
 	private RefreshToken findByRefreshToken ( String refreshToken ) {
-		return refreshTokenRepo.findByRefreshToken( refreshToken )
-		        .orElseThrow( ()-> new IllegalArgumentException() );// TODO exception
+		return refreshTokenRepo.findByRefreshToken( refreshToken ).orElse( null );
 	}
 
 	/*

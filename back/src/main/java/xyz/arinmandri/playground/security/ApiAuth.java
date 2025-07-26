@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.security;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,14 @@ public class ApiAuth extends ApiA
 	@PostMapping( "/token/basic" )
 	public ResponseEntity<TokenResponse> apiAuthTokenBasic (
 	        @RequestBody TokenReq req ) {
-		TokenResponse tokenRes = memberKeySer.issueAccessTokenByBasicKey( req.keyname, req.password );
+		TokenResponse tokenRes;
+		try{
+			tokenRes = memberKeySer.issueAccessTokenByBasicKey( req.keyname, req.password );
+		}
+		catch( LackAuthExcp e ){
+			return ResponseEntity.status( HttpStatus.FORBIDDEN )
+			        .body( null );
+		}
 		return ResponseEntity.ok()
 		        .body( tokenRes );
 	}
@@ -37,7 +45,14 @@ public class ApiAuth extends ApiA
 	@PostMapping("/token/refresh")
 	public ResponseEntity<TokenResponse> apiAuthTokenRefresh (
 			@RequestBody TokenRefreshReq req) {
-		TokenResponse tokenRes = memberKeySer.issueAccessTokenByRefreshToken( req.refreshToken );
+		TokenResponse tokenRes;
+		try{
+			tokenRes = memberKeySer.issueAccessTokenByRefreshToken( req.refreshToken );
+		}
+		catch( LackAuthExcp e ){
+			return ResponseEntity.status( HttpStatus.FORBIDDEN )
+			        .body( null );
+		}
 		return ResponseEntity.ok()
 		        .body( tokenRes );
 	}
