@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.security;
+package xyz.arinmandri.playground.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import xyz.arinmandri.playground.api.ApiA;
+import xyz.arinmandri.playground.security.LackAuthExcp;
+import xyz.arinmandri.playground.security.TokenProvider;
+import xyz.arinmandri.playground.security.TokenResponse;
 
 
 @RestController
@@ -17,11 +19,11 @@ import xyz.arinmandri.playground.api.ApiA;
 @RequiredArgsConstructor
 public class ApiAuth extends ApiA
 {
-	final private MKeySer memberKeySer;
+	final private TokenProvider tokenProvider;
 	
 	@PostMapping( "/token/guest" )
 	public ResponseEntity<TokenResponse> apiAuthTokenGuest () {
-		TokenResponse tokenRes = memberKeySer.issueAccessTokenForGuest();
+		TokenResponse tokenRes = tokenProvider.issueAccessTokenForGuest();
 		return ResponseEntity.ok()
 		        .body( tokenRes );
 	}
@@ -31,7 +33,7 @@ public class ApiAuth extends ApiA
 	        @RequestBody TokenReq req ) {
 		TokenResponse tokenRes;
 		try{
-			tokenRes = memberKeySer.issueAccessTokenByBasicKey( req.keyname, req.password );
+			tokenRes = tokenProvider.issueAccessTokenByBasicKey( req.keyname, req.password );
 		}
 		catch( LackAuthExcp e ){
 			throw new ExceptionalTask( ExcpType.LackOfAuth, e );
@@ -45,7 +47,7 @@ public class ApiAuth extends ApiA
 	        @RequestBody TokenRefreshReq req ) {
 		TokenResponse tokenRes;
 		try{
-			tokenRes = memberKeySer.issueAccessTokenByRefreshToken( req.refreshToken );
+			tokenRes = tokenProvider.issueAccessTokenByRefreshToken( req.refreshToken );
 		}
 		catch( LackAuthExcp e ){
 			throw new ExceptionalTask( ExcpType.LackOfAuth, e );

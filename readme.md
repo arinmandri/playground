@@ -25,7 +25,7 @@ XXX 도커도 해봐야지....
 
 ## 작업환경
 
-VSCode, Sourcetree
+sts, VSCode, Sourcetree
 
 
 

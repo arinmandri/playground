@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.security;
+package xyz.arinmandri.playground.mkey;
 
 import java.util.Optional;
 

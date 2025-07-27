@@ -7,44 +7,36 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.jwt.JwtUtil;
 import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.mkey.MkeyBasic;
+import xyz.arinmandri.playground.mkey.MkeyBasicRepo;
 
 
 @Service
 @RequiredArgsConstructor
-public class MKeySer implements UserDetailsService
+public class TokenProvider
 {
 	static private final String CLAIM_PREFIX = "arinmandri.xyz/";
 	static private final String guestScope = "guest";// XXX 이거 어케함?
 	static private final String normalScope = "normal";// XXX 이거 어케함?
 
 	@Value( "${jwt.expia}" )
-	private long expiA;
+	private long expiA;// 액세스토큰 기한
 	@Value( "${jwt.expiag}" )
-	private long expiAG;
+	private long expiAG;// 비회원 액세스토큰 기한
 	@Value( "${jwt.expir}" )
-	private long expiR;
+	private long expiR;// 리프레시토큰 기한
 
 	final private MkeyBasicRepo MemberBKRepo;
 	final private RefreshTokenRepo refreshTokenRepo;
 
 	final private JwtUtil jwtUtil;
 	private SecureRandom random = new SecureRandom();
-
-	@Override
-	public UserDetails loadUserByUsername ( String key ) throws UsernameNotFoundException {
-		UserDetails u;
-		u = MemberBKRepo.findByKeyname( key ).orElse( null );
-		return u;
-	}
 
 	public TokenResponse issueAccessTokenForGuest () {
 
