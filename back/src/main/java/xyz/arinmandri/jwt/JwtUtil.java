@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -60,7 +61,10 @@ public class JwtUtil
 			        .parseSignedClaims( token );
 			return true;
 		}
-		catch( SignatureException e ){
+		catch( SignatureException | ExpiredJwtException e ){
+			return false;
+		}
+		catch( Exception e ){
 			return false;
 		}
 	}

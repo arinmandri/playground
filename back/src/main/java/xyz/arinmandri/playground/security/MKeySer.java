@@ -62,7 +62,7 @@ public class MKeySer implements UserDetailsService
 		//// 검증
 		MkeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
 		if( u == null || !u.getPassword().equals( password ) ){// TODO 비밀번호 암호화
-			throw new LackAuthExcp( "아디비번 안맞음" );
+			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
 
 		//// 발급

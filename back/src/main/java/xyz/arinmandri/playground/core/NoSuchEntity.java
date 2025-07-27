@@ -9,6 +9,6 @@ public class NoSuchEntity extends Exception
 	}
 
 	public NoSuchEntity( Class<? extends BaseEntity> entClass , long id ) {
-		super( entClass.getSimpleName() + " " + id + " NOT FOUND" );
+		super( entClass.getSimpleName() + " " + id + " not found" );
 	}
 }

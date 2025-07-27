@@ -33,16 +33,32 @@ public class ApiBoard extends ApiA
 
 	@GetMapping( "/post/{id}" )
 	public ResponseEntity<Post> apiPostGet (
-	        @PathVariable long id ) throws NoSuchEntity {
-		Post p = postSer.get( id );
+	        @PathVariable long id ) {
+
+		Post p;
+		try{
+			p = postSer.get( id );
+		}
+		catch( NoSuchEntity e ){
+			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
+		}
 		return ResponseEntity.ok()
 		        .body( p );
 	}
 
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
-	        @RequestBody PostSer.AddReq req ) throws NoSuchEntity {
-		Post p = postSer.add( 1L, req );// TODO auth: author = 로그인회원
+	        @RequestBody PostSer.AddReq req ) {
+
+		// TODO auth: author = 로그인회원
+
+		Post p;
+		try{
+			p = postSer.add( 1L, req );
+		}
+		catch( NoSuchEntity e ){
+			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
+		}
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
 	}
@@ -50,17 +66,27 @@ public class ApiBoard extends ApiA
 	@PostMapping( "/post/{id}/edit" )
 	public ResponseEntity<Post> apiPostEdit (
 	        @PathVariable long id ,
-	        @RequestBody PostSer.EditReq req ) throws NoSuchEntity {
+	        @RequestBody PostSer.EditReq req ) {
+
 		// TODO auth: author = 로그인회원
-		Post p = postSer.edit( id, req );
+
+		Post p;
+		try{
+			p = postSer.edit( id, req );
+		}
+		catch( NoSuchEntity e ){
+			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
+		}
 		return ResponseEntity.ok()
 		        .body( p );
 	}
 
 	@PostMapping( "/post/{id}/del" )
 	public ResponseEntity<Void> apiPostDel (
-	        @PathVariable long id ) throws NoSuchEntity {
+	        @PathVariable long id ) {
+
 		// TODO auth: author = 로그인회원
+
 		postSer.del( id );
 		return ResponseEntity.ok().build();
 	}
