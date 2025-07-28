@@ -6,12 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 
 
 @Service
 @RequiredArgsConstructor
-public class MemberSer
+public class MemberSer extends PersistenceSer
 {
 	final private MemberRepo repo;
 

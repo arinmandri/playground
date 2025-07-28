@@ -1,0 +1,38 @@
+package xyz.arinmandri.playground.core;
+
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import xyz.arinmandri.playground.core.BaseEntity.ConstraintDesc;
+
+
+public class PersistenceSer
+{
+	public void maybeThrowsUniqueViolated ( DataIntegrityViolationException e , ConstraintDesc constraint ) throws UniqueViolated {
+		if( isByConstraintUnique( e, constraint.constraintName ) )
+		    throw new UniqueViolated( e, constraint.msg );
+	}
+	/**
+	 * 예외가 유니크 위반 때문에 났는지 확인
+	 */
+	public boolean isByConstraintUnique ( Throwable e , String constraintName ) {
+		Throwable cause = e;
+		while( cause != null ){
+			if( cause instanceof PSQLException psqlEx ){
+				return psqlEx.getSQLState().equals( "23505" )
+				        && psqlEx.getMessage().contains( constraintName );
+			}
+			cause = cause.getCause();
+		}
+		return false;
+	}
+
+	public class UniqueViolated extends SerExcp
+	{
+		private static final long serialVersionUID = 1_000_000L;
+
+		public UniqueViolated( Throwable cause , String msg ) {
+			super( msg, cause );
+		}
+	}
+}

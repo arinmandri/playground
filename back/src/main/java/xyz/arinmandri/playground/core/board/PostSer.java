@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
@@ -15,7 +16,7 @@ import xyz.arinmandri.playground.core.member.MemberSer;
 
 @Service
 @RequiredArgsConstructor
-public class PostSer
+public class PostSer extends PersistenceSer
 {
 	final private PostRepo repo;
 

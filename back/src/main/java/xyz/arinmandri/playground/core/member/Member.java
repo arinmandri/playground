@@ -31,5 +31,4 @@ public class Member extends BaseEntity
 		if( data.nick != null ) nick = data.nick;
 		if( data.email != null ) email = data.email;
 	}
-
 }

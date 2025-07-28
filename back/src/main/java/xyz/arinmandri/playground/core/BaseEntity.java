@@ -40,4 +40,18 @@ public abstract class BaseEntity
 	public int hashCode () {
 		return (int) (long) id;
 	}
+	
+	public enum ConstraintDesc {
+		MkeyBasic_Email ("mkey_basic_keyname_key", "email duplicate."),
+		;
+
+		public final String constraintName;
+		public final String msg;
+
+		private ConstraintDesc( String constraintName , String msg ) {
+			this.constraintName = constraintName;
+			this.msg = msg;
+		}
+		
+	}
 }

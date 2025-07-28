@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.api;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,13 @@ import lombok.Getter;
 
 /**
  * 컨트롤러 공통 이용 요소들 + 예외응답처리
+ * 
+ * memo
+ * 
+ * HTTP 메서드
+ * - GET: 조회용
+ * - POST: 데이터 삽입/수정/삭제 등
+ * - 그 외 메서드 안 씀.
  */
 public class ApiA
 {
@@ -22,6 +30,12 @@ public class ApiA
 	public ResponseEntity<ErrorResponse> handleKnownException ( ExceptionalTask e ) {
 		return ResponseEntity.status( e.type.status )
 		        .body( new ErrorResponse( e.type.toString(), e.msg ) );
+	}
+
+	@ExceptionHandler( DataIntegrityViolationException.class )
+	public ResponseEntity<ErrorResponse> handleKnownException ( DataIntegrityViolationException e ) {
+		return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+		        .body( new ErrorResponse( "TODO", "TODO" ) );
 	}
 
 	/**
@@ -56,6 +70,7 @@ public class ApiA
 	protected enum ExcpType
 	{
 		NoSuchEntity (HttpStatus.NOT_FOUND),
+		EntityDuplicate (HttpStatus.CONFLICT),
 		LackOfAuth (HttpStatus.FORBIDDEN),
 		;
 

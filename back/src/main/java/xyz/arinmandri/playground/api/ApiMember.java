@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.core.mkey.MkeyBasic;
@@ -38,7 +39,13 @@ public class ApiMember extends ApiA
 	public ResponseEntity<MkeyBasic> apiMemberAddBasic (
 	        @RequestBody MkeySer.AddBasicWithMemberReq req ) {
 
-		MkeyBasic m = mkeySer.addMemberWithKeyBasic( req );
+		MkeyBasic m;
+		try{
+			m = mkeySer.addMemberWithKeyBasic( req );
+		}
+		catch( UniqueViolated e ){
+			throw new ExceptionalTask( ExcpType.EntityDuplicate, e );
+		}
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( m );
 	}
