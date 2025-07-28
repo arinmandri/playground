@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +38,9 @@ public class TokenProvider
 	final private MkeyBasicRepo MemberBKRepo;
 	final private RefreshTokenRepo refreshTokenRepo;
 
+	final private PasswordEncoder pwEncoder;
 	final private JwtUtil jwtUtil;
-	private SecureRandom random = new SecureRandom();
+	final private SecureRandom random;
 
 	public TokenResponse issueAccessTokenForGuest () {
 
@@ -55,7 +57,7 @@ public class TokenProvider
 
 		//// 검증
 		MkeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
-		if( u == null || !u.getPassword().equals( password ) ){// TODO 비밀번호 암호화
+		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
 			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
 

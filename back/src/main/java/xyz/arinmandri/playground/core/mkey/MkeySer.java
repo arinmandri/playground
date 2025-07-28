@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -23,6 +24,8 @@ import xyz.arinmandri.playground.core.member.MemberSer.AddReq;
 public class MkeySer extends PersistenceSer
         implements UserDetailsService
 {
+	final private PasswordEncoder pwEncoder;
+	
 	final private MemberRepo memberRepo;
 	final private MkeyBasicRepo mkeyBasicRepo;
 
@@ -38,7 +41,7 @@ public class MkeySer extends PersistenceSer
 
 		try{
 			Member member = req.member.toEntity();
-			MkeyBasic mkey = req.key.toEntity( member );
+			MkeyBasic mkey = req.key.toEntity( member, pwEncoder );
 			memberRepo.save( member );
 			MkeyBasic result = mkeyBasicRepo.save( mkey );
 
@@ -67,11 +70,11 @@ public class MkeySer extends PersistenceSer
 		String keyname;
 		String password;
 
-		public MkeyBasic toEntity ( Member owner ) {
+		public MkeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
 			return MkeyBasic.builder()
 			        .owner( owner )
 			        .keyname( keyname )
-			        .password( password )
+			        .password( pwEncoder.encode( password) )
 			        .build();
 		}
 	}

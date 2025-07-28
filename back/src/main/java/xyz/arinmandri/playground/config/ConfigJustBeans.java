@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.config;
 
+import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,5 +24,10 @@ public class ConfigJustBeans
 		return new JwtUtil(
 		        issuer,
 		        secret_key );
+	}
+
+	@Bean
+	public SecureRandom random () {
+		return new SecureRandom();
 	}
 }
