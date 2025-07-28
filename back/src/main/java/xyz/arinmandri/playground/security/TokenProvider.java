@@ -25,12 +25,12 @@ public class TokenProvider
 	static private final String guestScope = "guest";// XXX 이거 어케함?
 	static private final String normalScope = "normal";// XXX 이거 어케함?
 
-	@Value( "${jwt.expia}" )
-	private long expiA;// 액세스토큰 기한
-	@Value( "${jwt.expiag}" )
-	private long expiAG;// 비회원 액세스토큰 기한
-	@Value( "${jwt.expir}" )
-	private long expiR;// 리프레시토큰 기한
+	@Value( "${jwt.duration_a}" )
+	private long duration_a;// 액세스토큰 기한
+	@Value( "${jwt.duration_ag}" )
+	private long duration_ag;// 비회원 액세스토큰 기한
+	@Value( "${jwt.duration_r}" )
+	private long duration_r;// 리프레시토큰 기한
 
 	final private MkeyBasicRepo MemberBKRepo;
 	final private RefreshTokenRepo refreshTokenRepo;
@@ -44,9 +44,9 @@ public class TokenProvider
 		random.nextBytes( bytes );
 		String guestName = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
 
-		String accessToken = generateToken( "guest:" + guestName, normalScope, expiAG );
+		String accessToken = generateToken( "guest:" + guestName, normalScope, duration_ag );
 
-		return new TokenResponse( accessToken, null, guestScope, expiAG );
+		return new TokenResponse( accessToken, null, guestScope, duration_ag );
 	}
 
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
@@ -59,8 +59,8 @@ public class TokenProvider
 
 		//// 발급
 		String refreshToken = issueRefreshToken( u.getOwner() );
-		String accessToken = generateToken( "member:" + u.getOwner().getId(), normalScope, expiA );
-		return new TokenResponse( accessToken, refreshToken, normalScope, expiA );
+		String accessToken = generateToken( "member:" + u.getOwner().getId(), normalScope, duration_a );
+		return new TokenResponse( accessToken, refreshToken, normalScope, duration_a );
 	}
 
 	@Transactional
@@ -72,12 +72,12 @@ public class TokenProvider
 		}
 		Member member = refreshTokenE0.getOwner();
 
-		String accessToken = generateToken( "member:" + member.getId(), normalScope, expiA );
+		String accessToken = generateToken( "member:" + member.getId(), normalScope, duration_a );
 		String refreshToken = issueRefreshToken( member );
 
 		refreshTokenRepo.delete( refreshTokenE0 );// 이전 리프레시토큰 삭제
 
-		return new TokenResponse( accessToken, refreshToken, normalScope, expiA );
+		return new TokenResponse( accessToken, refreshToken, normalScope, duration_a );
 	}
 
 	private String generateToken ( String user , String scope , long expi ) {
@@ -102,7 +102,7 @@ public class TokenProvider
 		RefreshToken refreshTokenE = new RefreshToken(
 		        member,
 		        refreshToken,
-		        Instant.ofEpochMilli( System.currentTimeMillis() + expiR * 1000 ) );
+		        Instant.ofEpochMilli( System.currentTimeMillis() + duration_r * 1000 ) );
 		refreshTokenRepo.save( refreshTokenE );
 
 		return refreshToken;

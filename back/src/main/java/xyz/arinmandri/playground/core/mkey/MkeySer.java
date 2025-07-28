@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.core.mkey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,13 +23,6 @@ import xyz.arinmandri.playground.core.member.MemberSer.AddReq;
 public class MkeySer extends PersistenceSer
         implements UserDetailsService
 {
-	@Value( "${jwt.expia}" )
-	private long expiA;
-	@Value( "${jwt.expiag}" )
-	private long expiAG;
-	@Value( "${jwt.expir}" )
-	private long expiR;
-
 	final private MemberRepo memberRepo;
 	final private MkeyBasicRepo mkeyBasicRepo;
 
