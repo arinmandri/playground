@@ -14,6 +14,7 @@ CREATE TABLE "playground"."member"(
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"nick" VARCHAR(20) NOT NULL
     ,"email" VARCHAR(100) NULL
+        UNIQUE
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
@@ -24,6 +25,7 @@ CREATE TABLE "playground"."mkey_basic"(
         UNIQUE
         -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
     ,"keyname" VARCHAR(50) NOT NULL
+        UNIQUE
     ,"password" VARCHAR(50) NOT NULL
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
@@ -43,7 +45,7 @@ DROP TABLE IF EXISTS "playground"."refresh_token";
 CREATE TABLE "playground"."refresh_token"(
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"owner__m" INT NOT NULL
-        REFERENCES "playground"."member"
+        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
     ,"refresh_token" VARCHAR(90) NOT NULL
     ,"expires_at" TIMESTAMPTZ NOT NULL
 );
@@ -51,21 +53,21 @@ CREATE INDEX "refresh_token__refresh_token" ON "playground"."refresh_token" (ref
 
 -- ---------------------------------
 
-INSERT INTO "playground"."member" ("nick", "email")
+INSERT INTO "playground"."member" ("nick", "email", "created_at")
 VALUES
-('김영선', 'arinmandri@gmail.com'),
-('홍길동', 'hong@naver.com'),
-('킹 세종', 'king@daum.net');
+('김영선', 'arinmandri@gmail.com', '2025-07-01'),
+('홍길동', 'hong@naver.com', '2025-07-01'),
+('킹 세종', 'king@daum.net', '2025-07-01');
 
-INSERT INTO "playground"."mkey_basic" ("owner__m", "keyname", "password")
+INSERT INTO "playground"."mkey_basic" ("owner__m", "keyname", "password", "created_at")
 VALUES
- (1, 'abc', '123')
-,(3, 'www', '321')
-,(2, 'sss', '222')
+ (1, 'abc', '123', '2025-07-01')
+,(3, 'www', '321', '2025-07-01')
+,(2, 'sss', '222', '2025-07-01')
 ;
 
-INSERT INTO "playground"."post" ("content", "author__m")
+INSERT INTO "playground"."post" ("content", "author__m", "created_at")
 VALUES
-('글 1 가나다', 1),
-('글 2 홍길동', 2),
-('글 3 세종대왕', 3);
+('글 1 가나다', 1, '2025-07-01'),
+('글 2 홍길동', 2, '2025-07-01'),
+('글 3 세종대왕', 3, '2025-07-01');

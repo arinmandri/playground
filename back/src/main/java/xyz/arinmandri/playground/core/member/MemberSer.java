@@ -21,8 +21,11 @@ public class MemberSer
 	}
 
 	@Transactional
-	public Member add ( AddReq req ) {
-		return repo.save( req.toEntity() );
+	public Member edit ( Long id , EditReq req ) throws NoSuchEntity {
+		Member m = repo.findById( id )
+		        .orElseThrow( ()-> new NoSuchEntity( Member.class , id ) );
+		m.update( req.toEntity() );
+		return m;
 	}
 
 	@AllArgsConstructor
@@ -32,20 +35,12 @@ public class MemberSer
 		String nick;
 		String email;
 
-		Member toEntity () {
+		public Member toEntity () {
 			return Member.builder()
 			        .nick( nick )
 			        .email( email )
 			        .build();
 		}
-	}
-
-	@Transactional
-	public Member edit ( Long id , EditReq req ) throws NoSuchEntity {
-		Member m = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Member.class , id ) );
-		m.update( req.toEntity() );
-		return m;
 	}
 
 	@AllArgsConstructor

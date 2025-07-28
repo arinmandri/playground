@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.mkey.MkeyBasic;
+import xyz.arinmandri.playground.mkey.MkeySer;
 
 
 @RestController
@@ -21,19 +23,22 @@ import xyz.arinmandri.playground.core.member.MemberSer;
 public class ApiMember extends ApiA
 {
 	final MemberSer memberSer;
+	final MkeySer mkeySer;
 
 	@GetMapping( "/{id}" )
 	public ResponseEntity<Member> apiMemberGet (
 	        @PathVariable long id ) throws NoSuchEntity {
+
 		Member m = memberSer.get( id );
 		return ResponseEntity.ok()
 		        .body( m );
 	}
 
-	@PostMapping( "/add" )
-	public ResponseEntity<Member> apiMemberAdd (
-	        @RequestBody MemberSer.AddReq req ) {
-		Member m = memberSer.add( req );
+	@PostMapping( "/add/basic" )
+	public ResponseEntity<MkeyBasic> apiMemberAddBasic (
+	        @RequestBody MkeySer.AddBasicWithMemberReq req ) {
+
+		MkeyBasic m = mkeySer.addMemberWithKeyBasic( req );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( m );
 	}
@@ -42,7 +47,9 @@ public class ApiMember extends ApiA
 	public ResponseEntity<Member> apiMemberEdit (
 	        @PathVariable long id ,
 	        @RequestBody MemberSer.EditReq req ) throws NoSuchEntity {
+
 		// TODO auth: author = 로그인회원
+
 		Member m = memberSer.edit( id, req );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( m );
