@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.arinmandri.playground.core.BaseEntity;
 import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.security.TokenProvider;
 
 
 @Entity
@@ -42,9 +43,7 @@ public class MkeyBasic extends BaseEntity
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities () {
-		// TODO Auto-generated method stub
-//		return null;
-		return List.of( ()-> "READ" );
+		return List.of( ()-> TokenProvider.normalAuthority );
 	}
 
 	@Override

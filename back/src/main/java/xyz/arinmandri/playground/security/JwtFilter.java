@@ -56,8 +56,8 @@ public class JwtFilter extends OncePerRequestFilter
 		if( token == null ) return null; // TODO exception
 
 		Claims claims = jwtUtil.getClaims( token );
-		// TODO
-		Set<SimpleGrantedAuthority> authorities = Collections.singleton( new SimpleGrantedAuthority( "ROLE_USER" ) );
+		Set<SimpleGrantedAuthority> authorities = Collections.singleton(
+		        new SimpleGrantedAuthority( claims.get( TokenProvider.CLAIM_SCOPE ).toString() ) );
 
 		return new UsernamePasswordAuthenticationToken(
 		        new User( claims.getSubject(), "", authorities ),

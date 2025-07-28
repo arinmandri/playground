@@ -22,8 +22,10 @@ import xyz.arinmandri.util.JwtUtil;
 public class TokenProvider
 {
 	static private final String CLAIM_PREFIX = "arinmandri.xyz/";
-	static private final String guestScope = "guest";// XXX 이거 어케함?
-	static private final String normalScope = "normal";// XXX 이거 어케함?
+	static public final String CLAIM_USER = CLAIM_PREFIX + "user";
+	static public final String CLAIM_SCOPE = CLAIM_PREFIX + "scope";
+	static public final String guestAuthority = "guest";
+	static public final String normalAuthority = "normal";
 
 	@Value( "${jwt.duration_a}" )
 	private long duration_a;// 액세스토큰 기한
@@ -44,9 +46,9 @@ public class TokenProvider
 		random.nextBytes( bytes );
 		String guestName = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
 
-		String accessToken = generateToken( "guest:" + guestName, normalScope, duration_ag );
+		String accessToken = generateToken( "guest:" + guestName, normalAuthority, duration_ag );
 
-		return new TokenResponse( accessToken, null, guestScope, duration_ag );
+		return new TokenResponse( accessToken, null, guestAuthority, duration_ag );
 	}
 
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
@@ -59,8 +61,8 @@ public class TokenProvider
 
 		//// 발급
 		String refreshToken = issueRefreshToken( u.getOwner() );
-		String accessToken = generateToken( "member:" + u.getOwner().getId(), normalScope, duration_a );
-		return new TokenResponse( accessToken, refreshToken, normalScope, duration_a );
+		String accessToken = generateToken( "member:" + u.getOwner().getId(), normalAuthority, duration_a );
+		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
 	}
 
 	@Transactional
@@ -72,12 +74,12 @@ public class TokenProvider
 		}
 		Member member = refreshTokenE0.getOwner();
 
-		String accessToken = generateToken( "member:" + member.getId(), normalScope, duration_a );
+		String accessToken = generateToken( "member:" + member.getId(), normalAuthority, duration_a );
 		String refreshToken = issueRefreshToken( member );
 
 		refreshTokenRepo.delete( refreshTokenE0 );// 이전 리프레시토큰 삭제
 
-		return new TokenResponse( accessToken, refreshToken, normalScope, duration_a );
+		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
 	}
 
 	private String generateToken ( String user , String scope , long expi ) {
@@ -85,8 +87,8 @@ public class TokenProvider
 		return jwtUtil.generateToken(
 		        user,
 		        Map.of(
-		                CLAIM_PREFIX + "user", user,
-		                CLAIM_PREFIX + "scope", scope ),
+		                CLAIM_USER, user,
+		                CLAIM_SCOPE, scope ),
 		        expi );
 	}
 
