@@ -16,7 +16,7 @@ public class ConfigWeb implements WebMvcConfigurer
 	 * 개발모드에서는 포트번호가 다름.
 	 */
 	@Override
-	@Profile( "dev" )
+	@Profile( "lodev" )
 	public void addCorsMappings ( CorsRegistry registry ) {
 		registry.addMapping( "/**" )
 		        .allowedOrigins( "http://localhost:5173" )
