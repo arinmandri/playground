@@ -41,9 +41,12 @@ public class JwtFilter extends OncePerRequestFilter
 		        ? authorizationHeader.substring( TOKEN_PREFIX.length() )
 		        : null;
 
-		if( jwtUtil.validateToken( token ) ){// 토큰 유효
+		if( token != null && jwtUtil.validateToken( token ) ){// 토큰 유효
 			Authentication authentication = getAuthentication( token );
 			SecurityContextHolder.getContext().setAuthentication( authentication );
+		}
+		else{
+			SecurityContextHolder.clearContext(); // 인증 실패 시 SecurityContext 비우기
 		}
 
 		filterChain.doFilter( request, response );
