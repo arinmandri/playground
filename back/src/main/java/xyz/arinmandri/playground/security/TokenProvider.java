@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.jwt.JwtUtil;
 import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.mkey.MkeyBasic;
-import xyz.arinmandri.playground.mkey.MkeyBasicRepo;
+import xyz.arinmandri.playground.core.mkey.MkeyBasic;
+import xyz.arinmandri.playground.core.mkey.MkeyBasicRepo;
+import xyz.arinmandri.util.JwtUtil;
 
 
 @Service

@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.mkey;
+package xyz.arinmandri.playground.core.mkey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;

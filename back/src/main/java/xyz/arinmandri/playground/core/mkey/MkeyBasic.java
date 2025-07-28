@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.mkey;
+package xyz.arinmandri.playground.core.mkey;
 
 import java.util.Collection;
 import java.util.List;

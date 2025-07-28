@@ -18,7 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.jwt.JwtUtil;
+import xyz.arinmandri.util.JwtUtil;
 
 
 @Component

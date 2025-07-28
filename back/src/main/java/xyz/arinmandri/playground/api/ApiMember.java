@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
-import xyz.arinmandri.playground.mkey.MkeyBasic;
-import xyz.arinmandri.playground.mkey.MkeySer;
+import xyz.arinmandri.playground.core.mkey.MkeyBasic;
+import xyz.arinmandri.playground.core.mkey.MkeySer;
 
 
 @RestController

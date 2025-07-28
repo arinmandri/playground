@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import xyz.arinmandri.jwt.JwtUtil;
+import xyz.arinmandri.util.JwtUtil;
 
 
 /*

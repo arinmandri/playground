@@ -1,4 +1,4 @@
-package xyz.arinmandri.jwt;
+package xyz.arinmandri.util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
