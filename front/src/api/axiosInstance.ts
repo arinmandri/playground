@@ -33,6 +33,13 @@ api.interceptors.response.use(
         if (status === 403 && !originalRequest._retry) {// 응답이 403일 때 1회에 한해 토큰 리프레시 후 재시도
             originalRequest._retry = true;// 이 API 요청이 재시도인지 표시
 
+            const what = new Promise((resolve) => {
+                pendingRequests.push(() => {
+                    originalRequest.headers.Authorization = `Bearer ${getAccessToken()}`;
+                    resolve(api(originalRequest));
+                });
+            });
+
             if (!isRefreshing) {// 토큰 리프레시 중복 방지 XXX 그러나 여러 탭이 열림을 생각하면 경합을 완전히 예방하진 못한다. 하지만 일단 이 정도로 넘어감.
                 // XXX 리프레시 토큰 사용 결과가 403인 경우의 처리 없음.
                 const authStore = useAuthStore();
@@ -61,13 +68,7 @@ api.interceptors.response.use(
                 }
             }
 
-            // 대기 중인 요청 큐에 등록
-            return new Promise((resolve) => {
-                pendingRequests.push(() => {
-                    originalRequest.headers.Authorization = `Bearer ${getAccessToken()}`;
-                    resolve(api(originalRequest));
-                });
-            });
+            return what;
         }
 
         return Promise.reject(error);
