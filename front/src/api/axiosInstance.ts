@@ -15,11 +15,12 @@ let isRefreshing = false;
 let pendingRequests: (() => void)[] = [];
 
 api.interceptors.request.use(async (config) => {
-    await ensureToken();
-    const token = getAccessToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    let token = getAccessToken();
+    if (!token) {
+        await ensureToken();
+        token = getAccessToken();
     }
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
 
