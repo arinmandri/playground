@@ -37,6 +37,9 @@ public class MemberSer extends PersistenceSer
 		String email;
 
 		public Member toEntity () {
+			if( nick.equals( "" ) ) nick = null;
+			if( email.equals( "" ) ) email = null;
+
 			return Member.builder()
 			        .nick( nick )
 			        .email( email )

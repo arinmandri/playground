@@ -18,6 +18,8 @@ import lombok.Getter;
  * - GET: 조회용
  * - POST: 데이터 삽입/수정/삭제 등
  * - 그 외 메서드 안 씀.
+ * 
+ * XXX API 파라미터 유효성 검사 안 하고 있다.
  */
 public class ApiA
 {

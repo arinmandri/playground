@@ -21,8 +21,9 @@
 </template>
 
 <script setup lang="ts">
+import api from "@/api/axiosInstance";
+
 import { ref, onMounted } from "vue";
-import { fetchBoardList } from "@/api/board";
 
 // 게시글 데이터 타입 정의
 interface Post {
@@ -49,4 +50,15 @@ onMounted(async () => {
     console.error("데이터를 불러오는데 실패했습니다.", error);
   }
 });
+
+//// 게시판 데이터 가져오기
+async function fetchBoardList() {
+    try {
+        const response = await api.get("/board");
+        return response.data;
+    } catch (error) {
+        console.error("게시판 데이터를 불러오는데 실패했습니다.", error);
+        throw error;
+    }
+}
 </script>
