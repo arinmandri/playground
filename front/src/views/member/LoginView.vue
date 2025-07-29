@@ -30,12 +30,11 @@
 </template>
 
 <script lang="ts" setup>
-import { loginWithBasicKey } from "@/api/axiosInstance";
+import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
 import { ref } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'; const router = useRouter();
 
-const router = useRouter();
 
 interface LoginForm {
     keyname: string
@@ -54,7 +53,7 @@ const onSubmit = async () => {
     error.value = ''
     loading.value = true
     try {
-        await loginWithBasicKey(form.value.keyname, form.value.password);
+        await authStore.loginWithBasicKey(form.value.keyname, form.value.password);
         router.push('/');
     } catch (err: any) {
         error.value = err.response?.data?.message || 'Login failed'

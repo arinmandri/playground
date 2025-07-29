@@ -54,9 +54,7 @@
 import api from "@/api/axiosInstance";
 
 import { ref } from 'vue'
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
+import { useRouter } from 'vue-router'; const router = useRouter();
 
 interface FormData {
     keyname: string

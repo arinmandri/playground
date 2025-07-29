@@ -1,8 +1,6 @@
-import { getAccessToken, getRefreshToken, setTokens, clearTokens } from './tokenStorage';
+import { useAuthStore, ensureToken, getAccessToken, getRefreshToken } from '@/stores/auth';
 
 import axios from 'axios';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -15,12 +13,6 @@ const api = axios.create({
 
 let isRefreshing = false;
 let pendingRequests: (() => void)[] = [];
-
-async function ensureToken() {
-    if (!getAccessToken()) {
-        await loginAsGuest();
-    }
-}
 
 api.interceptors.request.use(async (config) => {
     await ensureToken();
@@ -41,16 +33,18 @@ api.interceptors.response.use(
             originalRequest._retry = true;// 이 API 요청이 재시도인지 표시
 
             if (!isRefreshing) {// 토큰 리프레시 중복 방지 XXX 그러나 여러 탭이 열림을 생각하면 경합을 완전히 예방하진 못한다. 하지만 일단 이 정도로 넘어감.
+                // XXX 리프레시 토큰 사용 결과가 403인 경우의 처리 없음.
+                const authStore = useAuthStore();
                 isRefreshing = true;
                 try {
                     const refresh_token_curr = getRefreshToken();
                     //// 토큰 재발급
                     if (!refresh_token_curr) {// 리프레시토큰 없음: 비회원
                         console.log('비회원 토큰 발급 시도');
-                        loginAsGuest();
+                        await authStore.loginAsGuest();
                     } else {// 회원
                         console.log('회원 토큰 발급 시도');
-                        refreshToken(refresh_token_curr);
+                        await authStore.refreshToken(refresh_token_curr);
                     }
 
                     //// 대기요청큐 실행
@@ -58,7 +52,8 @@ api.interceptors.response.use(
                     pendingRequests = [];
                 } catch (err) {
                     console.log('토큰 리프레시 실패');
-                    clearTokens();
+                    authStore.logout();
+                    await authStore.loginAsGuest();
                     return Promise.reject(err);
                 } finally {
                     isRefreshing = false;
@@ -77,22 +72,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-export async function loginAsGuest() {
-    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/guest`)).data;
-    setTokens(access_token, refresh_token);
-}
-
-export async function loginWithBasicKey(keyname: string, password: string) {
-    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/basic`, { keyname, password })).data;
-    setTokens(access_token, refresh_token);
-}
-
-async function refreshToken(refreshToken: string) {
-    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/refresh`, { refreshToken })).data;
-    setTokens(access_token, refresh_token);
-}
-
-// TODO 로그아웃
 
 export default api;
