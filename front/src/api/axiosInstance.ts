@@ -44,16 +44,22 @@ api.interceptors.response.use(
                 isRefreshing = true;
                 try {
                     const refresh_token_curr = getRefreshToken();
-                    if (!refresh_token_curr) throw new Error('No refresh token');
-
                     //// 토큰 재발급
-                    const { access_token, refresh_token } = await refreshToken(refresh_token_curr);
-                    setTokens(access_token, refresh_token);
+                    if (!refresh_token_curr) {// 리프레시토큰 없음: 비회원
+                        console.log('토큰 리프레시 시도 - 비회원');
+                        const { access_token, refresh_token } = await getGuestToken();
+                        setTokens(access_token, refresh_token);
+                    } else {// 회원
+                        console.log('토큰 리프레시 시도 - 회원');
+                        const { access_token, refresh_token } = await refreshToken(refresh_token_curr);
+                        setTokens(access_token, refresh_token);
+                    }
 
                     //// 대기요청큐 실행
                     pendingRequests.forEach((cb) => cb());
                     pendingRequests = [];
                 } catch (err) {
+                    console.log('토큰 리프레시 실패');
                     clearTokens();
                     return Promise.reject(err);
                 } finally {
