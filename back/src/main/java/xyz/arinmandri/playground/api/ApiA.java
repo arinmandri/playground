@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import xyz.arinmandri.playground.core.mkey.MkeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.mkey.MkeyBasicRepo;
+import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
 
@@ -31,14 +32,17 @@ public class ApiA
 	@Autowired
 	MkeyBasicRepo mkeyBasicRepo;
 
-	protected MkeyBasic getMkeyBasicFrom ( UserDetails u ) {
+	/**
+	 * UserDetails --> Member
+	 */
+	protected Member getMemberFrom ( UserDetails u ) {
 		if( u instanceof UserNormal un ){
 			return mkeyBasicRepo.findByOwnerId( un.getId() )
 			        .orElseThrow( ()-> {
-				        throw new RuntimeException();// TODO exception
-			        } );
+				        throw new LackAuthExcp( "회원이어야 합니다." );
+			        } ).getOwner();
 		}
-		throw new RuntimeException();// TODO exception
+		throw new LackAuthExcp( "회원이어야 합니다." );
 	}
 
 	/**

@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.board.Post;
+import xyz.arinmandri.playground.core.board.PostRepo;
 import xyz.arinmandri.playground.core.board.PostSer;
-import xyz.arinmandri.playground.core.mkey.MkeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.security.LackAuthExcp;
 
 
 @RestController
@@ -25,6 +29,8 @@ public class ApiBoard extends ApiA
 {
 
 	final PostSer postSer;
+
+	final private PostRepo postRepo;
 
 	// TEST
 	@GetMapping( "/board" )
@@ -52,48 +58,78 @@ public class ApiBoard extends ApiA
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody PostSer.AddReq req ) {
+	        @RequestBody AddPostReq req ) {
 
-		MkeyBasic mk = getMkeyBasicFrom( userDetails );
+		Member m = getMemberFrom( userDetails );
 
-		Post p;
-		try{
-			p = postSer.add( mk.getOwner().getId(), req );
-		}
-		catch( NoSuchEntity e ){
-			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
-		}
+		Post p = req.toEntity( m );
+		p = postSer.add( p );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
+	}
+
+	@AllArgsConstructor
+	@Getter
+	static public class AddPostReq
+	{
+		private String content;
+
+		Post toEntity ( Member author ) {
+			return Post.builder()
+			        .author( author )
+			        .content( content )
+			        .build();
+		}
 	}
 
 	@PostMapping( "/post/{id}/edit" )
 	public ResponseEntity<Post> apiPostEdit (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
-	        @RequestBody PostSer.EditReq req ) {
+	        @RequestBody EditReq req ) throws LackAuthExcp {
 
-		// TODO auth: author = 로그인회원
+		Member m = getMemberFrom( userDetails );
 
-		Post p;
-		try{
-			p = postSer.edit( id, req );
+		Post p = postRepo.findById( id )
+		        .orElseThrow( ()-> new ExceptionalTask( ExcpType.NoSuchEntity, new NoSuchEntity( Post.class, id ) ) );
+
+		if( !p.getAuthor().equals( m ) ){
+			throw new LackAuthExcp( "내 것이 아니면 못 건듧니다." );
 		}
-		catch( NoSuchEntity e ){
-			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
-		}
+
+		p = postSer.edit( p, req.toEntity() );
 		return ResponseEntity.ok()
 		        .body( p );
+	}
+
+	@AllArgsConstructor
+	@Getter
+	static public class EditReq
+	{
+		private String content;
+
+		Post toEntity () {
+			return Post.builder()
+			        .content( content )
+			        .build();
+		}
 	}
 
 	@PostMapping( "/post/{id}/del" )
 	public ResponseEntity<Void> apiPostDel (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @PathVariable long id ) {
+	        @PathVariable long id ) throws LackAuthExcp {
 
-		// TODO auth: author = 로그인회원
+		Member m = getMemberFrom( userDetails );
 
-		postSer.del( id );
+		Post p = postRepo.findById( id )
+		        .orElseThrow( ()-> new ExceptionalTask( ExcpType.NoSuchEntity, new NoSuchEntity( Post.class, id ) ) );
+
+		if( !p.getAuthor().equals( m ) ){
+			throw new LackAuthExcp( "내 것이 아니면 못 건듧니다." );
+		}
+
+		postSer.del( p );
 		return ResponseEntity.ok().build();
 	}
 }

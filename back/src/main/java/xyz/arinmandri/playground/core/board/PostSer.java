@@ -5,12 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.member.MemberSer;
 
 
@@ -31,48 +28,18 @@ public class PostSer extends PersistenceSer
 		        .orElseThrow( ()-> new NoSuchEntity( Post.class , id ) );
 	}
 
-	public void del ( long id ) {
-		repo.deleteById( id );
+	public void del ( Post post ) {
+		repo.delete( post );
 	}
 
 	@Transactional
-	public Post add ( long author__m , AddReq req ) throws NoSuchEntity {
-		Member author = memberSer.get( author__m );
-		return repo.save( req.toEntity( author ) );
-	}
-
-	@AllArgsConstructor
-	@Getter
-	static public class AddReq
-	{
-		private String content;
-
-		Post toEntity ( Member author ) {
-			return Post.builder()
-			        .author( author )
-			        .content( content )
-			        .build();
-		}
+	public Post add ( Post post ) {
+		return repo.save( post );
 	}
 
 	@Transactional
-	public Post edit ( Long id , EditReq req ) throws NoSuchEntity {
-		Post p = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Post.class , id ) );
-		p.update( req.toEntity() );
-		return p;
-	}
-
-	@AllArgsConstructor
-	@Getter
-	static public class EditReq
-	{
-		private String content;
-
-		Post toEntity () {
-			return Post.builder()
-			        .content( content )
-			        .build();
-		}
+	public Post edit ( Post postOriginal , Post postNew ) {
+		postOriginal.update( postNew );
+		return postOriginal;
 	}
 }
