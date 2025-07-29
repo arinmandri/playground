@@ -1,27 +1,3 @@
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { fetchBoardList } from "@/api/board";
-
-// 게시글 데이터 타입 정의
-interface Post {
-  id: number;
-  title: string;
-  author: string;
-  created_at: string;
-}
-
-const boardList = ref<Post[]>([]);
-
-onMounted(async () => {
-  try {
-    const posts = await fetchBoardList();
-    boardList.value = posts
-  } catch (error) {
-    console.error("데이터를 불러오는데 실패했습니다.", error);
-  }
-});
-</script>
-
 <template>
   <div>
     <h1>게시판</h1>
@@ -43,3 +19,34 @@ onMounted(async () => {
     </table>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { fetchBoardList } from "@/api/board";
+
+// 게시글 데이터 타입 정의
+interface Post {
+  id: number;
+  content: string;
+  author: Member;
+  createdAt: string;
+}
+
+interface Member {
+  id: number;
+  nick: string;
+  email: string;
+  createdAt: string;
+}
+
+const boardList = ref<Post[]>([]);
+
+onMounted(async () => {
+  try {
+    const posts = await fetchBoardList();
+    boardList.value = posts
+  } catch (error) {
+    console.error("데이터를 불러오는데 실패했습니다.", error);
+  }
+});
+</script>
