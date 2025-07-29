@@ -1,9 +1,6 @@
 package xyz.arinmandri.playground.core.mkey;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,19 +19,11 @@ import xyz.arinmandri.playground.core.member.MemberSer.AddReq;
 @Service
 @RequiredArgsConstructor
 public class MkeySer extends PersistenceSer
-        implements UserDetailsService
 {
 	final private PasswordEncoder pwEncoder;
 	
 	final private MemberRepo memberRepo;
 	final private MkeyBasicRepo mkeyBasicRepo;
-
-	@Override
-	public UserDetails loadUserByUsername ( String key ) throws UsernameNotFoundException {
-		UserDetails u;
-		u = mkeyBasicRepo.findByKeyname( key ).orElse( null );
-		return u;
-	}
 
 	@Transactional
 	public MkeyBasic addMemberWithKeyBasic ( AddBasicWithMemberReq req ) throws UniqueViolated {

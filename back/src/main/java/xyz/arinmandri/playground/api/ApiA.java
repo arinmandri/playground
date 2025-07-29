@@ -1,12 +1,17 @@
 package xyz.arinmandri.playground.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import xyz.arinmandri.playground.core.mkey.MkeyBasic;
+import xyz.arinmandri.playground.core.mkey.MkeyBasicRepo;
+import xyz.arinmandri.playground.security.user.UserNormal;
 
 
 /**
@@ -23,6 +28,18 @@ import lombok.Getter;
  */
 public class ApiA
 {
+	@Autowired
+	MkeyBasicRepo mkeyBasicRepo;
+
+	protected MkeyBasic getMkeyBasicFrom ( UserDetails u ) {
+		if( u instanceof UserNormal un ){
+			return mkeyBasicRepo.findByOwnerId( un.getId() )
+			        .orElseThrow( ()-> {
+				        throw new RuntimeException();// TODO exception
+			        } );
+		}
+		throw new RuntimeException();// TODO exception
+	}
 
 	/**
 	 * 예외 응답

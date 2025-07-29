@@ -1,6 +1,8 @@
 package xyz.arinmandri.playground.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,8 @@ public class ApiAuth extends ApiA
 	final private TokenProvider tokenProvider;
 	
 	@PostMapping( "/token/guest" )
-	public ResponseEntity<TokenResponse> apiAuthTokenGuest () {
+	public ResponseEntity<TokenResponse> apiAuthTokenGuest (
+	        @AuthenticationPrincipal UserDetails userDetails ) {
 		TokenResponse tokenRes = tokenProvider.issueAccessTokenForGuest();
 		return ResponseEntity.ok()
 		        .body( tokenRes );
@@ -30,6 +33,7 @@ public class ApiAuth extends ApiA
 
 	@PostMapping( "/token/basic" )
 	public ResponseEntity<TokenResponse> apiAuthTokenBasic (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @RequestBody TokenReq req ) {
 		TokenResponse tokenRes;
 		try{
@@ -44,6 +48,7 @@ public class ApiAuth extends ApiA
 	
 	@PostMapping("/token/refresh")
 	public ResponseEntity<TokenResponse> apiAuthTokenRefresh (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @RequestBody TokenRefreshReq req ) {
 		TokenResponse tokenRes;
 		try{

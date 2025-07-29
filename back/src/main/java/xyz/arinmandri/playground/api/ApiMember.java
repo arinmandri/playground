@@ -2,6 +2,8 @@ package xyz.arinmandri.playground.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,7 @@ public class ApiMember extends ApiA
 
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<MkeyBasic> apiMemberAddBasic (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @RequestBody MkeySer.AddBasicWithMemberReq req ) {
 
 		MkeyBasic m;
@@ -52,6 +55,7 @@ public class ApiMember extends ApiA
 
 	@PostMapping( "/{id}/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
 	        @RequestBody MemberSer.EditReq req ) throws NoSuchEntity {
 

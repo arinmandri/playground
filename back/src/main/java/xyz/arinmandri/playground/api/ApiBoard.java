@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostSer;
+import xyz.arinmandri.playground.core.mkey.MkeyBasic;
 
 
 @RestController
@@ -48,13 +51,14 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @RequestBody PostSer.AddReq req ) {
 
-		// TODO auth: author = 로그인회원
+		MkeyBasic mk = getMkeyBasicFrom( userDetails );
 
 		Post p;
 		try{
-			p = postSer.add( 1L, req );
+			p = postSer.add( mk.getOwner().getId(), req );
 		}
 		catch( NoSuchEntity e ){
 			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
@@ -65,6 +69,7 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/{id}/edit" )
 	public ResponseEntity<Post> apiPostEdit (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
 	        @RequestBody PostSer.EditReq req ) {
 
@@ -83,6 +88,7 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/{id}/del" )
 	public ResponseEntity<Void> apiPostDel (
+	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ) {
 
 		// TODO auth: author = 로그인회원
