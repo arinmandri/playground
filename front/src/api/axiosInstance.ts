@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from './tokenStorage';
+
+import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,8 +18,7 @@ let pendingRequests: (() => void)[] = [];
 
 async function ensureToken() {
     if (!getAccessToken()) {
-        const { access_token, refresh_token } = await getGuestToken();
-        setTokens(access_token, refresh_token);
+        await loginAsGuest();
     }
 }
 
@@ -46,13 +46,11 @@ api.interceptors.response.use(
                     const refresh_token_curr = getRefreshToken();
                     //// 토큰 재발급
                     if (!refresh_token_curr) {// 리프레시토큰 없음: 비회원
-                        console.log('토큰 리프레시 시도 - 비회원');
-                        const { access_token, refresh_token } = await getGuestToken();
-                        setTokens(access_token, refresh_token);
+                        console.log('비회원 토큰 발급 시도');
+                        loginAsGuest();
                     } else {// 회원
-                        console.log('토큰 리프레시 시도 - 회원');
-                        const { access_token, refresh_token } = await refreshToken(refresh_token_curr);
-                        setTokens(access_token, refresh_token);
+                        console.log('회원 토큰 발급 시도');
+                        refreshToken(refresh_token_curr);
                     }
 
                     //// 대기요청큐 실행
@@ -80,19 +78,21 @@ api.interceptors.response.use(
     }
 );
 
-export async function getGuestToken() {
-    const res = await axios.post(`${API_BASE}/auth/token/guest`);
-    return res.data;
+export async function loginAsGuest() {
+    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/guest`)).data;
+    setTokens(access_token, refresh_token);
 }
 
-export async function getBasicToken(keyname: string, password: string) {
-    const res = await axios.post(`${API_BASE}/auth/token/basic`, { keyname, password });
-    return res.data;
+export async function loginWithBasicKey(keyname: string, password: string) {
+    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/basic`, { keyname, password })).data;
+    setTokens(access_token, refresh_token);
 }
 
-export async function refreshToken(refreshToken: string) {
-    const res = await axios.post(`${API_BASE}/auth/token/refresh`, { refreshToken });
-    return res.data;
+async function refreshToken(refreshToken: string) {
+    const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/refresh`, { refreshToken })).data;
+    setTokens(access_token, refresh_token);
 }
+
+// TODO 로그아웃
 
 export default api;

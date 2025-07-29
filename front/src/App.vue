@@ -9,8 +9,9 @@ onMounted(async () => {
   <div>
     <nav>
       <router-link to="/">홈</router-link> |
-      <router-link to="/board">게시판</router-link> | 
-      <router-link to="/member/join">가입</router-link>
+      <router-link to="/board">게시판</router-link> |
+      <router-link to="/member/join">가입</router-link> |
+      <router-link to="/member/login">로그인</router-link> |
     </nav>
 
     <router-view />
