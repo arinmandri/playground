@@ -18,6 +18,7 @@
       </tbody>
     </table>
   </div>
+  <router-link to="/board/post/write">글쓰기</router-link>
 </template>
 
 <script setup lang="ts">

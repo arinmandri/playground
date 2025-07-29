@@ -11,7 +11,7 @@ import xyz.arinmandri.playground.security.user.User;
 
 
 /*
- * 규칙: POST 요청이면 첫 번째 파라미터는 UserDetails이다.
+ * 규칙: POST 요청이면 첫 번째 파라미터는 UserDetails이다. XXX 검사
  */
 @Aspect
 @Component

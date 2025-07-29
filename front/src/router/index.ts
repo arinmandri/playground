@@ -3,6 +3,7 @@ import Home from "../views/HomeView.vue";
 import Board from "../views/board/BoardView.vue";
 import MemberJoin from "../views/member/JoinView.vue";
 import MemberLogin from "../views/member/LoginView.vue";
+import BoardPostWrite from "../views/board/PostWriteView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes = [
@@ -10,6 +11,7 @@ const routes = [
   { name: "board", path: "/board", component: Board },
   { name: "memberJoin", path: "/member/join", component: MemberJoin },
   { name: "memberLogin", path: "/member/login", component: MemberLogin },
+  { name: "boardPostWrite", path: "/board/post/write", component: BoardPostWrite },
 ];
 
 const router = createRouter({
