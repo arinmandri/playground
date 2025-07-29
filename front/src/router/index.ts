@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/HomeView.vue";
-import Board from "../views/BoardView.vue";
+import Board from "../views/board/BoardView.vue";
 import MemberJoin from "../views/member/JoinView.vue";
 import MemberLogin from "../views/member/LoginView.vue";
 import { useAuthStore } from "@/stores/auth";
@@ -21,10 +21,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
-  //// 이미 로그인 상태이면 홈으로
-  if (to.name === "memberLogin" && authStore.isAuthenticated) {
-    return next({ name: "home" });
-  }
+  if (authStore.isAuthenticated) {
+    //// 이미 로그인 상태이면 홈으로
+    if (to.name === "memberLogin") {
+      return next({ name: "home" });
+    }
+  } else { }
 
   return next();
 });

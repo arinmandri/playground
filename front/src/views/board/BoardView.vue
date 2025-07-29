@@ -21,24 +21,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Post } from "@/types/board";
 import api from "@/api/axiosInstance";
 
 import { ref, onMounted } from "vue";
-
-// 게시글 데이터 타입 정의
-interface Post {
-  id: number;
-  content: string;
-  author: Member;
-  createdAt: string;
-}
-
-interface Member {
-  id: number;
-  nick: string;
-  email: string;
-  createdAt: string;
-}
 
 const boardList = ref<Post[]>([]);
 
