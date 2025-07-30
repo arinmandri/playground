@@ -117,13 +117,13 @@ async function refreshToken(): Promise<void> {
     const authStore = useAuthStore();
     const refresh_token_curr = getRefreshToken();
     try {
-        if (!refresh_token_curr) {// 리프레시토큰 없음: 비회원
+        if (authStore.isLoggedIn) {// 회원
+            console.log('회원 토큰 발급 시도');
+            await authStore.refreshToken(refresh_token_curr || '');
+        }
+        else {// 비회원
             console.log('비회원 토큰 발급 시도');
             await authStore.loginAsGuest();
-        }
-        else {// 회원
-            console.log('회원 토큰 발급 시도');
-            await authStore.refreshToken(refresh_token_curr);
         }
     } catch (e: any) {
         console.log('토큰 재발급 실패; 비회원 토큰 발급 시도');
