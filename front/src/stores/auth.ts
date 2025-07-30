@@ -53,7 +53,7 @@ export function getRefreshToken() {
 function setTokens(access: string, refresh: string) {
     localStorage.setItem(ACCESS_TOKEN_KEY, access == null ? '' : access);
     localStorage.setItem(REFRESH_TOKEN_KEY, refresh == null ? '' : refresh);
-    console.log('토큰 저장', access.slice(-4), refresh.slice(0, 4));
+    console.log('토큰 저장', access?.slice(-4), refresh?.slice(0, 4));
     return { isLoggedIn: !!refresh };
 }
 
