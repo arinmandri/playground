@@ -61,6 +61,12 @@ public class ApiA
 		        .body( new ErrorResponse( "TODO", "TODO" ) );
 	}
 
+	@ExceptionHandler( Exception.class )
+	public ResponseEntity<ErrorResponse> handleKnownException ( Exception e ) {
+		return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
+		        .body( new ErrorResponse( "TEST", "TEST msg" ) );// TODO
+	}
+
 	/**
 	 * 컨트롤러에서 정상 시나리오에서 벗어난 응답시 이걸 던진다.
 	 * 우습게도 또 그 딱딱한 자료형의 벽에 부딪혀; 핸들러 메서드의 반환꼴은 정상 시나리오의 응답형식으로 고정이고, 다른 꼴의 응답을 반환하려면 예외던지기로 빼돌려야지.

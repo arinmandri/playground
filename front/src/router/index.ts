@@ -23,7 +23,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
-  if (authStore.isAuthenticated) {// 로그인 상태
+  if (authStore.isLoggedIn) {// 로그인 상태
     if (to.name === "memberLogin") {// 로그인페이지 --> 이전 페이지 | 홈
       if (window.history.length > 1) {
         return next(from.fullPath);
