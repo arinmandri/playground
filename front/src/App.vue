@@ -44,11 +44,13 @@ const logout = () => {
   margin: 0px;
   padding: 0px;
 }
+
 nav {
   background-color: #eee;
   margin-bottom: 20px;
   padding: 10px;
 }
+
 #globalMenu {
   list-style: none;
   display: flex;
