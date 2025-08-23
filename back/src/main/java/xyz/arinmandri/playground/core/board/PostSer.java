@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.member.MemberSer;
@@ -15,19 +16,19 @@ import xyz.arinmandri.playground.core.member.MemberSer;
 @RequiredArgsConstructor
 public class PostSer extends PersistenceSer
 {
+	private final int pageSize = pageSizeDefault;
+
 	final private PostRepo repo;
 
 	final private MemberSer memberSer;
 
-	public List<Post> all () {
-		return repo.findAll();
-	}
-
+	@Transactional( readOnly = true )
 	public Post get ( long id ) throws NoSuchEntity {
 		return repo.findById( id )
 		        .orElseThrow( ()-> new NoSuchEntity( Post.class , id ) );
 	}
 
+	@Transactional
 	public void del ( Post post ) {
 		repo.delete( post );
 	}
@@ -41,5 +42,17 @@ public class PostSer extends PersistenceSer
 	public Post edit ( Post postOriginal , Post postNew ) {
 		postOriginal.update( postNew );
 		return postOriginal;
+	}
+
+	@Transactional( readOnly = true )
+	public CursorPage<Post> list () {
+		List<Post> rows = repo.findAllByOrderByIdDesc( defaultPageable );
+		return new CursorPage<>( rows, pageSize );
+	}
+
+	@Transactional( readOnly = true )
+	public CursorPage<Post> list ( Long cursor ) {
+		List<Post> rows = repo.findByIdLessThanOrderByIdDesc( cursor, defaultPageable );
+		return new CursorPage<>( rows, pageSize );
 	}
 }

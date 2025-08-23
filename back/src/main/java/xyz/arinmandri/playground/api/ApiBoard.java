@@ -1,7 +1,5 @@
 package xyz.arinmandri.playground.api;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,11 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostRepo;
@@ -31,29 +31,6 @@ public class ApiBoard extends ApiA
 	final PostSer postSer;
 
 	final private PostRepo postRepo;
-
-	// TEST
-	@GetMapping( "/board" )
-	public ResponseEntity<List<Post>> apiBoard () {
-		List<Post> list = postSer.all();
-		return ResponseEntity.ok()
-		        .body( list );
-	}
-
-	@GetMapping( "/post/{id}" )
-	public ResponseEntity<Post> apiPostGet (
-	        @PathVariable long id ) {
-
-		Post p;
-		try{
-			p = postSer.get( id );
-		}
-		catch( NoSuchEntity e ){
-			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
-		}
-		return ResponseEntity.ok()
-		        .body( p );
-	}
 
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
@@ -131,5 +108,33 @@ public class ApiBoard extends ApiA
 
 		postSer.del( p );
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping( "/post/{id}" )
+	public ResponseEntity<Post> apiPostGet (
+	        @PathVariable long id ) {
+
+		Post p;
+		try{
+			p = postSer.get( id );
+		}
+		catch( NoSuchEntity e ){
+			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
+		}
+		return ResponseEntity.ok()
+		        .body( p );
+	}
+
+	@GetMapping( "/post/list" )
+	public ResponseEntity<CursorPage<Post>> apiPostList (
+	        @RequestParam( required = false ) Long cursor ) {
+
+		CursorPage<Post> p;
+		p = cursor == null
+		        ? postSer.list()
+		        : postSer.list( cursor );
+
+		return ResponseEntity.ok()
+		        .body( p );
 	}
 }

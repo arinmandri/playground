@@ -1,22 +1,18 @@
 <template>
   <div>
     <h1>게시판</h1>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>내용</th>
-          <th>작성자</th>
-          <th>작성일시</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="post in boardList" :key="post.id">
-          <td>{{ post.content }}</td>
-          <td>{{ post.author.nick }}</td>
-          <td>{{ post.createdAt }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="posts">
+      <div class="post" v-for="post in boardList" :key="post.id">
+        <p>{{ post.content }}</p>
+        <p>
+          <span>{{ post.author.nick }}</span>
+          <span>{{ post.createdAt }}</span>
+        </p>
+      </div>
+    </div>
+    <div>
+      <button v-if="!isEnd" @click="fetchPostList">더보기</button>
+    </div>
   </div>
   <router-link to="/board/post/write">글쓰기</router-link>
 </template>
@@ -28,24 +24,44 @@ import api from "@/api/axiosInstance";
 import { ref, onMounted } from "vue";
 
 const boardList = ref<Post[]>([]);
+const cursor = ref<number | null>(null);
+const isEnd = ref(false);
 
 onMounted(async () => {
   try {
-    const posts = await fetchBoardList();
-    boardList.value = posts
+    fetchPostList();
   } catch (error) {
     console.error("데이터를 불러오는데 실패했습니다.", error);
   }
 });
 
 //// 게시판 데이터 가져오기
-async function fetchBoardList() {
-    try {
-        const response = await api.get("/board");
-        return response.data;
-    } catch (error) {
-        console.error("게시판 데이터를 불러오는데 실패했습니다.", error);
-        throw error;
-    }
+async function fetchPostList() {
+  try {
+    const response = await api.get("/post/list", {
+      cursor: cursor.value,
+    });
+    const resData = response.data;
+    const newPosts = resData.list as Post[];
+    boardList.value = [...boardList.value, ...newPosts];
+    cursor.value = resData.nextCursor;
+    isEnd.value = cursor.value == null;
+  } catch (error) {
+    console.error("다음 페이지 데이터를 불러오는데 실패했습니다.", error);
+  }
 }
 </script>
+
+<style>
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+</style>

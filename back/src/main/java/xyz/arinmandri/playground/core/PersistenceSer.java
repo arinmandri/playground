@@ -2,12 +2,19 @@ package xyz.arinmandri.playground.core;
 
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import xyz.arinmandri.playground.core.BaseEntity.ConstraintDesc;
 
 
 public class PersistenceSer
 {
+	protected final int pageSizeDefault = 10;
+
+	protected Pageable defaultPageable = PageRequest.of( 0, pageSizeDefault, Sort.by( "id" ).descending() );
+
 	public void maybeThrowsUniqueViolated ( DataIntegrityViolationException e , ConstraintDesc constraint ) throws UniqueViolated {
 		if( isByConstraintUnique( e, constraint.constraintName ) )
 		    throw new UniqueViolated( e, constraint.msg );
