@@ -57,7 +57,7 @@ const api = {
             attemptRequest();
         });
     },
-    post: async (url: string, data?: any): Promise<AxiosResponse<any, any> | void> => {
+    post: async (url: string, data?: any): Promise<AxiosResponse<any, any>> => {
         return new Promise((resolve, reject) => {
             const attemptRequest = attemptRequestOf(ax.post, url, data, resolve, reject);
             attemptRequest();
