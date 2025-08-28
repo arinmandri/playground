@@ -1,3 +1,4 @@
+XXX 개발에 관한 건 readme 말고 memo에 적어야...
 
 ## 목적
 
@@ -84,8 +85,13 @@ npm run dev --mode lodev # 모드 지정하는 법
 
 ##### 백엔드
 
-STS4에서 그 프로젝트 우클릭 > Run As > Spring Boot App
+STS4에서: 그 프로젝트 우클릭 > Run As > Spring Boot App
 
+윈도우 CMD에서 JAR 실행
+```
+cd <프로젝트 루트>
+java -jar .\back\target\playground-0.0.1-SNAPSHOT.jar > .\back.log
+```
 
 
 
@@ -96,7 +102,6 @@ STS4에서 그 프로젝트 우클릭 > Run As > Spring Boot App
 ## 업데이트
 
 1. 작업한 걸 커밋하고 깃허브에 푸시한다.
-  - 나는 Git을 이용할 때 보통 Sourcetree를 쓰지만 저장소가 private라 푸시는 터미널에 `git push prigin main`을 입력해서 하고 있다.
 2. 서버에서 `~/playground` 위치에서 관리중.
 3. `update.sh` 를 실행한다.
 
@@ -122,3 +127,8 @@ pm2 list  # PM2 실행 현황 보기
 tail -n1000 -f ~/.pm2/logs/playground-backend-out.log  # PM2 백엔드 로그 확인
 tail -n1000 -f ~/.pm2/logs/playground-backend-error.log  # PM2 백엔드 에러로그 확인
 ```
+
+- postgresql
+- maven
+
+
