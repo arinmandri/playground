@@ -9,8 +9,7 @@
       </ul>
       <div id="user">
         <div v-if="isLoggedIn">
-          <span>로그인함</span>
-          <button @click="logout">로그아웃</button>
+          <router-link to="/member/myplace">로그인함</router-link>
         </div>
         <div v-else>
           <span>비회원</span>
@@ -35,11 +34,6 @@ const { isLoggedIn } = storeToRefs(authStore);
 
 onMounted(async () => {
 });
-
-const logout = () => {
-  authStore.logout();
-  router.push('/member/login');
-};
 </script>
 
 <style>

@@ -21,7 +21,7 @@
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'; const router = useRouter();
+import { useRouter, useRoute } from 'vue-router'; const router = useRouter(); const route = useRoute();
 
 
 interface LoginForm {
@@ -42,7 +42,8 @@ const onSubmit = async () => {
   loading.value = true
   try {
     await authStore.loginWithBasicKey(form.value.keyname, form.value.password);
-    router.push('/');
+    router.push(route.query.redirect?.toString() || "/");
+    // router.push('/');// TODO
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Login failed'
   } finally {
