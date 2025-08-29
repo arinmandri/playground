@@ -1,18 +1,26 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/HomeView.vue";
-import Board from "../views/board/BoardView.vue";
-import MemberJoin from "../views/member/JoinView.vue";
-import MemberLogin from "../views/member/LoginView.vue";
-import BoardPostWrite from "../views/board/PostWriteView.vue";
+
 import { useAuthStore } from "@/stores/auth";
 
-const routes = [
-  { name: "home", path: "/", component: Home },
-  { name: "board", path: "/board", component: Board },
-  { name: "memberJoin", path: "/member/join", component: MemberJoin },
-  { name: "memberLogin", path: "/member/login", component: MemberLogin },
-  { name: "boardPostWrite", path: "/board/post/write", component: BoardPostWrite },
-];
+/*
+ * 이름이 "View.vue"로 끝나는 모든 컴포넌트를 자동으로 라우트로 등록
+ */
+const vueFiles = import.meta.glob("@/views/**/*View.vue", { eager: true });
+const routes = Object.keys(vueFiles).map((filePath) => {
+  const temp = filePath
+      .replace('/src/views/', '')// 상대경로로
+      .replace(/View\.vue$/, '')// "View.vue" 제거
+      .replace(/\/$/, '')// "/" 제거 (파일명이 View.vue 인 경우)
+      .toLowerCase();
+  const name = temp === '' ? 'home' : temp.replace(/\//g, '-');
+  const path = '/' + temp;
+  console.log('******************************', name, '★', path);// TEST
+  return {
+    name,
+    path,
+    component: (vueFiles as any)[filePath].default,
+  };
+});
 
 const router = createRouter({
   history: createWebHistory(),
