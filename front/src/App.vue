@@ -34,7 +34,6 @@ import { storeToRefs } from "pinia";
 const { isLoggedIn } = storeToRefs(authStore);
 
 onMounted(async () => {
-  console.log('App.vue mounted');
 });
 
 const logout = () => {

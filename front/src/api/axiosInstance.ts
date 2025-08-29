@@ -43,7 +43,6 @@ ax.interceptors.request.use(async (config) => {
         token = await getAccessToken();
     }
     config.headers.Authorization = `Bearer ${token}`;
-    console.log(`${config.url} TOKEN: `, token?.slice(-4));// TEST
     return config;
 });
 

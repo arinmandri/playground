@@ -14,7 +14,6 @@ const routes = Object.keys(vueFiles).map((filePath) => {
       .toLowerCase();
   const name = temp === '' ? 'home' : temp.replace(/\//g, '-');
   const path = '/' + temp;
-  console.log('******************************', name, '★', path);// TEST
   return {
     name,
     path,
