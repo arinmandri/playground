@@ -26,14 +26,12 @@ public class ApiFile
 	        MultipartFile file ) {
 
 		// TODO
-		System.out.println( file.getOriginalFilename() );
 		File file1 = fileSer.createTempFile( file );
 		if( file1 == null ){
 			// TODO exception
 			return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
 			        .body( "File upload failed" );
 		}
-		System.out.println( file1.getAbsolutePath() );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( "File upload is not implemented yet" );
