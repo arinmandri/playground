@@ -16,6 +16,19 @@
 
 
 
+## Github 올라간 것 말고
+
+##### AWS S3 키
+
+AWS IAM 액세스 키를 여기 추가
+
+백엔드 `xyz.arinmandri.playground.MyDeepestSecret.java`
+
+- `public static final String AwsAccessKeyID = "..."`
+- `public static final String AwsSecretAccessKey = = "..."`
+
+
+
 
 
 

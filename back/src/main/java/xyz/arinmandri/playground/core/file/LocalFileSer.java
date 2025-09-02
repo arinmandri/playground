@@ -1,11 +1,12 @@
 package xyz.arinmandri.playground.core.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
-import xyz.arinmandri.playground.aws.S3Actions;
 
-
-/*
+/**
+ * 로컬 임시파일 관리.
+ * 
  * 임시파일들은 임시파일 폴더 하위에 저장된다.
  * 임시파일 폴더 디렉토리를 30분마다 교대시킨다.
  * 임시파일 폴더 베이스 디렉토리 하위에 버킷 폴더 두 개가 있다.
@@ -27,28 +26,22 @@ import xyz.arinmandri.playground.aws.S3Actions;
  * 교대할 때; 사용하던 버킷은 비우지 않고 그대로 두고, 새로 사용할 버킷은 비우고 시작한다.
  */
 @Service
-public class FileSer
-{
-	private static final Logger logger = LoggerFactory.getLogger( FileSer.class );
+public class LocalFileSer {
+	private static final Logger logger = LoggerFactory.getLogger( LocalFileSer.class );
 
 	private final int tempFileNameLength = 24;
 
 	final private String tempDirBase;
 	final private String[] currentBucketNames = { "bucket1", "bucket2" };
 	private int currentBucketIndex = 0;
-	final private String awsBucketName;
 
 	final SecureRandom random;
 
-	static S3Actions s3Actions = new S3Actions();// TODO static 말고 빈으로 바꾸기
-
-	public FileSer(
+	public LocalFileSer(
 	        @Value( "${file.temp-directory-base}" ) String tempDirBase ,
-	        @Value( "${aws.s3.bucket-name}" ) String awsBucketName ,
 	        @Autowired SecureRandom random ) {
 
 		this.tempDirBase = tempDirBase;
-		this.awsBucketName = awsBucketName;
 		this.random = random;
 
 		/*
@@ -60,47 +53,29 @@ public class FileSer
 			    folder.mkdirs();
 		}
 	}
-
-	public void uploadTest ( File file ) {
-
-		String key = file.getName();
-		String objectPath = file.getAbsolutePath();
-		try{
-			CompletableFuture<PutObjectResponse> future = s3Actions.uploadLocalFileAsync( awsBucketName, key, objectPath );
-			future.join();
-
-		}
-		catch( RuntimeException rt ){
-			Throwable cause = rt.getCause();
-			if( cause instanceof S3Exception s3Ex ){
-				logger.info( "S3 error occurred: Error message: {}, Error code {}", s3Ex.getMessage(), s3Ex.awsErrorDetails().errorCode() );
-			}
-			else{
-				logger.info( "An unexpected error occurred: " + rt.getMessage() );
-			}
-			// throw cause;
-		}
-	}
+    
 
 	/**
 	 * MultipartFile을 임시파일로 저장
+	 * 
+	 * @return 생성된 임시파일
+	 *         입력하는 파일이 없으면 null
 	 */
 	public File createTempFile ( MultipartFile multipartFile ) {
 		if( multipartFile == null || multipartFile.isEmpty() )
-		    return null;
+		    return null;// TODO exception
 
 		final Path path = Paths.get( generateRandomLocalFilePath() + "." + getExtension( multipartFile.getOriginalFilename() ) );
 
 		File file;
 		try{
 			multipartFile.transferTo( path );
-			file = path.toFile();
 		}
-		catch( Exception e ){
+		catch( IOException | IllegalStateException ex ){
 			// TODO exception
-			System.out.println( e.getMessage() );
-			file = null;
+			return null;
 		}
+		file = path.toFile();
 
 		return file;
 	}
@@ -112,7 +87,7 @@ public class FileSer
 	private String generateRandomFileName () {
 		byte[] randomBytes = new byte[tempFileNameLength];
 		random.nextBytes( randomBytes );
-		return Base64.getUrlEncoder().withoutPadding().encodeToString( randomBytes );
+		return Base64.getUrlEncoder().withoutPadding().encodeToString( randomBytes ).toLowerCase();
 	}
 
 	private String getTempBucketDir ( int index ) {

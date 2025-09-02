@@ -27,7 +27,7 @@ import xyz.arinmandri.playground.security.user.UserNormal;
  * 
  * XXX API 파라미터 유효성 검사 안 하고 있다.
  */
-public class ApiA
+public abstract class ApiA
 {
 	@Autowired
 	MkeyBasicRepo mkeyBasicRepo;
