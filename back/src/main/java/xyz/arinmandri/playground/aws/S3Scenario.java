@@ -43,7 +43,7 @@ public class S3Scenario
 	public static final String DASHES = new String( new char[80] ).replace( "\0", "-" );
 	private static final Logger logger = LoggerFactory.getLogger( S3Scenario.class );
 
-	public static void main ( String[] args ) throws IOException{
+	public static void main_ ( String[] args ) throws IOException {
 		final String usage = """
 		        Usage:
 		           <bucketName> <key> <objectPath> <savePath> <toBucket>

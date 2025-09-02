@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
@@ -44,6 +46,7 @@ import software.amazon.awssdk.services.s3.model.UploadPartCopyRequest;
 import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Publisher;
 import software.amazon.awssdk.services.s3.waiters.S3AsyncWaiter;
+import xyz.arinmandri.playground.MyDeepestSecret;
 
 
 /**
@@ -55,7 +58,7 @@ public class S3Actions
 	private static final Logger logger = LoggerFactory.getLogger( S3Actions.class );
 	private static S3AsyncClient s3AsyncClient;
 
-	public static S3AsyncClient getAsyncClient (){
+	public static S3AsyncClient getAsyncClient () {
 		if( s3AsyncClient == null ){
 			/*
 			The `NettyNioAsyncHttpClient` class is part of the AWS SDK for Java, version 2,
@@ -78,7 +81,11 @@ public class S3Actions
 			        .build();
 
 			s3AsyncClient = S3AsyncClient.builder()
-			        .region( Region.US_EAST_1 )
+			        .region( Region.AP_NORTHEAST_2 )
+			        .credentialsProvider( StaticCredentialsProvider.create(
+			                AwsBasicCredentials.create(
+			                        MyDeepestSecret.AwsAccessKeyID,
+			                        MyDeepestSecret.AwsSecretAccessKey ) ) )
 			        .httpClient( httpClient )
 			        .overrideConfiguration( overrideConfig )
 			        .build();
@@ -93,7 +100,7 @@ public class S3Actions
 	 * @return a {@link CompletableFuture} that completes when the bucket is created and ready
 	 * @throws RuntimeException if there is a failure while creating the bucket
 	 */
-	public CompletableFuture<Void> createBucketAsync ( String bucketName ){
+	public CompletableFuture<Void> createBucketAsync ( String bucketName ) {
 		CreateBucketRequest bucketRequest = CreateBucketRequest.builder()
 		        .bucket( bucketName )
 		        .build();
@@ -126,7 +133,7 @@ public class S3Actions
 	 * @param objectPath the local file path of the file to be uploaded
 	 * @return a {@link CompletableFuture} that completes with the {@link PutObjectResponse} when the upload is successful, or throws a {@link RuntimeException} if the upload fails
 	 */
-	public CompletableFuture<PutObjectResponse> uploadLocalFileAsync ( String bucketName , String key , String objectPath ){
+	public CompletableFuture<PutObjectResponse> uploadLocalFileAsync ( String bucketName , String key , String objectPath ) {
 		PutObjectRequest objectRequest = PutObjectRequest.builder()
 		        .bucket( bucketName )
 		        .key( key )
@@ -148,7 +155,7 @@ public class S3Actions
 	 * @param path       the local file path where the object's bytes will be written
 	 * @return a {@link CompletableFuture} that completes when the object bytes have been written to the local file
 	 */
-	public CompletableFuture<Void> getObjectBytesAsync ( String bucketName , String keyName , String path ){
+	public CompletableFuture<Void> getObjectBytesAsync ( String bucketName , String keyName , String path ) {
 		GetObjectRequest objectRequest = GetObjectRequest.builder()
 		        .key( keyName )
 		        .bucket( bucketName )
@@ -163,11 +170,11 @@ public class S3Actions
 				logger.info( "Successfully obtained bytes from an S3 object" );
 			}
 			catch( IOException ex ){
-				throw new RuntimeException( "Failed to write data to file", ex );
+				throw new RuntimeException( "Failed to write data to file" , ex );
 			}
 		} ).whenComplete( ( resp , ex )-> {
 			if( ex != null ){
-				throw new RuntimeException( "Failed to get object bytes from S3", ex );
+				throw new RuntimeException( "Failed to get object bytes from S3" , ex );
 			}
 		} );
 	}
@@ -178,7 +185,7 @@ public class S3Actions
 	 * @param bucketName the name of the S3 bucket to list objects for
 	 * @return a {@link CompletableFuture} that completes when all objects have been listed
 	 */
-	public CompletableFuture<Void> listAllObjectsAsync ( String bucketName ){
+	public CompletableFuture<Void> listAllObjectsAsync ( String bucketName ) {
 		ListObjectsV2Request initialRequest = ListObjectsV2Request.builder()
 		        .bucket( bucketName )
 		        .maxKeys( 1 )
@@ -205,7 +212,7 @@ public class S3Actions
 	 * @return a {@link CompletableFuture} that completes with the copy result as a {@link String}
 	 * @throws RuntimeException if the URL could not be encoded or an S3 exception occurred during the copy
 	 */
-	public CompletableFuture<String> copyBucketObjectAsync ( String fromBucket , String objectKey , String toBucket ){
+	public CompletableFuture<String> copyBucketObjectAsync ( String fromBucket , String objectKey , String toBucket ) {
 		CopyObjectRequest copyReq = CopyObjectRequest.builder()
 		        .sourceBucket( fromBucket )
 		        .sourceKey( objectKey )
@@ -234,7 +241,7 @@ public class S3Actions
 	 * @param key        the key (name) of the file to be uploaded
 	 * @return a {@link CompletableFuture} that completes when the multipart upload is successful
 	 */
-	public CompletableFuture<Void> multipartUpload ( String bucketName , String key ){
+	public CompletableFuture<Void> multipartUpload ( String bucketName , String key ) {
 		int mB = 1024 * 1024;
 
 		CreateMultipartUploadRequest createMultipartUploadRequest = CreateMultipartUploadRequest.builder()
@@ -314,7 +321,7 @@ public class S3Actions
 	 * @param key        the key (file name) of the object to be deleted
 	 * @return a {@link CompletableFuture} that completes when the object has been deleted
 	 */
-	public CompletableFuture<Void> deleteObjectFromBucketAsync ( String bucketName , String key ){
+	public CompletableFuture<Void> deleteObjectFromBucketAsync ( String bucketName , String key ) {
 		DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
 		        .bucket( bucketName )
 		        .key( key )
@@ -340,7 +347,7 @@ public class S3Actions
 	 * @return a {@link CompletableFuture} that completes when the bucket deletion is successful, or throws a {@link RuntimeException}
 	 *         if an error occurs during the deletion process
 	 */
-	public CompletableFuture<Void> deleteBucketAsync ( String bucket ){
+	public CompletableFuture<Void> deleteBucketAsync ( String bucket ) {
 		DeleteBucketRequest deleteBucketRequest = DeleteBucketRequest.builder()
 		        .bucket( bucket )
 		        .build();
@@ -357,7 +364,7 @@ public class S3Actions
 		return response.thenApply( r-> null );
 	}
 
-	public CompletableFuture<String> performMultiCopy ( String toBucket , String bucketName , String key ){
+	public CompletableFuture<String> performMultiCopy ( String toBucket , String bucketName , String key ) {
 		CreateMultipartUploadRequest createMultipartUploadRequest = CreateMultipartUploadRequest.builder()
 		        .bucket( toBucket )
 		        .key( key )
@@ -394,7 +401,7 @@ public class S3Actions
 		return null;
 	}
 
-	private static ByteBuffer getRandomByteBuffer ( int size ){
+	private static ByteBuffer getRandomByteBuffer ( int size ) {
 		ByteBuffer buffer = ByteBuffer.allocate( size );
 		for( int i = 0 ; i < size ; i++ ){
 			buffer.put( (byte) ( Math.random() * 256 ) );
@@ -403,4 +410,3 @@ public class S3Actions
 		return buffer;
 	}
 }
-
