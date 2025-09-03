@@ -44,15 +44,13 @@ public class S3Ser
 		try{
 			s3Actions.uploadLocalFile( awsBucketName, key, objectPath );
 		}
-		catch( RuntimeException rt ){
+		catch( S3Exception e ){
 			// TODO exception
-			Throwable cause = rt.getCause();
-			if( cause instanceof S3Exception s3Ex ){
-				logger.info( "S3 error occurred: Error message: {}, Error code {}", s3Ex.getMessage(), s3Ex.awsErrorDetails().errorCode() );
-			}
-			else{
-				logger.info( "An unexpected error occurred: " + rt.getMessage() );
-			}
+			logger.info( "S3 error occurred: Error message: {}, Error code {}", e.getMessage(), e.awsErrorDetails().errorCode() );
+		}
+		catch( RuntimeException e ){
+			// TODO exception
+			logger.info( "An unexpected error occurred: " + e.getMessage() );
 		}
 		return getUrl( key );
 	}

@@ -1,4 +1,5 @@
 
+현재 서버의 물리적 실체는 본가에 둔 컴퓨터본체인데; 24시간 돌아가니 신경쓰인다는 아빠의 의견을 반영하여 쓸 때만 WOL을 이용하여 켜고 평소에는 꺼둔다.
 
 ## 작업환경
 
@@ -22,10 +23,12 @@
 
 AWS IAM 액세스 키를 여기 추가
 
-백엔드 `xyz.arinmandri.playground.MyDeepestSecret.java`
+백엔드 `xyz.arinmandri.playground.MyDeepestSecret.java` (gitignore에 있음)
 
-- `public static final String AwsAccessKeyID = "..."`
-- `public static final String AwsSecretAccessKey = = "..."`
+```
+public static final String AWS_ACCESS_KEY_ID = "...";
+public static final String AWS_SECRET_ACCESS_KEY = "...";
+```
 
 
 

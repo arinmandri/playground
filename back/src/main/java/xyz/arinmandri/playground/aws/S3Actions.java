@@ -2,8 +2,10 @@ package xyz.arinmandri.playground.aws;
 
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
@@ -15,7 +17,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-
 import xyz.arinmandri.playground.MyDeepestSecret;
 
 
@@ -38,7 +39,8 @@ public class S3Actions
 		S3AsyncClient client = S3AsyncClient.builder()
 		        .region( Region.AP_NORTHEAST_2 )
 		        .credentialsProvider( StaticCredentialsProvider.create(
-		                AwsBasicCredentials.create( MyDeepestSecret.AWS_ACCESS_KEY_ID,
+		                AwsBasicCredentials.create(
+		                        MyDeepestSecret.AWS_ACCESS_KEY_ID,
 		                        MyDeepestSecret.AWS_SECRET_ACCESS_KEY ) ) )
 		        .build();
 
@@ -50,7 +52,8 @@ public class S3Actions
 		S3Client client = S3Client.builder()
 		        .region( Region.AP_NORTHEAST_2 )
 		        .credentialsProvider( StaticCredentialsProvider.create(
-		                AwsBasicCredentials.create( MyDeepestSecret.AWS_ACCESS_KEY_ID,
+		                AwsBasicCredentials.create(
+		                        MyDeepestSecret.AWS_ACCESS_KEY_ID,
 		                        MyDeepestSecret.AWS_SECRET_ACCESS_KEY ) ) )
 		        .build();
 
