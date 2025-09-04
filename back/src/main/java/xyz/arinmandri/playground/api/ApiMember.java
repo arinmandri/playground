@@ -28,9 +28,22 @@ public class ApiMember extends ApiA
 	final MemberSer memberSer;
 	final MkeySer mkeySer;
 
+	// @GetMapping( "/me" )
+	// public ResponseEntity<Member> apiMemberMe (
+	//         @AuthenticationPrincipal UserDetails userDetails ) throws NoSuchEntity {
+
+	// 	// XXX 남의 정보를 어디까지 보여줄?
+
+	// 	Member m = memberSer.get( id );
+	// 	return ResponseEntity.ok()
+	// 	        .body( m );
+	// }
+
 	@GetMapping( "/{id}" )
 	public ResponseEntity<Member> apiMemberGet (
 	        @PathVariable long id ) throws NoSuchEntity {
+
+		// XXX 남의 정보를 어디까지 보여줄?
 
 		Member m = memberSer.get( id );
 		return ResponseEntity.ok()

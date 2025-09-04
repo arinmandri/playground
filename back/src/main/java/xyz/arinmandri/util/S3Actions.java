@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.aws;
+package xyz.arinmandri.util;
 
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +17,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import xyz.arinmandri.playground.MyDeepestSecret;
 
 
 /**
@@ -30,31 +29,41 @@ public class S3Actions
 {
 	private static final Logger logger = LoggerFactory.getLogger( S3Actions.class );
 
-	private static final S3AsyncClient s3AsyncClient = getAsyncClient();
-	private static final S3Client s3Client = getClient();
-	public static final S3Utilities utils = s3AsyncClient.utilities();
+	private final S3AsyncClient s3AsyncClient;
+	private final S3Client s3Client;
+	public final S3Utilities utils;
 
-	private static S3AsyncClient getAsyncClient () {
+	static public S3Actions getInstance ( String region , String accessKey , String secretKey ) {
+
+		S3Actions i = new S3Actions( region , accessKey , secretKey );
+
+		return i;
+	}
+
+	private S3Actions( String region , String accessKey , String secretKey ) {
+
+		s3AsyncClient = getAsyncClient( region, accessKey, secretKey );
+		s3Client = getClient( region, accessKey, secretKey );
+		utils = s3AsyncClient.utilities();
+	}
+
+	private static S3AsyncClient getAsyncClient ( String region , String accessKey , String secretKey ) {
 
 		S3AsyncClient client = S3AsyncClient.builder()
-		        .region( Region.AP_NORTHEAST_2 )
+		        .region( Region.of( region ) )
 		        .credentialsProvider( StaticCredentialsProvider.create(
-		                AwsBasicCredentials.create(
-		                        MyDeepestSecret.AWS_ACCESS_KEY_ID,
-		                        MyDeepestSecret.AWS_SECRET_ACCESS_KEY ) ) )
+		                AwsBasicCredentials.create( accessKey, secretKey ) ) )
 		        .build();
 
 		return client;
 	}
 
-	private static S3Client getClient () {
+	private static S3Client getClient ( String region , String accessKey , String secretKey ) {
 
 		S3Client client = S3Client.builder()
-		        .region( Region.AP_NORTHEAST_2 )
+		        .region( Region.of( region ) )
 		        .credentialsProvider( StaticCredentialsProvider.create(
-		                AwsBasicCredentials.create(
-		                        MyDeepestSecret.AWS_ACCESS_KEY_ID,
-		                        MyDeepestSecret.AWS_SECRET_ACCESS_KEY ) ) )
+		                AwsBasicCredentials.create( accessKey, secretKey ) ) )
 		        .build();
 
 		return client;

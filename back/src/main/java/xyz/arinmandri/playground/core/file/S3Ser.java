@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.services.s3.model.S3Exception;
-import xyz.arinmandri.playground.aws.S3Actions;
+import xyz.arinmandri.util.S3Actions;
 
 
 @Service
@@ -57,7 +57,7 @@ public class S3Ser
 
 	public URL getUrl ( String key ) {
 
-		URL url = S3Actions.utils.getUrl( b-> b
+		URL url = s3Actions.utils.getUrl( b-> b
 		        .bucket( awsBucketName )
 		        .key( key ) );
 

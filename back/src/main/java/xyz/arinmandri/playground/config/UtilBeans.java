@@ -6,15 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import xyz.arinmandri.playground.aws.S3Actions;
+import xyz.arinmandri.playground.MyDeepestSecret;
 import xyz.arinmandri.util.JwtUtil;
+import xyz.arinmandri.util.S3Actions;
 
 
-/*
- * TODO 그냥 순환참조 때문에 덜렁 분리됐을 뿐이다.
- */
 @Configuration
-public class ConfigJustBeans
+public class UtilBeans
 {
 	@Value( "${jwt.issuer}" )
 	private String issuer;
@@ -24,13 +22,16 @@ public class ConfigJustBeans
 	@Bean
 	public JwtUtil jwtUtil () {
 		return new JwtUtil(
-		        issuer,
+		        issuer ,
 		        secret_key );
 	}
 
 	@Bean
 	public S3Actions s3Actions () {
-		return new S3Actions();
+		return S3Actions.getInstance(
+		        "ap-northeast-2",
+		        MyDeepestSecret.AWS_ACCESS_KEY_ID,
+		        MyDeepestSecret.AWS_SECRET_ACCESS_KEY );
 	}
 
 	@Bean
