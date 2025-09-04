@@ -35,14 +35,17 @@ public class MemberSer extends PersistenceSer
 	{
 		String nick;
 		String email;
+		String propic;
 
 		public Member toEntity () {
 			if( nick.equals( "" ) ) nick = null;
 			if( email.equals( "" ) ) email = null;
+			if( propic.equals( "" ) ) propic = null;
 
 			return Member.builder()
 			        .nick( nick )
 			        .email( email )
+			        .propic( propic )
 			        .build();
 		}
 	}
@@ -53,11 +56,14 @@ public class MemberSer extends PersistenceSer
 	{
 		String nick;
 		String email;
+		String propic;
 
-		Member toEntity () {
+		Member toEntity (){
+
 			return Member.builder()
 			        .nick( nick )
 			        .email( email )
+			        .propic( propic )
 			        .build();
 		}
 	}

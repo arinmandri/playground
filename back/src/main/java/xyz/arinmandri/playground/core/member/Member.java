@@ -21,14 +21,21 @@ import xyz.arinmandri.playground.core.BaseEntity;
 public class Member extends BaseEntity
 {
 
-	@Column( nullable = false )
+	@Column( nullable = false , length = 20 )
 	private String nick;
 
-	@Column
+	@Column( length = 100 )
 	private String email;
+
+	@Column( length = 256 )
+	private String propic;
 
 	void update ( Member data ) {
 		if( data.nick != null ) nick = data.nick;
+		if( nick.equals( "" ) ) nick = null;
 		if( data.email != null ) email = data.email;
+		if( email.equals( "" ) ) email = null;
+		if( data.propic != null ) propic = data.propic;
+		if( propic.equals( "" ) ) propic = null;
 	}
 }

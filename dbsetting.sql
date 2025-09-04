@@ -1,20 +1,22 @@
 -- sudo -u postgres psql -d arinmandri
 -- created_at 컬럼에 DEFAULT CURRENT_TIMESTAMP 대신 jpa에서
 
+-- DB: arinmandri
 CREATE SCHEMA playground;
 
 -- DROP USER "playground-backend";
-CREATE USER "playground-backend" WITH PASSWORD 'bungchi^^patchi';
+CREATE USER "playground-backend" WITH PASSWORD 'bungchi^^patchi';-- TODO 이것도...
 GRANT USAGE ON SCHEMA "playground" TO "playground-backend";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "playground-backend";
 ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "playground-backend";
 
 DROP TABLE IF EXISTS "playground"."member";
-CREATE TABLE "playground"."member"(
+CREATE TABLE "playground"."member"(-- m
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"nick" VARCHAR(20) NOT NULL
     ,"email" VARCHAR(100) NULL
         UNIQUE
+    ,"propic" VARCHAR(256) NULL
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
@@ -32,7 +34,7 @@ CREATE TABLE "playground"."mkey_basic"(
 CREATE INDEX "mkey_basic__keyname" ON "playground"."mkey_basic" (keyname);
 
 DROP TABLE IF EXISTS "playground"."post";
-CREATE TABLE "playground"."post"(
+CREATE TABLE "playground"."post"(-- p
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"author__m" INT NOT NULL
         -- REFERENCES "playground"."member" -- TODO 테스트 끝나고

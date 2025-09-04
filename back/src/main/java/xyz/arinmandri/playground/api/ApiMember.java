@@ -39,6 +39,7 @@ public class ApiMember extends ApiA
 	// 	        .body( m );
 	// }
 
+	// TODO 이거 응답도 바꿔야지.
 	@GetMapping( "/{id}" )
 	public ResponseEntity<Member> apiMemberGet (
 	        @PathVariable long id ) throws NoSuchEntity {
@@ -50,6 +51,7 @@ public class ApiMember extends ApiA
 		        .body( m );
 	}
 
+	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<MkeyBasic> apiMemberAddBasic (
 	        @AuthenticationPrincipal UserDetails userDetails ,
@@ -66,6 +68,7 @@ public class ApiMember extends ApiA
 		        .body( m );
 	}
 
+	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/{id}/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
 	        @AuthenticationPrincipal UserDetails userDetails ,
