@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.core.file;
 
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +33,15 @@ public class S3Ser
 	/**
 	 * S3 업로드
 	 * 
-	 * @param file
+	 * @param path
 	 * @return
 	 */
-	public URL s3Upload ( File file ) {
+	public URL s3Upload ( Path path ){
 
-		String key = file.getName();
-		String objectPath = file.getAbsolutePath();
+		String key = path.getFileName().toString();
 
 		try{
-			s3Actions.uploadLocalFile( awsBucketName, key, objectPath );
+			s3Actions.uploadLocalFile( awsBucketName, key, path );
 		}
 		catch( S3Exception e ){
 			// TODO exception

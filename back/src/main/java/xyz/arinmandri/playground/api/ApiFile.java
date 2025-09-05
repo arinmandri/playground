@@ -1,7 +1,6 @@
 package xyz.arinmandri.playground.api;
 
-import java.io.File;
-import java.net.URL;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.file.S3Ser;
 
 
@@ -26,21 +26,32 @@ public class ApiFile
 {
 	private static final Logger logger = LoggerFactory.getLogger( ApiFile.class );
 
-	final S3Ser fileSer;
+	final S3Ser s3Ser;
 	final LocalFileSer localFileSer;
 
-	@PostMapping( "/simple/add" )
+	@PostMapping( "/add" )
 	// TODO @ClearFile
-	public ResponseEntity<String> apiFileSimpleAdd (
+	public ResponseEntity<String> apiFileAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file ) {
 
-		File file1 = localFileSer.createTempFile( file );
-
-		URL url = fileSer.s3Upload( file1 );
-		logger.info( "url = {}", url );
+		LocalTempFile ltf = localFileSer.createTempFile( file );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( url.toString() );
+		        .body( ltf.id() );
+	}
+
+	@PostMapping( "/sadd" )
+	// TODO @ClearFile
+	public ResponseEntity<List<String>> apiFileSadd (
+	        @AuthenticationPrincipal UserDetails userDetails ,
+	        List<MultipartFile> files ){
+
+		List<LocalTempFile> ltfs = localFileSer.createTempFiles( files );
+
+		return ResponseEntity.status( HttpStatus.CREATED )
+		        .body( ltfs.stream()
+		                .map( ltf-> ltf.id() )
+		                .toList() );
 	}
 }

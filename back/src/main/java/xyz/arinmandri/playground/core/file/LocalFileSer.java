@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 교대할 때; 사용하던 버킷은 비우지 않고 그대로 두고, 새로 사용할 버킷은 비우고 시작한다.
  */
 @Service
-public class LocalFileSer {
+public class LocalFileSer
+{
 	private static final Logger logger = LoggerFactory.getLogger( LocalFileSer.class );
 
 	private final int tempFileNameLength = 24;
@@ -53,21 +55,19 @@ public class LocalFileSer {
 			    folder.mkdirs();
 		}
 	}
-    
 
 	/**
 	 * MultipartFile을 임시파일로 저장
 	 * 
 	 * @return 생성된 임시파일
-	 *         입력하는 파일이 없으면 null
 	 */
-	public File createTempFile ( MultipartFile multipartFile ) {
+	public LocalTempFile createTempFile ( MultipartFile multipartFile ){
 		if( multipartFile == null || multipartFile.isEmpty() )
 		    return null;// TODO exception
 
-		final Path path = Paths.get( generateRandomLocalFilePath() + "." + getExtension( multipartFile.getOriginalFilename() ) );
+		String id = generateRandomFileName() + "." + getExtension( multipartFile.getOriginalFilename() );
+		final Path path = Paths.get( getTempBucketDir() + "/" + id );
 
-		File file;
 		try{
 			multipartFile.transferTo( path );
 		}
@@ -75,26 +75,35 @@ public class LocalFileSer {
 			// TODO exception
 			return null;
 		}
-		file = path.toFile();
 
-		return file;
+		return new LocalTempFile( id, path );
 	}
 
-	private String generateRandomLocalFilePath () {
-		return getTempBucketDir() + "/" + generateRandomFileName();
+	/**
+	 * MultipartFile 여럿을 임시파일로 저장
+	 * 
+	 * @return 생성된 임시파일 목록. 입력 순서와 같다.
+	 */
+	public List<LocalTempFile> createTempFiles ( List<MultipartFile> multipartFiles ){
+		if( multipartFiles == null || multipartFiles.isEmpty() )
+		    return List.of();
+
+		return multipartFiles.stream()
+		        .map( this::createTempFile )
+		        .toList();
 	}
 
-	private String generateRandomFileName () {
+	private String generateRandomFileName (){
 		byte[] randomBytes = new byte[tempFileNameLength];
 		random.nextBytes( randomBytes );
 		return Base64.getUrlEncoder().withoutPadding().encodeToString( randomBytes ).toLowerCase();
 	}
 
-	private String getTempBucketDir ( int index ) {
+	private String getTempBucketDir ( int index ){
 		return tempDirBase + "/" + currentBucketNames[index];
 	}
 
-	private String getTempBucketDir () {
+	private String getTempBucketDir (){
 		return getTempBucketDir( currentBucketIndex );
 	}
 
@@ -104,7 +113,7 @@ public class LocalFileSer {
 	 * @param fileName
 	 * @return 확장자(소문자), 없으면 빈 문자열
 	 */
-	public String getExtension ( String fileName ) {
+	public String getExtension ( String fileName ){
 
 		int li = fileName.lastIndexOf( "." );
 		if( li < 0 || li >= fileName.length() - 1 ){
@@ -117,14 +126,14 @@ public class LocalFileSer {
 	 * 버킷 교대
 	 */
 	@Scheduled( cron = "0 */30 * * * *" )
-	public void rotateBucket () {
+	public void rotateBucket (){
 		int newIndex = ( currentBucketIndex + 1 ) % currentBucketNames.length;
 		File folder = new File( getTempBucketDir( newIndex ) );
 		clearFolderRecursive( folder );
 		currentBucketIndex = newIndex;
 	}
 
-	private void clearFolderRecursive ( File folder ) {
+	private void clearFolderRecursive ( File folder ){
 		File[] contents = folder.listFiles();
 		if( contents != null ){
 			for( File f : contents ){

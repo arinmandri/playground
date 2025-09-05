@@ -1,6 +1,6 @@
 package xyz.arinmandri.util;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
@@ -77,14 +77,14 @@ public class S3Actions
 	 * @param objectPath the local file path of the file to be uploaded
 	 * @return a {@link CompletableFuture} that completes with the {@link PutObjectResponse} when the upload is successful, or throws a {@link RuntimeException} if the upload fails
 	 */
-	public CompletableFuture<PutObjectResponse> uploadLocalFileAsync ( String bucketName , String key , String objectPath ) {
+	public CompletableFuture<PutObjectResponse> uploadLocalFileAsync ( String bucketName , String key , Path objectPath ){
 
 		PutObjectRequest objectRequest = PutObjectRequest.builder()
 		        .bucket( bucketName )
 		        .key( key )
 		        .build();
 
-		CompletableFuture<PutObjectResponse> response = s3AsyncClient.putObject( objectRequest, AsyncRequestBody.fromFile( Paths.get( objectPath ) ) );
+		CompletableFuture<PutObjectResponse> response = s3AsyncClient.putObject( objectRequest, AsyncRequestBody.fromFile( objectPath ) );
 		return response.whenComplete( ( resp , ex )-> {
 			if( ex != null ){
 				throw new RuntimeException( "Failed to upload file" , ex );
@@ -100,14 +100,14 @@ public class S3Actions
 	 * @param objectPath the local file path of the file to be uploaded
 	 * @return a {@link PutObjectResponse} when the upload is successful, or throws a {@link RuntimeException} if the upload fails
 	 */
-	public PutObjectResponse uploadLocalFile ( String bucketName , String key , String objectPath ) {
+	public PutObjectResponse uploadLocalFile ( String bucketName , String key , Path objectPath ){
 
 		PutObjectRequest objectRequest = PutObjectRequest.builder()
 		        .bucket( bucketName )
 		        .key( key )
 		        .build();
 
-		PutObjectResponse response = s3Client.putObject( objectRequest, Paths.get( objectPath ) );
+		PutObjectResponse response = s3Client.putObject( objectRequest, objectPath );
 		return response;
 	}
 
