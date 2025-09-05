@@ -9,6 +9,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 import xyz.arinmandri.playground.core.BaseEntity.ConstraintDesc;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
@@ -82,7 +83,7 @@ public class MemberSer extends PersistenceSer
 	static public record AddMemberReq(
 	        String nick ,
 	        String email ,
-	        String propic )
+	        @With String propic )
 	{
 
 		public Member toEntity (){

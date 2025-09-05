@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.EntityHandler;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
@@ -27,6 +28,7 @@ import xyz.arinmandri.playground.core.member.MemberSer.AddMemberReq;
 public class ApiMember extends ApiA
 {
 	final MemberSer memberSer;
+	final EntityHandler entityHandler;
 
 	// @GetMapping( "/me" )
 	// public ResponseEntity<Member> apiMemberMe (
@@ -59,7 +61,15 @@ public class ApiMember extends ApiA
 
 		MKeyBasic m;
 		try{
-			m = memberSer.addMemberWithKeyBasic( req.member, req.key );
+			AddMemberReq memberReq = req.member;
+			AddMKeyBasicReq keyReq = req.key;
+
+			// 프사 필드 업로드 처리
+			memberReq = entityHandler.uploadFileField( memberReq,
+			        ( r )-> r.propic(),
+			        ( r , v )-> r.withPropic( v ) );
+
+			m = memberSer.addMemberWithKeyBasic( memberReq, keyReq );
 		}
 		catch( UniqueViolated e ){
 			throw new ExceptionalTask( ExcpType.EntityDuplicate, e );
