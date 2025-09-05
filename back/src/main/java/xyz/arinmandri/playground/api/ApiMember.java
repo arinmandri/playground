@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
-import xyz.arinmandri.playground.core.mkey.MkeyBasic;
-import xyz.arinmandri.playground.core.mkey.MkeySer;
 
 
 @RestController
@@ -26,7 +25,6 @@ import xyz.arinmandri.playground.core.mkey.MkeySer;
 public class ApiMember extends ApiA
 {
 	final MemberSer memberSer;
-	final MkeySer mkeySer;
 
 	// @GetMapping( "/me" )
 	// public ResponseEntity<Member> apiMemberMe (
@@ -53,13 +51,13 @@ public class ApiMember extends ApiA
 
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/add/basic" )
-	public ResponseEntity<MkeyBasic> apiMemberAddBasic (
+	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody MkeySer.AddBasicWithMemberReq req ) {
+	        @RequestBody MemberSer.AddBasicWithMemberReq req ){
 
-		MkeyBasic m;
+		MKeyBasic m;
 		try{
-			m = mkeySer.addMemberWithKeyBasic( req );
+			m = memberSer.addMemberWithKeyBasic( req );
 		}
 		catch( UniqueViolated e ){
 			throw new ExceptionalTask( ExcpType.EntityDuplicate, e );

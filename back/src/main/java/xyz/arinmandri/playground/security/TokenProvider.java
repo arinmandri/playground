@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.core.mkey.MkeyBasic;
-import xyz.arinmandri.playground.core.mkey.MkeyBasicRepo;
 import xyz.arinmandri.util.JwtUtil;
 
 
@@ -35,7 +35,7 @@ public class TokenProvider
 	@Value( "${jwt.duration_r}" )
 	private long duration_r;// 리프레시토큰 기한
 
-	final private MkeyBasicRepo MemberBKRepo;
+	final private MKeyBasicRepo MemberBKRepo;
 	final private RefreshTokenRepo refreshTokenRepo;
 
 	final private PasswordEncoder pwEncoder;
@@ -56,7 +56,7 @@ public class TokenProvider
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
 
 		//// 검증
-		MkeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
+		MKeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
 		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
 			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
