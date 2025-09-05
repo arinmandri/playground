@@ -93,6 +93,30 @@ public class LocalFileSer
 		        .toList();
 	}
 
+	/**
+	 * 임시파일 id --> 경로
+	 *
+	 * @param id
+	 * @return 그 임시파일의 경로.
+	 *         없으면 null.
+	 */
+	public Path getTempFilePath ( String id ){
+		if( id == null || id.isBlank() )
+		    return null;
+
+		/*
+		 * 현재 버킷 먼저 찾고 없으면 인덱스를 -1씩 하며 차례로 모두 찾는다.
+		 */
+		final int l = currentBucketNames.length;
+		for( int offset = 0 ; offset < l ; offset++ ){
+			int idx = ( currentBucketIndex - offset + l ) % l;
+			Path path = Paths.get( getTempBucketDir( idx ) + "/" + id );
+			if( path.toFile().exists() )
+			    return path;
+		}
+		return null;
+	}
+
 	private String generateRandomFileName (){
 		byte[] randomBytes = new byte[tempFileNameLength];
 		random.nextBytes( randomBytes );
