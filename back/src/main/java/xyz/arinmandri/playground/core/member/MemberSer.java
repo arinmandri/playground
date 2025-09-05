@@ -6,12 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.With;
 import xyz.arinmandri.playground.core.BaseEntity.ConstraintDesc;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
@@ -27,9 +22,9 @@ import xyz.arinmandri.playground.core.PersistenceSer;
 public class MemberSer extends PersistenceSer
 {
 	final private MemberRepo repo;
-	final private PasswordEncoder pwEncoder;
-
 	final private MKeyBasicRepo mkeyBasicRepo;
+
+	final private PasswordEncoder pwEncoder;
 
 	public Member get ( long id ) throws NoSuchEntity {
 		return repo.findById( id )
@@ -41,12 +36,10 @@ public class MemberSer extends PersistenceSer
 	 */
 	@Transactional
 	public MKeyBasic addMemberWithKeyBasic (
-	        AddMemberReq memberReq ,
-	        AddMKeyBasicReq keyReq ) throws UniqueViolated {
+	        Member member ,
+	        MKeyBasic mkey ) throws UniqueViolated {
 
 		try{
-			Member member = memberReq.toEntity();
-			MKeyBasic mkey = keyReq.toEntity( member, pwEncoder );
 			repo.save( member );
 			MKeyBasic result = mkeyBasicRepo.save( mkey );
 
@@ -60,59 +53,14 @@ public class MemberSer extends PersistenceSer
 		}
 	}
 
-	static public record AddMKeyBasicReq(
-	        String keyname ,
-	        String password )
-	{
-
-		public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
-			return MKeyBasic.builder()
-			        .owner( owner )
-			        .keyname( keyname )
-			        .password( pwEncoder.encode( password ) )
-			        .build();
-		}
-	}
-
-	static public record AddMemberReq(
-	        @NotNull @NotBlank String nick ,
-	        @NotNull @NotBlank String email ,
-	        @With String propic )
-	{
-
-		public Member toEntity () {
-
-			return Member.builder()
-			        .nick( nick.equals( "" ) ? null : nick )
-			        .email( email.equals( "" ) ? null : email )
-			        .propic( propic == null || propic.equals( "" ) ? null : propic )
-			        .build();
-		}
-	}
-
 	@Transactional
-	public Member edit ( Long id , EditMemberReq req ) throws NoSuchEntity {
+	public Member edit ( Long id , Member updata ) throws NoSuchEntity {
+		/*
+		 * TODO 이거 뭔가 좀 이상하고 맘에 안 드는데.
+		 */
 		Member m = repo.findById( id )
 		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
-		m.update( req.toEntity() );
+		m.update( updata );
 		return m;
-	}
-
-	@AllArgsConstructor
-	@Getter
-	static public class EditMemberReq
-	{
-		String nick;
-		String email;
-		String propic;
-
-		Member toEntity () {
-
-			return Member.builder()
-			        .nick( nick )
-			        .email( email )
-			        .propic( propic )
-			        .build();
-		}
 	}
 }
