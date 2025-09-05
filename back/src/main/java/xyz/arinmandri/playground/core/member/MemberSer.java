@@ -28,20 +28,22 @@ public class MemberSer extends PersistenceSer
 
 	final private MKeyBasicRepo mkeyBasicRepo;
 
-	public Member get ( long id ) throws NoSuchEntity {
+	public Member get ( long id ) throws NoSuchEntity{
 		return repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Member.class , id ) );
+		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
 	}
 
 	/**
 	 * 생성: @link{Member} + @link{MKeyBasic}
 	 */
 	@Transactional
-	public MKeyBasic addMemberWithKeyBasic ( AddBasicWithMemberReq req ) throws UniqueViolated{
+	public MKeyBasic addMemberWithKeyBasic (
+	        AddMemberReq memberReq ,
+	        AddMKeyBasicReq keyReq ) throws UniqueViolated{
 
 		try{
-			Member member = req.member.toEntity();
-			MKeyBasic mkey = req.key.toEntity( member, pwEncoder );
+			Member member = memberReq.toEntity();
+			MKeyBasic mkey = keyReq.toEntity( member, pwEncoder );
 			repo.save( member );
 			MKeyBasic result = mkeyBasicRepo.save( mkey );
 
@@ -55,20 +57,10 @@ public class MemberSer extends PersistenceSer
 		}
 	}
 
-	@AllArgsConstructor
-	@Getter
-	static public class AddBasicWithMemberReq
+	static public record AddMKeyBasicReq(
+	        String keyname ,
+	        String password )
 	{
-		AddReq member;
-		AddBasicReq key;
-	}
-
-	@AllArgsConstructor
-	@Getter
-	static public class AddBasicReq
-	{
-		String keyname;
-		String password;
 
 		public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ){
 			return MKeyBasic.builder()
@@ -80,37 +72,32 @@ public class MemberSer extends PersistenceSer
 	}
 
 	@Transactional
-	public Member edit ( Long id , EditReq req ) throws NoSuchEntity {
+	public Member edit ( Long id , EditMemberReq req ) throws NoSuchEntity{
 		Member m = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Member.class , id ) );
+		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
 		m.update( req.toEntity() );
 		return m;
 	}
 
-	@AllArgsConstructor
-	@Getter
-	static public class AddReq
+	static public record AddMemberReq(
+	        String nick ,
+	        String email ,
+	        String propic )
 	{
-		String nick;
-		String email;
-		String propic;
 
-		public Member toEntity () {
-			if( nick.equals( "" ) ) nick = null;
-			if( email.equals( "" ) ) email = null;
-			if( propic.equals( "" ) ) propic = null;
+		public Member toEntity (){
 
 			return Member.builder()
-			        .nick( nick )
-			        .email( email )
-			        .propic( propic )
+			        .nick( nick.equals( "" ) ? null : nick )
+			        .email( email.equals( "" ) ? null : email )
+			        .propic( propic.equals( "" ) ? null : propic )
 			        .build();
 		}
 	}
 
 	@AllArgsConstructor
 	@Getter
-	static public class EditReq
+	static public class EditMemberReq
 	{
 		String nick;
 		String email;

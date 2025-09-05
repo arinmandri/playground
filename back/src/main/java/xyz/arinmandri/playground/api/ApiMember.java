@@ -17,6 +17,8 @@ import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.core.member.MemberSer.AddMKeyBasicReq;
+import xyz.arinmandri.playground.core.member.MemberSer.AddMemberReq;
 
 
 @RestController
@@ -53,11 +55,11 @@ public class ApiMember extends ApiA
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody MemberSer.AddBasicWithMemberReq req ){
+	        @RequestBody apiMemberAddBasicReqBody req ){
 
 		MKeyBasic m;
 		try{
-			m = memberSer.addMemberWithKeyBasic( req );
+			m = memberSer.addMemberWithKeyBasic( req.member, req.key );
 		}
 		catch( UniqueViolated e ){
 			throw new ExceptionalTask( ExcpType.EntityDuplicate, e );
@@ -66,12 +68,18 @@ public class ApiMember extends ApiA
 		        .body( m );
 	}
 
+	static public record apiMemberAddBasicReqBody(
+	        AddMemberReq member ,
+	        AddMKeyBasicReq key )
+	{
+	}
+
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/{id}/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
-	        @RequestBody MemberSer.EditReq req ) throws NoSuchEntity {
+	        @RequestBody MemberSer.EditMemberReq req ) throws NoSuchEntity{
 
 		// TODO auth: author = 로그인회원
 
