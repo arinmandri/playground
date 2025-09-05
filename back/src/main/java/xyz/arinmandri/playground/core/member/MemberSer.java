@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class MemberSer extends PersistenceSer
 
 	final private MKeyBasicRepo mkeyBasicRepo;
 
-	public Member get ( long id ) throws NoSuchEntity{
+	public Member get ( long id ) throws NoSuchEntity {
 		return repo.findById( id )
 		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
 	}
@@ -40,7 +42,7 @@ public class MemberSer extends PersistenceSer
 	@Transactional
 	public MKeyBasic addMemberWithKeyBasic (
 	        AddMemberReq memberReq ,
-	        AddMKeyBasicReq keyReq ) throws UniqueViolated{
+	        AddMKeyBasicReq keyReq ) throws UniqueViolated {
 
 		try{
 			Member member = memberReq.toEntity();
@@ -63,7 +65,7 @@ public class MemberSer extends PersistenceSer
 	        String password )
 	{
 
-		public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ){
+		public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
 			return MKeyBasic.builder()
 			        .owner( owner )
 			        .keyname( keyname )
@@ -72,28 +74,28 @@ public class MemberSer extends PersistenceSer
 		}
 	}
 
-	@Transactional
-	public Member edit ( Long id , EditMemberReq req ) throws NoSuchEntity{
-		Member m = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
-		m.update( req.toEntity() );
-		return m;
-	}
-
 	static public record AddMemberReq(
-	        String nick ,
-	        String email ,
+	        @NotNull @NotBlank String nick ,
+	        @NotNull @NotBlank String email ,
 	        @With String propic )
 	{
 
-		public Member toEntity (){
+		public Member toEntity () {
 
 			return Member.builder()
 			        .nick( nick.equals( "" ) ? null : nick )
 			        .email( email.equals( "" ) ? null : email )
-			        .propic( propic.equals( "" ) ? null : propic )
+			        .propic( propic == null || propic.equals( "" ) ? null : propic )
 			        .build();
 		}
+	}
+
+	@Transactional
+	public Member edit ( Long id , EditMemberReq req ) throws NoSuchEntity {
+		Member m = repo.findById( id )
+		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
+		m.update( req.toEntity() );
+		return m;
 	}
 
 	@AllArgsConstructor
@@ -104,7 +106,7 @@ public class MemberSer extends PersistenceSer
 		String email;
 		String propic;
 
-		Member toEntity (){
+		Member toEntity () {
 
 			return Member.builder()
 			        .nick( nick )
