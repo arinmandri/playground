@@ -68,8 +68,8 @@ public class ApiMember extends ApiA
 
 		MKeyBasic m;
 		try{
-			AddMemberReq memberReq = req.member;
-			AddMKeyBasicReq keyReq = req.key;
+			apiMemberAddBasicReqBody._Member memberReq = req.member;
+			apiMemberAddBasicReqBody._Key keyReq = req.key;
 
 			// 프사 필드 업로드 처리
 			memberReq = entityHandler.uploadFileField( memberReq,
@@ -88,37 +88,37 @@ public class ApiMember extends ApiA
 	}
 
 	static public record apiMemberAddBasicReqBody(
-	        @NotNull @Valid AddMemberReq member ,
-	        @NotNull @Valid AddMKeyBasicReq key )
+	        @NotNull @Valid _Member member ,
+	        @NotNull @Valid _Key key )
 	{
-	}
 
-	static public record AddMemberReq(
-	        @NotNull @NotBlank String nick ,
-	        @NotNull @NotBlank String email ,
-	        @With String propic )
-	{
-		public Member toEntity () {
+		static public record _Member(
+		        @NotNull @NotBlank String nick ,
+		        @NotNull @NotBlank String email ,
+		        @With String propic )
+		{
+			public Member toEntity (){
 
-			return Member.builder()
-			        .nick( nick.equals( "" ) ? null : nick )
-			        .email( email.equals( "" ) ? null : email )
-			        .propic( propic == null || propic.equals( "" ) ? null : propic )
-			        .build();
+				return Member.builder()
+				        .nick( nick.equals( "" ) ? null : nick )
+				        .email( email.equals( "" ) ? null : email )
+				        .propic( propic == null || propic.equals( "" ) ? null : propic )
+				        .build();
+			}
 		}
-	}
 
-	static public record AddMKeyBasicReq(
-	        // XXX 제한 추가. 길이라든가 정규식 뭐 있겠지.
-	        @NotNull String keyname ,
-	        @NotNull String password )
-	{
-		public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
-			return MKeyBasic.builder()
-			        .owner( owner )
-			        .keyname( keyname )
-			        .password( pwEncoder.encode( password ) )
-			        .build();
+		static public record _Key(
+		        // XXX 제한 추가. 길이라든가 정규식 뭐 있겠지.
+		        @NotNull String keyname ,
+		        @NotNull String password )
+		{
+			public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ){
+				return MKeyBasic.builder()
+				        .owner( owner )
+				        .keyname( keyname )
+				        .password( pwEncoder.encode( password ) )
+				        .build();
+			}
 		}
 	}
 
