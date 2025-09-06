@@ -4,15 +4,13 @@
       <ul id="globalMenu">
         <li><router-link to="/">홈</router-link></li>
         <li><router-link to="/board">게시판</router-link></li>
-        <li><router-link to="/member/join">가입</router-link></li>
-        <li><router-link to="/member/login">로그인</router-link></li>
       </ul>
       <div id="user">
         <div v-if="isLoggedIn">
-          <router-link to="/member/myplace">로그인함</router-link>
+          <router-link to="/member/myplace">(회원닉네임)</router-link><!-- TODO -->
         </div>
         <div v-else>
-          <span>비회원</span>
+          <span><router-link to="/member/login">로그인</router-link></span>
         </div>
       </div>
     </nav>
@@ -27,7 +25,6 @@
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
 import { onMounted } from "vue";
-import { useRouter } from 'vue-router'; const router = useRouter();
 import { storeToRefs } from "pinia";
 
 const { isLoggedIn } = storeToRefs(authStore);
@@ -53,6 +50,12 @@ body {
   border: 0px solid black;
 }
 
+button,
+input,
+select,
+textarea {
+  border: 1px solid grey;
+}
 nav {
   background-color: #eee;
   padding: 10px;

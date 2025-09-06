@@ -2,11 +2,11 @@
   <div class="login-view">
     <form @submit.prevent="onSubmit" class="login-form">
       <div>
-        <label for="keyname">Keyname</label>
+        <label for="keyname">Key</label>
         <input id="keyname" v-model="form.keyname" type="text" required autocomplete="username" />
       </div>
       <div>
-        <label for="password">Password</label>
+        <label for="password">비밀번호</label>
         <input id="password" v-model="form.password" type="password" required autocomplete="current-password" />
       </div>
       <button type="submit" :disabled="loading">
@@ -14,6 +14,7 @@
       </button>
       <div v-if="error" class="error">{{ error }}</div>
     </form>
+    <router-link to="/member/join">가입</router-link>
   </div>
 </template>
 

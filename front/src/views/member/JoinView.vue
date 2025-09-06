@@ -28,6 +28,7 @@
       <div v-if="success" class="success">Sign up successful!</div>
     </form>
   </div>
+  <router-link to="/member/login">로그인</router-link>
 </template>
 
 <script lang="ts" setup>
