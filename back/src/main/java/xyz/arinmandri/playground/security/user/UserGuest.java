@@ -12,11 +12,11 @@ public class UserGuest extends User
 {
 	private static final long serialVersionUID = 1_000_000L;
 
-	String id;
+	String guestId;
 
 	public UserGuest( Collection<? extends GrantedAuthority> authorities , String id ) {
 		super( authorities );
-		this.id = id;
+		this.guestId = id;
 	}
 
 	@Override
@@ -25,8 +25,7 @@ public class UserGuest extends User
 	}
 
 	@Override
-	public String getUsername () {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCode () {
+		return guestId;
 	}
 }

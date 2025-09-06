@@ -12,11 +12,11 @@ public class UserNormal extends User
 {
 	private static final long serialVersionUID = 1_000_000L;
 
-	final Long id;
+	final Long memberId;
 
 	public UserNormal( Collection<? extends GrantedAuthority> authorities , Long id ) {
 		super( authorities );
-		this.id = id;
+		this.memberId = id;
 	}
 
 	@Override
@@ -25,8 +25,7 @@ public class UserNormal extends User
 	}
 
 	@Override
-	public String getUsername () {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCode () {
+		return String.valueOf( memberId );
 	}
 }

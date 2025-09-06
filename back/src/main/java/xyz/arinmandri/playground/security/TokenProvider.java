@@ -43,6 +43,11 @@ public class TokenProvider
 	final private JwtUtil jwtUtil;
 	final private SecureRandom random;
 
+	/**
+	 * 비회원 사용자용 액세스토큰
+	 * 
+	 * @return 액세스토큰
+	 */
 	public TokenResponse issueAccessTokenForGuest () {
 
 		byte[] bytes = new byte[10];
@@ -54,6 +59,11 @@ public class TokenProvider
 		return new TokenResponse( accessToken, null, guestAuthority, duration_ag );
 	}
 
+	/**
+	 * 회원용 액세스토큰
+	 * 
+	 * @return 액세스토큰
+	 */
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
 
 		//// 검증
@@ -68,6 +78,11 @@ public class TokenProvider
 		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
 	}
 
+	/**
+	 * 리프레시토큰 사용
+	 * 
+	 * @return 액세스토큰
+	 */
 	@Transactional
 	public TokenResponse issueAccessTokenByRefreshToken ( String refreshToken0 ) throws LackAuthExcp {
 

@@ -37,9 +37,9 @@ public abstract class ApiA
 	 */
 	protected Member getMemberFrom ( UserDetails u ) {
 		if( u instanceof UserNormal un ){
-			return mkeyBasicRepo.findByOwnerId( un.getId() )
+			return mkeyBasicRepo.findByOwnerId( un.getMemberId() )
 			        .orElseThrow( ()-> {
-				        throw new LackAuthExcp( "회원이어야 합니다." );
+				        throw new LackAuthExcp( "없는 회원입니다." );
 			        } ).getOwner();
 		}
 		throw new LackAuthExcp( "회원이어야 합니다." );
