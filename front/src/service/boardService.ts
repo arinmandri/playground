@@ -9,7 +9,7 @@ import api from "@/api/axiosInstance";
 */
 
 //// 게시판 데이터 가져오기
-export async function fetchPostList(listPack:SimpleListPack<Post>): Promise<void> {
+export async function fetchPostList(listPack: SimpleListPack<Post>): Promise<void> {
   try {
     const response = await api.get("/post/list", {
       cursor: listPack.cursor,
@@ -24,8 +24,8 @@ export async function fetchPostList(listPack:SimpleListPack<Post>): Promise<void
   }
 }
 
-function getPostListFromRawList(rawList:PostRaw[]):Post[] {
-  return rawList.map(rawItem=>({
+function getPostListFromRawList(rawList: PostRaw[]): Post[] {
+  return rawList.map(rawItem => ({
     ...rawItem,
     createdAt: new Date(rawItem.createdAt),
     get createdAtPretty() {

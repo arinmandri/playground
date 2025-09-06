@@ -47,27 +47,32 @@ function clickMoreBtn() {
   flex-direction: column;
   gap: 10px;
 }
+
 .post {
   border: 1px solid #e0e0e0;
   background: #fafbfc;
   padding: 16px 16px 2px 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.2s;
 }
+
 .post:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
+
 .post .content {
   font-size: 1.1rem;
   margin-bottom: 8px;
   color: #333;
 }
+
 .post .author {
   font-size: 0.95rem;
   color: #4a90e2;
   margin-bottom: 4px;
 }
+
 .post .info {
   margin-top: 6px;
   font-size: 0.85rem;
@@ -91,8 +96,7 @@ function clickMoreBtn() {
   border-radius: 40%;
   font-size: 1.5rem;
   text-align: center;
-  box-shadow: 1px 1px 8px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s, box-shadow 0.2s;
 }
-
 </style>

@@ -56,6 +56,7 @@ select,
 textarea {
   border: 1px solid grey;
 }
+
 nav {
   background-color: #eee;
   padding: 10px;
@@ -73,9 +74,9 @@ nav {
   max-width: 840px;
   margin: 0 auto;
   padding: 20px 0;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
 }
-#routerViewDiv > * {
+#routerViewDiv>* {
   margin: 0 20px;
 }
 </style>

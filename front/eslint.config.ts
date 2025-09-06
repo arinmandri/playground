@@ -11,6 +11,10 @@ export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
+    rules: {
+      // ESLint 캐시 삭제: npx eslint . --ext .vue,.ts --no-cache
+      'vue/multi-word-component-names': 'off',
+    },
   },
 
   {

@@ -28,106 +28,106 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 
 const ax = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-    },
-    timeout: 5000,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+  },
+  timeout: 5000,
 });
 
 ax.interceptors.request.use(async (config) => {
-    let token = await getAccessToken();
-    if (!token) {
-        await ensureToken();
-        token = await getAccessToken();
-    }
-    config.headers.Authorization = `Bearer ${token}`;
-    return config;
+  let token = await getAccessToken();
+  if (!token) {
+    await ensureToken();
+    token = await getAccessToken();
+  }
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
 let isRefreshing = false;
 let retryQueue: (() => void)[] = [];// 403 재시도 대기큐.
 
 const api = {
-    get: (url: string, params = {}): Promise<AxiosResponse<any>> => {
-        return new Promise((resolve, reject) => {
-            const attemptRequest = attemptRequestOf(ax.get, url, { params }, resolve, reject);
-            attemptRequest();
-        });
-    },
-    post: async (url: string, data?: any): Promise<AxiosResponse<any, any>> => {
-        return new Promise((resolve, reject) => {
-            const attemptRequest = attemptRequestOf(ax.post, url, data, resolve, reject);
-            attemptRequest();
-        });
-    }
+  get: (url: string, params = {}): Promise<AxiosResponse<any>> => {
+    return new Promise((resolve, reject) => {
+      const attemptRequest = attemptRequestOf(ax.get, url, { params }, resolve, reject);
+      attemptRequest();
+    });
+  },
+  post: async (url: string, data?: any): Promise<AxiosResponse<any, any>> => {
+    return new Promise((resolve, reject) => {
+      const attemptRequest = attemptRequestOf(ax.post, url, data, resolve, reject);
+      attemptRequest();
+    });
+  }
 }
 
 const RETRY_MAX = 3;
 
 function attemptRequestOf(fun: (url: string, params: any) => any, url: string, params: any, resolve: any, reject: any) {
-    const attemptRequest = (retryCount = 0) => {
-        if (retryCount > 0) console.log(url, '재시도: ' + retryCount);
-        fun(url, params)
-            .then(resolve)
-            .catch(async (error: any) => {
-                if (retryCount > RETRY_MAX) {
-                    console.error(url, `재시도 횟수(${RETRY_MAX}) 초과:`);
-                    reject(error);
-                    return;
-                }
-                if (error.response?.status === 403) {
-                    if (isRefreshing) {// 이미 토큰 재발급 중: 큐에 대기
-                        retryQueue.push(() => {
-                            attemptRequest(retryCount + 1);
-                        });
-                    } else {// 첫 번째 403 요청: 토큰 재발급 후 대기큐의 작업들 실행
-                        isRefreshing = true;
-                        try {
-                            await refreshToken();
-                            isRefreshing = false;
-
-                            // 대기큐에 있는 요청들 모두 재시도
-                            const queued = retryQueue;
-                            retryQueue = [];
-                            queued.forEach(cb => cb());
-                            attemptRequest(retryCount + 1);// 마지막으로 현재 요청도 재시도
-
-                        } catch (refreshError) {
-                            isRefreshing = false;
-
-                            retryQueue.forEach(cb => cb());
-                            retryQueue = [];
-
-                            reject(refreshError);
-                        }
-                    }
-                } else {// 403 외 에러: 단순 재시도
-                    attemptRequest(retryCount + 1);
-                }
+  const attemptRequest = (retryCount = 0) => {
+    if (retryCount > 0) console.log(url, '재시도: ' + retryCount);
+    fun(url, params)
+      .then(resolve)
+      .catch(async (error: any) => {
+        if (retryCount > RETRY_MAX) {
+          console.error(url, `재시도 횟수(${RETRY_MAX}) 초과:`);
+          reject(error);
+          return;
+        }
+        if (error.response?.status === 403) {
+          if (isRefreshing) {// 이미 토큰 재발급 중: 큐에 대기
+            retryQueue.push(() => {
+              attemptRequest(retryCount + 1);
             });
-    };
+          } else {// 첫 번째 403 요청: 토큰 재발급 후 대기큐의 작업들 실행
+            isRefreshing = true;
+            try {
+              await refreshToken();
+              isRefreshing = false;
 
-    return attemptRequest;
+              // 대기큐에 있는 요청들 모두 재시도
+              const queued = retryQueue;
+              retryQueue = [];
+              queued.forEach(cb => cb());
+              attemptRequest(retryCount + 1);// 마지막으로 현재 요청도 재시도
+
+            } catch (refreshError) {
+              isRefreshing = false;
+
+              retryQueue.forEach(cb => cb());
+              retryQueue = [];
+
+              reject(refreshError);
+            }
+          }
+        } else {// 403 외 에러: 단순 재시도
+          attemptRequest(retryCount + 1);
+        }
+      });
+  };
+
+  return attemptRequest;
 }
 
 async function refreshToken(): Promise<void> {
-    const authStore = useAuthStore();
-    const refresh_token_curr = getRefreshToken();
-    try {
-        if (authStore.isLoggedIn) {// 회원
-            console.log('회원 토큰 발급 시도');
-            await authStore.refreshToken(refresh_token_curr || '');
-        }
-        else {// 비회원
-            console.log('비회원 토큰 발급 시도');
-            await authStore.loginAsGuest();
-        }
-    } catch (e: any) {
-        console.log('토큰 재발급 실패; 비회원 토큰 발급 시도');
-        await authStore.loginAsGuest();
+  const authStore = useAuthStore();
+  const refresh_token_curr = getRefreshToken();
+  try {
+    if (authStore.isLoggedIn) {// 회원
+      console.log('회원 토큰 발급 시도');
+      await authStore.refreshToken(refresh_token_curr || '');
     }
+    else {// 비회원
+      console.log('비회원 토큰 발급 시도');
+      await authStore.loginAsGuest();
+    }
+  } catch (e: any) {
+    console.log('토큰 재발급 실패; 비회원 토큰 발급 시도');
+    await authStore.loginAsGuest();
+  }
 }
 
 export default api;
