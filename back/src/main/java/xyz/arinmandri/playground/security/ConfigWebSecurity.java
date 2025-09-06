@@ -4,9 +4,13 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -46,5 +50,21 @@ public class ConfigWebSecurity
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration( "/**", configuration );
 		return source;
+	}
+
+	// XXX
+	@Bean
+	public UserDetailsService userDetailsService (){
+		return username-> {
+			throw new UsernameNotFoundException( "This application uses JWT only, no local users." );
+		};
+	}
+
+	// XXX
+	@Bean
+	public AuthenticationManager authenticationManager (){
+		return authentication-> {
+			throw new AuthenticationCredentialsNotFoundException( "JWT authentication only" );
+		};
 	}
 }
