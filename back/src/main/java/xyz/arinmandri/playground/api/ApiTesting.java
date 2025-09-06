@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.api;
 
 import java.net.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,28 @@ public class ApiTesting extends ApiA
 	final S3Ser s3Ser;
 	final LocalFileSer localFileSer;
 
-	@GetMapping( "/test" )
-	public ResponseEntity<?> test1 (
-	        Authentication auth ) {
+	@GetMapping( "/get" )
+	public ResponseEntity<?> testGet (
+	        @AuthenticationPrincipal UserDetails userDetails ,
+	        Authentication auth ){
+
+		System.out.println( userDetails );
 		System.out.println( auth );
+
 		return ResponseEntity.ok()
-		        .body( auth );
+		        .body( userDetails );
+	}
+
+	@PostMapping( "/post" )
+	public ResponseEntity<?> testPost (
+	        @AuthenticationPrincipal UserDetails userDetails ,
+	        Authentication auth ) {
+
+		System.out.println( userDetails );
+		System.out.println( auth );
+
+		return ResponseEntity.ok()
+		        .body( userDetails );
 	}
 
 	@PostMapping( "/fileup" )

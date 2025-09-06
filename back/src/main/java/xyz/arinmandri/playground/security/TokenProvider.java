@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
 
 
@@ -48,7 +49,7 @@ public class TokenProvider
 		random.nextBytes( bytes );
 		String guestName = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
 
-		String accessToken = generateToken( "guest:" + guestName, normalAuthority, duration_ag );
+		String accessToken = generateToken( User.Type.guest, String.valueOf( guestName ), normalAuthority, duration_ag );
 
 		return new TokenResponse( accessToken, null, guestAuthority, duration_ag );
 	}
@@ -63,7 +64,7 @@ public class TokenProvider
 
 		//// 발급
 		String refreshToken = issueRefreshToken( u.getOwner() );
-		String accessToken = generateToken( "member:" + u.getOwner().getId(), normalAuthority, duration_a );
+		String accessToken = generateToken( User.Type.normal, String.valueOf( u.getOwner().getId() ), normalAuthority, duration_a );
 		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
 	}
 
@@ -76,7 +77,7 @@ public class TokenProvider
 		}
 		Member member = refreshTokenE0.getOwner();
 
-		String accessToken = generateToken( "member:" + member.getId(), normalAuthority, duration_a );
+		String accessToken = generateToken( User.Type.normal, String.valueOf( member.getId() ), normalAuthority, duration_a );
 		String refreshToken = issueRefreshToken( member );
 
 		refreshTokenRepo.delete( refreshTokenE0 );// 이전 리프레시토큰 삭제
@@ -84,12 +85,14 @@ public class TokenProvider
 		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
 	}
 
-	private String generateToken ( String user , String scope , long expi ) {
+	private String generateToken ( User.Type userType , String userName , String scope , long expi ) {
+
+		String userId = User.composeUserId( userType, userName );
 
 		return jwtUtil.generateToken(
-		        user,
+		        userId,
 		        Map.of(
-		                CLAIM_USER, user,
+		                CLAIM_USER, userId,
 		                CLAIM_SCOPE, scope ),
 		        expi );
 	}

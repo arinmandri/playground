@@ -17,7 +17,7 @@ public abstract class User
 		this.authorities = authorities;
 	}
 
-	enum Type
+	public enum Type
 	{
 		guest,
 		normal,
@@ -26,15 +26,27 @@ public abstract class User
 
 	public abstract Type getType ();
 
-	static public User from ( UserDetails userDetails ) {
-		if( userDetails == null ) return null;
+	static public String composeUserId ( Type userType , String userName ) {
+		String userId = userType.toString() + ":" + userName;
+		return userId;
+	}
 
-		String[] parts = userDetails.getUsername().split( ":" );
-		switch( parts[0] ){
-		case "guest":
-			return new UserGuest( userDetails.getAuthorities(), parts[1] );
-		case "member":// XXX member: member가 normal 말고 다른 타입이 생길까?
-			return new UserNormal( userDetails.getAuthorities(), Long.valueOf( parts[1] ) );
+	static public User parseUserId ( String userId , Collection<? extends GrantedAuthority> authorities ) {
+
+		String[] parts = userId.split( ":" );
+		User.Type type;
+		try {
+			type = User.Type.valueOf( parts[0] );
+		}
+		catch( IllegalArgumentException e ){
+			// TODO exception 없는 타입
+			throw e;
+		}
+		switch( type ){
+		case guest:
+			return new UserGuest( authorities, parts[1] );
+		case normal:
+			return new UserNormal( authorities, Long.valueOf( parts[1] ) );
 		}
 		throw new RuntimeException();// TODO exception
 	}

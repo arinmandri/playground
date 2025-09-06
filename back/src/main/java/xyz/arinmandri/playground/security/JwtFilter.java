@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
 
 
@@ -63,7 +63,7 @@ public class JwtFilter extends OncePerRequestFilter
 		        new SimpleGrantedAuthority( claims.get( TokenProvider.CLAIM_SCOPE ).toString() ) );
 
 		return new UsernamePasswordAuthenticationToken(
-		        new User( claims.getSubject(), "", authorities ),
+		        User.parseUserId( claims.getSubject(), authorities ),
 		        token,
 		        authorities );
 	}
