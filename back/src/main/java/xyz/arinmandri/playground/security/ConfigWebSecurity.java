@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +41,7 @@ public class ConfigWebSecurity
 	}
 
 	@Bean
+	@Profile( "lodev" )
 	public CorsConfigurationSource corsConfigurationSource () {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins( List.of( "http://localhost:5173" ) );
