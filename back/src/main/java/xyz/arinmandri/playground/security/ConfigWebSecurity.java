@@ -12,15 +12,22 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 
+/**
+ * 스프링 시큐리티 설정
+ * 
+ * @see xyz.arinmandri.playground.api.MyErrorCon
+ */
 @Configuration
 @RequiredArgsConstructor
 public class ConfigWebSecurity
@@ -35,10 +42,24 @@ public class ConfigWebSecurity
 		        .sessionManagement( session-> session.sessionCreationPolicy( SessionCreationPolicy.STATELESS ) )
 		        .authorizeHttpRequests( auth-> auth
 		                .requestMatchers( "/auth/**" ).permitAll()
+		                .requestMatchers( "/error" ).permitAll()
 		                .anyRequest().authenticated() )
+		        .exceptionHandling(ex -> ex
+		                .authenticationEntryPoint(
+		                        authenticationEntryPoint() )
+		            )
 		        .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class )
 		        .build();
 	}
+
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint () {
+		return ( request , response , authException )-> {
+			response.sendError( HttpServletResponse.SC_UNAUTHORIZED ); // 401
+		};
+	}
+
+	// XXX accessDeniedHandler는 뭐 되지도 않음.
 
 	@Bean
 	@Profile( "lodev" )
