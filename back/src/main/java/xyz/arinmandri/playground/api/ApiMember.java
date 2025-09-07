@@ -1,5 +1,12 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.core.EntityHandler;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberSer;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,12 +25,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
-import xyz.arinmandri.playground.core.EntityHandler;
-import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.core.member.MemberSer;
 
 
 @RestController
@@ -37,16 +38,16 @@ public class ApiMember extends ApiA
 
 	final private PasswordEncoder pwEncoder;
 
-	// @GetMapping( "/me" )
-	// public ResponseEntity<Member> apiMemberMe (
-	//         @AuthenticationPrincipal UserDetails userDetails ) throws NoSuchEntity {
+	// TODO 이거 응답도 바꿔야지.
+	@GetMapping( "/me" )
+	public ResponseEntity<Member> apiMemberMe (
+	        @AuthenticationPrincipal UserDetails userDetails ) throws NoSuchEntity{
 
-	// 	// XXX 남의 정보를 어디까지 보여줄?
+		Member m = getMemberFrom( userDetails );
 
-	// 	Member m = memberSer.get( id );
-	// 	return ResponseEntity.ok()
-	// 	        .body( m );
-	// }
+		return ResponseEntity.ok()
+		        .body( m );
+	}
 
 	// TODO 이거 응답도 바꿔야지.
 	@GetMapping( "/{id}" )
@@ -81,7 +82,7 @@ public class ApiMember extends ApiA
 			m = memberSer.addMemberWithKeyBasic( member, mkey );
 		}
 		catch( UniqueViolated e ){
-			throw new ExceptionalTask( ExcpType.EntityDuplicate, e );
+			throw ExceptionalTask.UNPROCESSABLE_ENTITY();
 		}
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( m );

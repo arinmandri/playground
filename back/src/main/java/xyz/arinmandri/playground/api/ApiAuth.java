@@ -1,5 +1,9 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.security.LackAuthExcp;
+import xyz.arinmandri.playground.security.TokenProvider;
+import xyz.arinmandri.playground.security.TokenResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import xyz.arinmandri.playground.security.LackAuthExcp;
-import xyz.arinmandri.playground.security.TokenProvider;
-import xyz.arinmandri.playground.security.TokenResponse;
 
 
 @RestController
@@ -40,7 +41,7 @@ public class ApiAuth extends ApiA
 			tokenRes = tokenProvider.issueAccessTokenByBasicKey( req.keyname, req.password );
 		}
 		catch( LackAuthExcp e ){
-			throw new ExceptionalTask( ExcpType.LackOfAuth, e );
+			throw ExceptionalTask.UNAUTHORIZED();
 		}
 		return ResponseEntity.ok()
 		        .body( tokenRes );
@@ -55,7 +56,7 @@ public class ApiAuth extends ApiA
 			tokenRes = tokenProvider.issueAccessTokenByRefreshToken( req.refreshToken );
 		}
 		catch( LackAuthExcp e ){
-			throw new ExceptionalTask( ExcpType.LackOfAuth, e );
+			throw ExceptionalTask.UNAUTHORIZED();
 		}
 		return ResponseEntity.ok()
 		        .body( tokenRes );

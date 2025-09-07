@@ -5,7 +5,6 @@ import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,37 +21,44 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 
+/**
+ * 특정 타입 에러 --> 클라이언트에게 줄 응답 구성
+ */
 @RestControllerAdvice
+@AllArgsConstructor
 public class ApiError
 {
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger( ApiError.class );
 
 	/**
-	 * 예외 응답
-	 * XXX 로그 추가도 여기서 할까 싶다.
+	 * 컨트롤러에서 만든
 	 */
 	@ExceptionHandler( ExceptionalTask.class )
-	public ResponseEntity<ErrorResponse> handleKnownException ( ExceptionalTask e ) {
-		return createResponseEntity( e.type.status, new ErrorResponse( e.type.toString(), e.msg ) );
-	}
-
-	@ExceptionHandler( DataIntegrityViolationException.class )
-	public ResponseEntity<ErrorResponse> handleKnownException ( DataIntegrityViolationException e ) {
-		return createResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR, new ErrorResponse( "TODO", "TODO" ) );
+	public ResponseEntity<String> handleKnownException ( ExceptionalTask e ) {
+		return createTextResponse( e.getHttpStatus(), e.getMessage() );
 	}
 
 	//// ---------------------- (◑_◑;;)
 
 	@ExceptionHandler( NullPointerException.class )
 	public ResponseEntity<String> handleKnownException ( NullPointerException e ) {
-		log.error( "NULL 처리 안 된 부분!!!!!" + exceptionStackTraceToString( e, 5, 2 ) );
-		return createResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러: " + "개발자에게 문의 바랍니다." );
+		log.error( "여기 NULL" );
+		return createTextResponse( HttpStatus.INTERNAL_SERVER_ERROR, "개발자를 탓하세요." );
 	}
 
-	//// ---------------------- 스프링 등에서 자동으로 던지는 예외의 처리
+	//// ---------------------- 스프링 등에서 자동으로 던지는 예외들
+
+	@ExceptionHandler( org.springframework.web.servlet.resource.NoResourceFoundException.class )
+	public ResponseEntity<String> handleKnownException ( org.springframework.web.servlet.resource.NoResourceFoundException e ) {
+		return createTextResponse( HttpStatus.NOT_FOUND, "주소를 다시 확인하세요." );
+	}
+
+	@ExceptionHandler( org.springframework.web.HttpRequestMethodNotSupportedException.class )
+	public ResponseEntity<String> handleKnownException ( org.springframework.web.HttpRequestMethodNotSupportedException e ) {
+		return createTextResponse( HttpStatus.NOT_FOUND, "HTTP 메서드를 다시 확인하세요." );
+	}
 
 	@ExceptionHandler( BindException.class )// DTO 값 설정 실패
 	public ResponseEntity<String> handleKnownException ( BindException e ) {
@@ -64,7 +70,7 @@ public class ApiError
 			if( i != ee.size() - 1 )
 			    sb.append( '\n' );
 		}
-		return createResponseEntity( HttpStatus.BAD_REQUEST, sb.toString() );
+		return createTextResponse( HttpStatus.BAD_REQUEST, sb.toString() );
 	}
 
 	//// request body
@@ -74,44 +80,44 @@ public class ApiError
 		Throwable cause0 = e.getCause();
 
 		if( cause0 == null ){
-			return createResponseEntity( HttpStatus.BAD_REQUEST, "Request Body는 필수입니다." );
+			return createTextResponse( HttpStatus.BAD_REQUEST, "Request Body는 필수입니다." );
 		}
 
 		try{
 			throw cause0;
 		}
 		catch( com.fasterxml.jackson.databind.exc.InvalidFormatException cause ){
-			return createResponseEntity( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( cause.getPath() ) + "은는 " + getTypeNameMsg( cause.getTargetType() ) + "이어야 합니다." );
+			return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( cause.getPath() ) + "은는 " + getTypeNameMsg( cause.getTargetType() ) + "이어야 합니다." );
 		}
 		catch( com.fasterxml.jackson.core.JsonParseException cause ){
-			return createResponseEntity( HttpStatus.BAD_REQUEST, "json 형식이 올바르지 않습니다." );
+			return createTextResponse( HttpStatus.BAD_REQUEST, "json 형식이 올바르지 않습니다." );
 		}
 		catch( UnrecognizedPropertyException cause ){
-			return createResponseEntity( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( cause.getPath() ) + " 필드는 정의되지 않았습니다." );
+			return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( cause.getPath() ) + " 필드는 정의되지 않았습니다." );
 		}
 		catch( com.fasterxml.jackson.databind.exc.MismatchedInputException cause ){
-			return createResponseEntity( HttpStatus.BAD_REQUEST, "json 형식이 목적 타입과 맞지 않습니다." );
+			return createTextResponse( HttpStatus.BAD_REQUEST, "json 형식이 목적 타입과 맞지 않습니다." );
 		}
 		catch( JsonMappingException cause ){
 			List<Reference> refPath = cause.getPath();
 			if( refPath == null || refPath.size() == 0 )
-			    return createResponseEntity( HttpStatus.BAD_REQUEST, "요청바디가 있지만 처리할 내용이 없습니다.(예: 공백문자로만 이루어진 요청바디)" );
+			    return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디가 있지만 처리할 내용이 없습니다.(예: 공백문자로만 이루어진 요청바디)" );
 
 			Throwable e1 = cause.getCause();
 			if( e1 == null )
-			    return createResponseEntity( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( refPath ) + " 필드의 에러: " + cause.getMessage() );
+			    return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( refPath ) + " 필드의 에러: " + cause.getMessage() );
 
 			try{
 				throw e1;
 			}
 			catch( com.fasterxml.jackson.core.JsonParseException e2 ){
-				return createResponseEntity( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( refPath ) + " 필드의 에러: " + "json 형식이 올바르지 않습니다." );
+				return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( refPath ) + " 필드의 에러: " + "json 형식이 올바르지 않습니다." );
 			}
 			catch( Throwable e2 ){}
 		}
 		catch( Throwable e1 ){}
 
-		return createResponseEntity( HttpStatus.BAD_REQUEST, e.getMessage() );
+		return createTextResponse( HttpStatus.BAD_REQUEST, e.getMessage() );
 	}
 
 	private String getTypeNameMsg ( Class<?> type ) {
@@ -151,7 +157,7 @@ public class ApiError
 	//// 요청 파라미터 오류 - multipart
 	@ExceptionHandler( MissingServletRequestPartException.class )
 	public ResponseEntity<String> handleKnownException ( MissingServletRequestPartException e ) {
-		return createResponseEntity( HttpStatus.BAD_REQUEST,
+		return createTextResponse( HttpStatus.BAD_REQUEST,
 		        "요청바디 중 " + e.getRequestPartName() + "은는 필수입니다." );
 	}
 
@@ -173,7 +179,7 @@ public class ApiError
 			type = "텍스트";
 			break;
 		}
-		return createResponseEntity( HttpStatus.BAD_REQUEST,
+		return createTextResponse( HttpStatus.BAD_REQUEST,
 		        "요청 파라미터 " + e.getParameterName() + " 은는 필수이며 " + type + " 꼴입니다." );
 	}
 
@@ -185,44 +191,39 @@ public class ApiError
 		if( cause0 != null ){
 			if( cause0.getClass().isAssignableFrom( InvalidContentTypeException.class ) ){
 				msg = "Content-Type을 \"multipart/form-data\"로 설정하십시오.";
-				return createResponseEntity( HttpStatus.UNSUPPORTED_MEDIA_TYPE, msg );
+				return createTextResponse( HttpStatus.UNSUPPORTED_MEDIA_TYPE, msg );
 			}
 		}
 
-		return createResponseEntity( HttpStatus.BAD_REQUEST, msg );
+		return createTextResponse( HttpStatus.BAD_REQUEST, msg );
 	}
 
 	//// 400 BAD_REQUEST
 	@ExceptionHandler( value = org.springframework.web.bind.ServletRequestBindingException.class )
 	public ResponseEntity<String> handleKnownException ( org.springframework.web.bind.ServletRequestBindingException e ) {
-		return createResponseEntity( HttpStatus.BAD_REQUEST, e.getMessage() );
+		return createTextResponse( HttpStatus.BAD_REQUEST, e.getMessage() );
 	}
 
 	@ExceptionHandler( value = org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class )
 	public ResponseEntity<String> handleKnownException ( org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e ) {
 		Class c = e.getRequiredType();
-		return createResponseEntity( HttpStatus.BAD_REQUEST, e.getMessage() );
+		return createTextResponse( HttpStatus.BAD_REQUEST, e.getMessage() );
 	}
 
 	//// ---------------------- unknown exceptions
+
 	@ExceptionHandler( Exception.class )
 	public ResponseEntity<String> handleUnknownException ( Exception e ) {
 		log.error( "################### ERROR HERE: " + exceptionStackTraceToString( e, -1, -1 ) );
-		return createResponseEntity( HttpStatus.INTERNAL_SERVER_ERROR, "an unknown error has occurred." );
+		return createTextResponse( HttpStatus.INTERNAL_SERVER_ERROR, "an unknown error has occurred." );
 	}
 
 	//// ---------------------- 기타 메서드
 
-	private ResponseEntity<String> createResponseEntity ( HttpStatus httpStatus , String msg ) {
+	private ResponseEntity<String> createTextResponse ( HttpStatus httpStatus , String msg ) {
 		return ResponseEntity.status( httpStatus )
 		        .header( "Content-Type", "text/plain; charset=UTF-8" )
 		        .body( msg );
-	}
-
-	private ResponseEntity<ErrorResponse> createResponseEntity ( HttpStatus httpStatus , ErrorResponse res ) {
-		return ResponseEntity.status( httpStatus )
-		        .header( "Content-Type", "application/json; charset=UTF-8" )
-		        .body( res );
 	}
 
 	public static String exceptionStackTraceToString ( Throwable e ) {
@@ -270,16 +271,5 @@ public class ApiError
 		}
 
 		return b.toString();
-	}
-
-	/**
-	 * 클라이언트에 전달될 응답
-	 */
-	@AllArgsConstructor
-	@Getter
-	protected static class ErrorResponse
-	{
-		String type;
-		String msg;
 	}
 }

@@ -1,5 +1,13 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.core.CursorPage;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.board.Post;
+import xyz.arinmandri.playground.core.board.PostRepo;
+import xyz.arinmandri.playground.core.board.PostSer;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.security.LackAuthExcp;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,13 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.core.CursorPage;
-import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.board.Post;
-import xyz.arinmandri.playground.core.board.PostRepo;
-import xyz.arinmandri.playground.core.board.PostSer;
-import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.security.LackAuthExcp;
 
 
 @RestController
@@ -68,10 +69,10 @@ public class ApiBoard extends ApiA
 		Member m = getMemberFrom( userDetails );
 
 		Post p = postRepo.findById( id )
-		        .orElseThrow( ()-> new ExceptionalTask( ExcpType.NoSuchEntity, new NoSuchEntity( Post.class, id ) ) );
+		        .orElseThrow( ()-> ExceptionalTask.NOT_FOUND() );
 
 		if( !p.getAuthor().equals( m ) ){
-			throw new LackAuthExcp( "내 것이 아니면 못 건듧니다." );
+			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
 		p = postSer.edit( p, req.toEntity() );
@@ -100,10 +101,10 @@ public class ApiBoard extends ApiA
 		Member m = getMemberFrom( userDetails );
 
 		Post p = postRepo.findById( id )
-		        .orElseThrow( ()-> new ExceptionalTask( ExcpType.NoSuchEntity, new NoSuchEntity( Post.class, id ) ) );
+		        .orElseThrow( ()-> ExceptionalTask.NOT_FOUND() );
 
 		if( !p.getAuthor().equals( m ) ){
-			throw new LackAuthExcp( "내 것이 아니면 못 건듧니다." );
+			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
 		postSer.del( p );
@@ -119,7 +120,7 @@ public class ApiBoard extends ApiA
 			p = postSer.get( id );
 		}
 		catch( NoSuchEntity e ){
-			throw new ExceptionalTask( ExcpType.NoSuchEntity, e );
+			throw ExceptionalTask.NOT_FOUND();
 		}
 		return ResponseEntity.ok()
 		        .body( p );
