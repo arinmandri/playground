@@ -1,18 +1,15 @@
 package xyz.arinmandri.playground.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import lombok.Getter;
 
 
 /**
@@ -46,28 +43,6 @@ public abstract class ApiA
 	}
 
 	/**
-	 * 예외 응답
-	 * XXX 로그 추가도 여기서 할까 싶다.
-	 */
-	@ExceptionHandler( ExceptionalTask.class )
-	public ResponseEntity<ErrorResponse> handleKnownException ( ExceptionalTask e ) {
-		return ResponseEntity.status( e.type.status )
-		        .body( new ErrorResponse( e.type.toString(), e.msg ) );
-	}
-
-	@ExceptionHandler( DataIntegrityViolationException.class )
-	public ResponseEntity<ErrorResponse> handleKnownException ( DataIntegrityViolationException e ) {
-		return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-		        .body( new ErrorResponse( "TODO", "TODO" ) );
-	}
-
-	@ExceptionHandler( Exception.class )
-	public ResponseEntity<ErrorResponse> handleKnownException ( Exception e ) {
-		return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-		        .body( new ErrorResponse( "TEST", "TEST msg" ) );// TODO
-	}
-
-	/**
 	 * 컨트롤러에서 정상 시나리오에서 벗어난 응답시 이걸 던진다.
 	 * 우습게도 또 그 딱딱한 자료형의 벽에 부딪혀; 핸들러 메서드의 반환꼴은 정상 시나리오의 응답형식으로 고정이고, 다른 꼴의 응답을 반환하려면 예외던지기로 빼돌려야지.
 	 */
@@ -98,6 +73,7 @@ public abstract class ApiA
 	 */
 	protected enum ExcpType
 	{
+		BlameMySelf (HttpStatus.INTERNAL_SERVER_ERROR),
 		NoSuchEntity (HttpStatus.NOT_FOUND),
 		EntityDuplicate (HttpStatus.CONFLICT),
 		LackOfAuth (HttpStatus.FORBIDDEN),
@@ -110,14 +86,4 @@ public abstract class ApiA
 		}
 	}
 
-	/**
-	 * 클라이언트에 전달될 응답
-	 */
-	@AllArgsConstructor
-	@Getter
-	protected static class ErrorResponse
-	{
-		String type;
-		String msg;
-	}
 }
