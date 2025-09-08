@@ -29,7 +29,7 @@ CREATE TABLE "playground"."mkey_basic"(
         -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
     ,"keyname" VARCHAR(50) NOT NULL
         UNIQUE
-    ,"password" VARCHAR(129) NOT NULL
+    ,"password" CHAR(160) NOT NULL
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 CREATE INDEX "mkey_basic__keyname" ON "playground"."mkey_basic" (keyname);
