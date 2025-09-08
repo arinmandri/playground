@@ -27,6 +27,8 @@ import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth';
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 
+const URL_FILE_ADD = '/file/add';
+
 const ax = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
@@ -48,24 +50,45 @@ let retryQueue: (() => void)[] = [];// 401, 403 재시도 대기큐.
 const api = {
   get: (url: string, params = {}): Promise<AxiosResponse<any>> => {
     return new Promise((resolve, reject) => {
-      const attemptRequest = attemptRequestOf(ax.get, url, { params }, resolve, reject);
+      const attemptRequest = attemptRequestOf(resolve, reject, ax.get, url, { params });
       attemptRequest();
     });
   },
   post: async (url: string, data?: any): Promise<AxiosResponse<any, any>> => {
     return new Promise((resolve, reject) => {
-      const attemptRequest = attemptRequestOf(ax.post, url, data, resolve, reject);
+      const attemptRequest = attemptRequestOf(resolve, reject, ax.post, url, data);
       attemptRequest();
     });
-  }
+  },
+  postFormData: async (formData: FormData): Promise<AxiosResponse<any, any>> => {
+    return new Promise((resolve, reject) => {
+      const attemptRequest = attemptRequestOf(resolve, reject, ax.post, URL_FILE_ADD, formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
+      attemptRequest();
+    });
+  },
 }
 
 const RETRY_MAX = 3;
 
-function attemptRequestOf(fun: (url: string, params: any) => any, url: string, params: any, resolve: any, reject: any) {
+// TEST
+// api.post(, formData, {
+//     headers: { 'Content-Type': 'multipart/form-data' }
+//   })
+function attemptRequestOf(
+  resolve: any,
+  reject: any,
+  axAction: (url: string, data: any, options: any) => any,
+  url: string,
+  data: any,
+  options?: any
+) {
   const attemptRequest = (retryCount = 0) => {
     if (retryCount > 0) console.log(url, '재시도: ' + retryCount);
-    fun(url, params)
+    axAction(url, data, options)
       .then(resolve)
       .catch(async (error: any) => {
         if (retryCount >= RETRY_MAX) {

@@ -54,13 +54,8 @@ public class MemberSer extends PersistenceSer
 	}
 
 	@Transactional
-	public Member edit ( Long id , Member updata ) throws NoSuchEntity {
-		/*
-		 * TODO 이거 뭔가 좀 이상하고 맘에 안 드는데.
-		 */
-		Member m = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Member.class, id ) );
-		m.update( updata );
-		return m;
+	public Member edit ( Member org , Member updata ) {
+		org.update( updata );
+		return org;
 	}
 }

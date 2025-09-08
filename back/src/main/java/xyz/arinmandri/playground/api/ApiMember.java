@@ -157,24 +157,29 @@ public class ApiMember extends ApiA
 	}
 
 	// TODO 이거 응답도 바꿔야지.
-	@PostMapping( "/{id}/edit" )
+	@PostMapping( "/me/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
 	        @AuthenticationPrincipal User u ,
-	        @PathVariable long id ,
 	        @RequestBody EditMemberReq req ) throws NoSuchEntity {
 
-		// TODO auth: author = 로그인회원
+		Member me = getMemberFrom( u );
 
-		Member m = req.toEntity();
-		m = memberSer.edit( id, m );
+		// 프사 필드 업로드 처리
+		req = entityHandler.uploadFileField( req,
+		        ( r )-> r.propic(),
+		        ( r , v )-> r.withPropic( v ) );
+
+		Member m2 = req.toEntity();
+
+		m2 = memberSer.edit( me, m2 );
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( m );
+		        .body( m2 );
 	}
 
 	static public record EditMemberReq(
 	        String nick ,
 	        String email ,
-	        String propic )
+	        @With String propic )
 	{
 		Member toEntity () {
 			return Member.builder()

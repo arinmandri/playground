@@ -52,7 +52,7 @@ public class ApiError
 
 	@ExceptionHandler( NullPointerException.class )
 	public ResponseEntity<String> handleKnownException ( NullPointerException e ) {
-		log.error( "여기 NULL" );
+		log.error( "여기 NULL" + exceptionStackTraceToString( e, 10, 1 ) );
 		return createTextResponse( HttpStatus.INTERNAL_SERVER_ERROR, "개발자를 탓하세요." );
 	}
 

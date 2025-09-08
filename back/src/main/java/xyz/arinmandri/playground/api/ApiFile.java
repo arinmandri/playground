@@ -31,19 +31,19 @@ public class ApiFile
 
 	@PostMapping( "/add" )
 	// TODO @ClearFile
-	public ResponseEntity<String> apiFileAdd (
+	public ResponseEntity<apiFileAddResBody> apiFileAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file ) {
 
 		LocalTempFile ltf = localFileSer.createTempFile( file );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( ltf.id() );
+		        .body( new apiFileAddResBody( ltf.id() ) );
 	}
 
 	@PostMapping( "/sadd" )
 	// TODO @ClearFile
-	public ResponseEntity<List<String>> apiFileSadd (
+	public ResponseEntity<List<apiFileAddResBody>> apiFileSadd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        List<MultipartFile> files ){
 
@@ -51,7 +51,12 @@ public class ApiFile
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( ltfs.stream()
-		                .map( ltf-> ltf.id() )
+		                .map( ltf-> new apiFileAddResBody( ltf.id() ) )
 		                .toList() );
+	}
+
+	public static record apiFileAddResBody(
+	        String id )
+	{
 	}
 }
