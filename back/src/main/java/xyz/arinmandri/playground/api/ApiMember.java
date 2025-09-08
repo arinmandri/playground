@@ -1,16 +1,8 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.EntityHandler;
-import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.core.member.MemberSer;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +17,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
+import xyz.arinmandri.playground.core.EntityHandler;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.security.user.UserGuest;
+import xyz.arinmandri.playground.security.user.UserNormal;
 
 
 @RestController
@@ -38,12 +39,44 @@ public class ApiMember extends ApiA
 
 	final private PasswordEncoder pwEncoder;
 
+	@GetMapping( "/whoami" )
+	public ResponseEntity<apiWhoamiRes> apiWhoami (
+	        @AuthenticationPrincipal User u ) {
+
+		String type = u.getType().toString();
+		String nick;
+		String propic = null;
+		if( u instanceof UserNormal un ){
+			Member m = getMemberFrom( un );
+			nick = m.getNick();
+			propic = m.getPropic();
+		}
+		else if( u instanceof UserGuest ug ){
+			nick = ug.getCode();
+		}
+		else{
+			throw new RuntimeException();// TODO exception
+		}
+		return ResponseEntity.ok()
+		        .body( new apiWhoamiRes(
+		                type,
+		                nick,
+		                propic ) );
+	}
+
+	static public record apiWhoamiRes(
+	        String type ,
+	        String nick ,
+	        String propic )
+	{
+	}
+
 	// TODO 이거 응답도 바꿔야지.
 	@GetMapping( "/me" )
 	public ResponseEntity<Member> apiMemberMe (
-	        @AuthenticationPrincipal UserDetails userDetails ) throws NoSuchEntity{
+	        @AuthenticationPrincipal User u ) {
 
-		Member m = getMemberFrom( userDetails );
+		Member m = getMemberFrom( u );
 
 		return ResponseEntity.ok()
 		        .body( m );
@@ -64,13 +97,13 @@ public class ApiMember extends ApiA
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
-	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody @Validated apiMemberAddBasicReqBody req ) {
+	        @AuthenticationPrincipal User u ,
+	        @RequestBody @Validated apiMemberAddBasicReq req ) {
 
 		MKeyBasic m;
 		try{
-			apiMemberAddBasicReqBody._Member memberReq = req.member;
-			apiMemberAddBasicReqBody._Key keyReq = req.key;
+			apiMemberAddBasicReq._Member memberReq = req.member;
+			apiMemberAddBasicReq._Key keyReq = req.key;
 
 			// 프사 필드 업로드 처리
 			memberReq = entityHandler.uploadFileField( memberReq,
@@ -88,7 +121,7 @@ public class ApiMember extends ApiA
 		        .body( m );
 	}
 
-	static public record apiMemberAddBasicReqBody(
+	static public record apiMemberAddBasicReq(
 	        @NotNull @Valid _Member member ,
 	        @NotNull @Valid _Key key )
 	{
@@ -98,7 +131,7 @@ public class ApiMember extends ApiA
 		        @NotNull @NotBlank String email ,
 		        @With String propic )
 		{
-			public Member toEntity (){
+			public Member toEntity () {
 
 				return Member.builder()
 				        .nick( nick.equals( "" ) ? null : nick )
@@ -113,7 +146,7 @@ public class ApiMember extends ApiA
 		        @NotNull String keyname ,
 		        @NotNull String password )
 		{
-			public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ){
+			public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
 				return MKeyBasic.builder()
 				        .owner( owner )
 				        .keyname( keyname )
@@ -126,7 +159,7 @@ public class ApiMember extends ApiA
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/{id}/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
-	        @AuthenticationPrincipal UserDetails userDetails ,
+	        @AuthenticationPrincipal User u ,
 	        @PathVariable long id ,
 	        @RequestBody EditMemberReq req ) throws NoSuchEntity {
 
