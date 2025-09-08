@@ -22,7 +22,7 @@
  * 토큰갱신중 상태인 경우 대기큐로 들어간다.
  */
 
-import { useAuthStore, ensureToken, getAccessToken, getRefreshToken } from '@/stores/auth';
+import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth';
 
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
@@ -37,11 +37,7 @@ const ax = axios.create({
 });
 
 ax.interceptors.request.use(async (config) => {
-  let token = await getAccessToken();
-  if (!token) {
-    await ensureToken();
-    token = await getAccessToken();
-  }
+  let token = await getEnsuredAccessToken();
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -86,7 +82,8 @@ function attemptRequestOf(fun: (url: string, params: any) => any, url: string, p
           } else {// 첫 번째 401, 403 요청: 토큰 재발급 후 대기큐의 작업들 실행
             isRefreshing = true;
             try {
-              await refreshToken();
+              const authStore = useAuthStore();
+              await authStore.reissueToken();
               isRefreshing = false;
 
               // 대기큐에 있는 요청들 모두 재시도
@@ -111,24 +108,6 @@ function attemptRequestOf(fun: (url: string, params: any) => any, url: string, p
   };
 
   return attemptRequest;
-}
-
-async function refreshToken(): Promise<void> {
-  const authStore = useAuthStore();
-  const refresh_token_curr = getRefreshToken();
-  try {
-    if (authStore.isLoggedIn) {// 회원
-      console.log('회원 토큰 발급 시도');
-      await authStore.refreshToken(refresh_token_curr || '');
-    }
-    else {// 비회원
-      console.log('비회원 토큰 발급 시도');
-      await authStore.loginAsGuest();
-    }
-  } catch (e: any) {
-    console.log('토큰 재발급 실패; 비회원 토큰 발급 시도');
-    await authStore.loginAsGuest();
-  }
 }
 
 export default api;

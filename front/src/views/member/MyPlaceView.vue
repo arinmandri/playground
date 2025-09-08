@@ -1,5 +1,5 @@
 <template>
-  <h1>((회원 닉네임)) 본거지</h1><!-- TODO -->
+  <h1>{{ user.nick }} 님의 본거지</h1>
   <button @click="logout">로그아웃</button>
 </template>
 
@@ -7,6 +7,9 @@
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 import { useRouter } from 'vue-router'; const router = useRouter();
+import { storeToRefs } from "pinia";
+
+const { user } = storeToRefs(authStore);
 
 const logout = () => {
   authStore.logout();

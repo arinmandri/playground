@@ -7,7 +7,7 @@
       </ul>
       <div id="user">
         <div v-if="isLoggedIn">
-          <router-link to="/member/myplace">(회원닉네임)</router-link><!-- TODO -->
+          <router-link to="/member/myplace">{{ user.nick }}</router-link>
         </div>
         <div v-else>
           <span><router-link to="/member/login">로그인</router-link></span>
@@ -27,7 +27,7 @@ import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
-const { isLoggedIn } = storeToRefs(authStore);
+const { isLoggedIn, user } = storeToRefs(authStore);
 
 onMounted(async () => {
 });
