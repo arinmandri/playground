@@ -7,10 +7,10 @@
       </ul>
       <div id="user">
         <div v-if="isLoggedIn">
-          <router-link to="/member/myplace">{{ user.nick }}</router-link>
+          <router-link to="/member/myplace">{{ user.nick }} 님 입장</router-link>
         </div>
         <div v-else>
-          <span><router-link to="/member/login">로그인</router-link></span>
+          <span><router-link to="/member/login">손님 입장하세요</router-link></span>
         </div>
       </div>
     </nav>
@@ -30,6 +30,7 @@ import { storeToRefs } from "pinia";
 const { isLoggedIn, user } = storeToRefs(authStore);
 
 onMounted(async () => {
+  authStore.loadAuthInfoFromLocal();
 });
 </script>
 

@@ -25,23 +25,40 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     isLoggedIn: !!getRefreshToken(),// 로그인 상태 기준: 리프레시토큰 있으면 로그인 상태
     user: {
-      type: USER_TYPE_GUEST,// TODO 초기에 나 누구?
-      nick: '(◑_◑;;)',// TODO 뭐라 해야 하노
+      type: USER_TYPE_GUEST,
+      nick: '…',
       propic: null as string | null,
     },
   }),
   actions: {
+    loadAuthInfoFromLocal() {
+      /*
+       * 액세스토큰 있으면 whoami 하고
+       * 없으면 손님로그인
+       */
+      let access_token = getAccessToken();
+      if (access_token == null) {
+        this.loginAsGuest();
+      } else {
+        ax.get(`${API_BASE}/member/whoami`)
+          .then((res) => {
+            this.user = res.data;
+          }).catch((err) => {
+            this.reissueToken();
+          });
+      }
+    },
     async loginAsGuest() {
       const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/guest`)).data;
       setTokens(access_token, refresh_token);
+      this.whoami();
       this.isLoggedIn = false;
-      this.user = (await ax.get(`${API_BASE}/member/whoami`)).data;
     },
     async loginWithBasicKey(keyname: string, password: string) {
       const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/basic`, { keyname, password })).data;
       setTokens(access_token, refresh_token);
+      this.whoami();
       this.isLoggedIn = true;
-      this.user = (await ax.get(`${API_BASE}/member/whoami`)).data;
     },
     async reissueToken(): Promise<void> {// XXX 그냥 비회원도 리프레시 되게 하나? 사실 비회원에 대해 뭐 처리하는 건 없어서 내가 또 쓸데없는 짓 생각하나 싶기도 하고.
       try {
@@ -62,11 +79,18 @@ export const useAuthStore = defineStore("auth", {
       const refresh_token_current = getRefreshToken();
       const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/refresh`, { refreshToken: refresh_token_current })).data;
       setTokens(access_token, refresh_token);
+      this.whoami();
     },
     logout() {
       clearTokens();
       this.loginAsGuest();
       console.log('로그아웃');
+    },
+    whoami() {
+      ax.get(`${API_BASE}/member/whoami`)
+        .then((res) => {
+          this.user = res.data;
+        })
     },
   }
 });
