@@ -1,7 +1,5 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
-
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
@@ -21,6 +19,8 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import lombok.AllArgsConstructor;
+import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
+import xyz.arinmandri.playground.security.LackAuthExcp;
 
 
 /**
@@ -38,6 +38,14 @@ public class ApiError
 	@ExceptionHandler( ExceptionalTask.class )
 	public ResponseEntity<String> handleKnownException ( ExceptionalTask e ) {
 		return createTextResponse( e.getHttpStatus(), e.getMessage() );
+	}
+
+	/**
+	 * 서비스예외이지만 처리가 공통
+	 */
+	@ExceptionHandler( LackAuthExcp.class )
+	public ResponseEntity<String> handleKnownException ( LackAuthExcp e ) {
+		return createTextResponse( HttpStatus.FORBIDDEN, e.getMessage() );
 	}
 
 	//// ---------------------- (◑_◑;;)
