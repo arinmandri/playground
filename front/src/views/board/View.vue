@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="postListPack.list.length > 0">
     <div class="posts">
       <div class="post" v-for="post in postListPack.list" :key="post.id">
         <p class="content">{{ post.content }}</p>
@@ -15,6 +15,7 @@
       <button v-if="!postListPack.isEnd" @click="clickMoreBtn">더보기</button>
     </div>
   </div>
+  <div v-else>게시글이 없다.</div>
   <router-link to="/board/post/write"><button class="writeBtn">✎</button></router-link>
 </template>
 
