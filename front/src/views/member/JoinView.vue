@@ -31,7 +31,10 @@
   <router-link to="/member/login">로그인</router-link>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+
+import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth'; const authStore = useAuthStore();
+
 import api from "@/api/axiosInstance";
 
 import { ref } from 'vue'
@@ -90,6 +93,7 @@ async function onSubmit() {
   try {
     await requestJoin();
     success.value = true
+    authStore.loginWithBasicKey(form.value.keyname, form.value.password);// 회원가입 완료시 그 회원으로 바로 로그인
     router.push('/')
   } catch (e: any) {
     error.value = e.response?.data?.message || 'Sign up failed.'
