@@ -1,5 +1,17 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.core.EntityHandler;
+import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.security.user.UserGuest;
+import xyz.arinmandri.playground.security.user.UserNormal;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,20 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
-import xyz.arinmandri.playground.core.EntityHandler;
-import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.core.member.MemberSer;
-import xyz.arinmandri.playground.security.user.User;
-import xyz.arinmandri.playground.security.user.UserGuest;
-import xyz.arinmandri.playground.security.user.UserNormal;
 
 
 @RestController
@@ -46,16 +46,14 @@ public class ApiMember extends ApiA
 		String type = u.getType().toString();
 		String nick;
 		String propic = null;
-		if( u instanceof UserNormal un ){
+		switch( u ){
+		case UserNormal un -> {
 			Member m = getMemberFrom( un );
 			nick = m.getNick();
 			propic = m.getPropic();
 		}
-		else if( u instanceof UserGuest ug ){
-			nick = ug.getCode();
-		}
-		else{
-			throw new RuntimeException();// TODO exception
+		case UserGuest ug -> nick = ug.getCode();
+		default -> throw new RuntimeException();// TODO exception
 		}
 		return ResponseEntity.ok()
 		        .body( new apiWhoamiRes(

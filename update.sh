@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 작업 디렉토리 설정
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 PROJECT_DIR=~/playground
 FRONTEND_BUILD_DIR=/var/www/playground
 BACKEND_DIR="$PROJECT_DIR/back"
@@ -40,7 +40,7 @@ fi
 # 새 백엔드 실행
 echo "STARTING BACKEND SERVER..."
 chmod u+x "$JAR_PATH"
-nohup java -jar "$JAR_PATH" > "$BACKEND_LOG" 2>&1 &
+nohup $JAVA_HOME/bin/java -jar "$JAR_PATH" > "$BACKEND_LOG" 2>&1 &
 
 echo "UPDATE DONE !"
 

@@ -8,8 +8,9 @@
 - Git
 - Sourcetree
 
-새 컴에 이거 깔아라
+깔아
 
+- 자바 21
 - node.js
 - postgresql
 - maven
