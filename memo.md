@@ -19,6 +19,12 @@
 
 ## Github 올라간 것 말고
 
+루트 디렉토리의 `.gitignore` 파일을 보라.
+
+##### DB 설정
+
+운영: 사용자 만들고 백엔드 설정에 추가
+
 ##### AWS S3 키
 
 AWS IAM 액세스 키를 여기 추가
@@ -108,7 +114,8 @@ java -jar .\target\playground-0.0.1-SNAPSHOT.jar > ..\back.log
 
 1. 작업한 걸 커밋하고 깃허브에 푸시한다.
 2. 서버에서 `~/playground` 위치에서 관리중.
-3. `update.sh` 를 실행한다.
+3. 설정 등 git에서 제외한 변경사항은 직접 갖다넣기.
+4. `update.sh` 를 실행한다.
 
 
 

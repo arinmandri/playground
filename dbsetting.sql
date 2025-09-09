@@ -5,11 +5,11 @@
 -- ALTER SCHEMA playground RENAME TO playground_trash
 CREATE SCHEMA playground;
 
--- DROP USER "playground-backend";
-CREATE USER "playground-backend" WITH PASSWORD 'bungchi^^patchi';-- TODO 이것도...
-GRANT USAGE ON SCHEMA "playground" TO "playground-backend";
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "playground-backend";
-ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "playground-backend";
+-- DROP USER "{ 사용자 }";
+CREATE USER "{ 사용자 }" WITH PASSWORD '{ 비번 }';
+GRANT USAGE ON SCHEMA "playground" TO "{ 사용자 }";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "{ 사용자 }";
+ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "{ 사용자 }";
 
 DROP TABLE IF EXISTS "playground"."member";
 CREATE TABLE "playground"."member"(-- m
@@ -53,24 +53,3 @@ CREATE TABLE "playground"."refresh_token"(
     ,"expires_at" TIMESTAMPTZ NOT NULL
 );
 CREATE INDEX "refresh_token__refresh_token" ON "playground"."refresh_token" (refresh_token);
-
--- ---------------------------------
-
-INSERT INTO "playground"."member" ("nick", "email", "created_at")
-VALUES
-('김영선', 'arinmandri@gmail.com', '2025-07-01'),
-('홍길동', 'hong@naver.com', '2025-07-01'),
-('킹 세종', 'king@daum.net', '2025-07-01');
-
-INSERT INTO "playground"."mkey_basic" ("owner__m", "keyname", "password", "created_at")
-VALUES
- (1, 'abc', '123', '2025-07-01')
-,(3, 'www', '321', '2025-07-01')
-,(2, 'sss', '222', '2025-07-01')
-;
-
-INSERT INTO "playground"."post" ("content", "author__m", "created_at")
-VALUES
-('글 1 가나다', 1, '2025-07-01'),
-('글 2 홍길동', 2, '2025-07-01'),
-('글 3 세종대왕', 3, '2025-07-01');
