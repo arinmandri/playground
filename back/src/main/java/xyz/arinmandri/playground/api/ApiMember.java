@@ -135,7 +135,7 @@ public class ApiMember extends ApiA
 
 				return Member.builder()
 				        .nick( nick.equals( "" ) ? null : nick )
-				        .email( email.equals( "" ) ? null : email )
+				        .email( email == null || email.equals( "" ) ? null : email )
 				        .propic( propic == null || propic.equals( "" ) ? null : propic )
 				        .build();
 			}

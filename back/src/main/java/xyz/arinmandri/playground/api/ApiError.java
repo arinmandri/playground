@@ -1,6 +1,8 @@
 package xyz.arinmandri.playground.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -57,6 +60,15 @@ public class ApiError
 	}
 
 	//// ---------------------- 스프링 등에서 자동으로 던지는 예외들
+
+	@ExceptionHandler( MethodArgumentNotValidException.class )// spring validation
+	public ResponseEntity<Map<String, String>> handleValidationExceptions ( MethodArgumentNotValidException e ) {
+
+		Map<String, String> errors = new HashMap<>();
+		e.getBindingResult().getFieldErrors().forEach( error-> errors.put( error.getField(), error.getDefaultMessage() ) );
+
+		return ResponseEntity.badRequest().body( errors );
+	}
 
 	@ExceptionHandler( org.springframework.web.servlet.resource.NoResourceFoundException.class )
 	public ResponseEntity<String> handleKnownException ( org.springframework.web.servlet.resource.NoResourceFoundException e ) {
