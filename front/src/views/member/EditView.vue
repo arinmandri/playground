@@ -12,13 +12,14 @@
       </div>
       <div>
         <label for="input-propic">Profile Picture:</label>
-        <input id="input-propic" type="file" @change="onFileChange" accept="image/*" />
-        <div v-if="form.propicPreview">
-          <img :src="form.propicPreview" alt="Profile Picture" style="max-width: 100px; max-height: 100px;" />
+        <input id="input-propic" type="file" @change="onPropicFileChange" accept="image/*" />
+        <div v-if="propicPreview">
+          <img :src="propicPreview" alt="프사" style="max-width: 100px; max-height: 100px;" />
         </div>
+        <button type="button" @click="removePropic">프사 지우기</button>
         // TEST<br>
         propic: {{ form.propic }}<br>
-        propicPreview: {{ form.propicPreview }}<br>
+        propicPreview: {{ propicPreview }}<br>
       </div>
       <button type="submit" :disabled="loading">Save</button>
     </form>
@@ -29,7 +30,7 @@
 
 <script setup lang="ts">
 
-import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth'; const authStore = useAuthStore();
+import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
 import { ref, onMounted } from 'vue';
 import api from '@/api/axiosInstance';
@@ -40,8 +41,8 @@ const form = ref({
   nick: '',
   email: '',
   propic: '',
-  propicPreview: '',
 })
+const propicPreview = ref('');
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
 const success = ref(false)
@@ -58,7 +59,7 @@ async function fetchMemberInfo() {
     form.value.nick = data.nick || '';
     form.value.email = data.email || '';
     form.value.propic = data.propic || '';
-    form.value.propicPreview = data.propic;
+    propicPreview.value = data.propic;
   } catch (err) {
     error.value = 'Failed to load member info.'
   } finally {
@@ -68,44 +69,55 @@ async function fetchMemberInfo() {
 
 const propicRender = new FileReader();
 propicRender.onload = function (e: any) {
-  form.value.propicPreview = e.target.result;
+  propicPreview.value = e.target.result;
 }
 
-async function onFileChange(e: any) {
-  // TODO 용량제한
-  const file = e.target.files[0]
-  if (!file) return
+let propicFile: File | null = null;
+
+function onPropicFileChange(e: any) {
+  const file = e.target.files[0];
+  if (!file) return;
+  propicFile = file;
   propicRender.readAsDataURL(file);
-  loading.value = true
-  error.value = ''
-  try {
-    const formData = new FormData()
-    formData.append('file', file)
-    const { id: fileId } = (await api.postFormData(formData)).data;
-    form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
-  } catch (err) {
-    error.value = 'Failed to upload profile picture.'
-  } finally {
-    loading.value = false
-  }
+}
+
+function removePropic() {
+  propicFile = null;
+  propicPreview.value = '';
+  form.value.propic = '';
 }
 
 async function submitForm() {
-  loading.value = true
-  error.value = ''
-  success.value = false
+  loading.value = true;
+  error.value = '';
+  success.value = false;
+
+  //// 프사 파일 업로드
+  if (propicFile) {
+    try {
+      const formData = new FormData();
+      formData.append('file', propicFile);
+      const { id: fileId } = (await api.postFormData(formData)).data;
+      form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
+    } catch (err) {
+      error.value = 'Failed to upload profile picture.';
+      loading.value = false;
+      return;
+    }
+  }
+
   try {
     await api.post('/member/me/edit', {
       nick: form.value.nick,
       email: form.value.email,
-      propic: form.value.propic
-    })
-    success.value = true
+      propic: form.value.propic,
+    });
+    success.value = true;
     authStore.whoami();
   } catch (err) {
-    error.value = 'Failed to update member info.'
+    error.value = 'Failed to update member info.';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>
