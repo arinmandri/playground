@@ -43,6 +43,8 @@ public class ConfigWebSecurity
 		        .authorizeHttpRequests( auth-> auth
 		                .requestMatchers( "/auth/**" ).permitAll()
 		                .requestMatchers( "/error" ).permitAll()
+		                .requestMatchers( "/swagger-*/**", "/v3/api-docs/**" ).permitAll()
+		                .requestMatchers( "/favicon.ico" ).permitAll()
 		                .anyRequest().authenticated() )
 		        .exceptionHandling(ex -> ex
 		                .authenticationEntryPoint(
