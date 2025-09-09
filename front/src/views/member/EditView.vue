@@ -8,14 +8,17 @@
       </div>
       <div>
         <label for="input-email">Email:</label>
-        <input id="input-email" v-model="form.email" type="email" required />
+        <input id="input-email" v-model="form.email" type="email" />
       </div>
       <div>
         <label for="input-propic">Profile Picture:</label>
         <input id="input-propic" type="file" @change="onFileChange" accept="image/*" />
-        <div v-if="form.propic">
-          <img :src="form.propic" alt="Profile Picture" style="max-width: 100px; max-height: 100px;" />
+        <div v-if="form.propicPreview">
+          <img :src="form.propicPreview" alt="Profile Picture" style="max-width: 100px; max-height: 100px;" />
         </div>
+        // TEST<br>
+        propic: {{ form.propic }}<br>
+        propicPreview: {{ form.propicPreview }}<br>
       </div>
       <button type="submit" :disabled="loading">Save</button>
     </form>
@@ -25,8 +28,10 @@
 </template>
 
 <script setup lang="ts">
-// TODO 초기값: 원래 회원 정보
-import { ref } from 'vue';
+
+import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth'; const authStore = useAuthStore();
+
+import { ref, onMounted } from 'vue';
 import api from '@/api/axiosInstance';
 
 const SERVER_TEMP_FILE_ID_PREFIX = '!';
@@ -34,15 +39,43 @@ const SERVER_TEMP_FILE_ID_PREFIX = '!';
 const form = ref({
   nick: '',
   email: '',
-  propic: ''
+  propic: '',
+  propicPreview: '',
 })
-const loading = ref(false)
+const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
 const success = ref(false)
 
+onMounted(() => {
+  fetchMemberInfo();
+});
+
+async function fetchMemberInfo() {
+  loading.value = true
+  error.value = ''
+  try {
+    const { data } = await api.get('/member/me');
+    form.value.nick = data.nick || '';
+    form.value.email = data.email || '';
+    form.value.propic = data.propic || '';
+    form.value.propicPreview = data.propic;
+  } catch (err) {
+    error.value = 'Failed to load member info.'
+  } finally {
+    loading.value = false
+  }
+}
+
+const propicRender = new FileReader();
+propicRender.onload = function (e: any) {
+  form.value.propicPreview = e.target.result;
+}
+
 async function onFileChange(e: any) {
+  // TODO 용량제한
   const file = e.target.files[0]
   if (!file) return
+  propicRender.readAsDataURL(file);
   loading.value = true
   error.value = ''
   try {
@@ -68,6 +101,7 @@ async function submitForm() {
       propic: form.value.propic
     })
     success.value = true
+    authStore.whoami();
   } catch (err) {
     error.value = 'Failed to update member info.'
   } finally {
