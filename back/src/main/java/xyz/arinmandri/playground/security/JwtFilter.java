@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,8 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
-
-
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter
@@ -32,9 +31,9 @@ public class JwtFilter extends OncePerRequestFilter
 
 	@Override
 	protected void doFilterInternal (
-	        HttpServletRequest request ,
-	        HttpServletResponse response ,
-	        FilterChain filterChain ) throws ServletException , IOException {
+	        @NonNull HttpServletRequest request ,
+	        @NonNull HttpServletResponse response ,
+	        @NonNull FilterChain filterChain ) throws ServletException , IOException {
 
 		String authorizationHeader = request.getHeader( HEADER_AUTHORIZATION );
 		String token = ( authorizationHeader != null && authorizationHeader.startsWith( TOKEN_PREFIX ) )

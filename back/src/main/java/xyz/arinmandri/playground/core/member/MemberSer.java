@@ -1,7 +1,6 @@
 package xyz.arinmandri.playground.core.member;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -23,8 +22,6 @@ public class MemberSer extends PersistenceSer
 {
 	final private MemberRepo repo;
 	final private MKeyBasicRepo mkeyBasicRepo;
-
-	final private PasswordEncoder pwEncoder;
 
 	public Member get ( long id ) throws NoSuchEntity {
 		return repo.findById( id )

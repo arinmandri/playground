@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
-import xyz.arinmandri.playground.core.member.MemberSer;
 
 
 @Service
@@ -19,8 +18,6 @@ public class PostSer extends PersistenceSer
 	private final int pageSize = pageSizeDefault;
 
 	final private PostRepo repo;
-
-	final private MemberSer memberSer;
 
 	@Transactional( readOnly = true )
 	public Post get ( long id ) throws NoSuchEntity {
