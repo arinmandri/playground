@@ -102,8 +102,8 @@ public class ApiMember extends ApiA
 
 		MKeyBasic m;
 		try{
-			apiMemberAddBasicReq._Member memberReq = req.member;
-			apiMemberAddBasicReq._Key keyReq = req.key;
+			apiMemberAddBasicReq.apiMemberAddBasicReqMember memberReq = req.member;
+			apiMemberAddBasicReq.apiMemberAddBasicReqKey keyReq = req.key;
 
 			// 프사 필드 업로드 처리
 			memberReq = entityHandler.uploadFileField( memberReq,
@@ -122,13 +122,13 @@ public class ApiMember extends ApiA
 	}
 
 	static public record apiMemberAddBasicReq(
-	        @NotNull @Valid _Member member ,
-	        @NotNull @Valid _Key key )
+	        @NotNull @Valid apiMemberAddBasicReqMember member ,
+	        @NotNull @Valid apiMemberAddBasicReqKey key )
 	{
 
-		static public record _Member(
+		static public record apiMemberAddBasicReqMember(
 		        @NotNull @NotBlank String nick ,
-		        @NotNull @NotBlank String email ,
+		        String email ,// TODO email 형식
 		        @With String propic )
 		{
 			public Member toEntity () {
@@ -141,7 +141,7 @@ public class ApiMember extends ApiA
 			}
 		}
 
-		static public record _Key(
+		static public record apiMemberAddBasicReqKey(
 		        // XXX 제한 추가. 길이라든가 정규식 뭐 있겠지.
 		        @NotNull String keyname ,
 		        @NotNull String password )
