@@ -4,22 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MultipartException;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import lombok.AllArgsConstructor;
 import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
@@ -61,8 +53,8 @@ public class ApiError
 
 	//// ---------------------- 스프링 등에서 자동으로 던지는 예외들
 
-	@ExceptionHandler( MethodArgumentNotValidException.class )// spring validation
-	public ResponseEntity<Map<String, String>> handleValidationExceptions ( MethodArgumentNotValidException e ) {
+	@ExceptionHandler( org.springframework.web.bind.MethodArgumentNotValidException.class )// spring validation
+	public ResponseEntity<Map<String, String>> handleValidationExceptions ( org.springframework.web.bind.MethodArgumentNotValidException e ) {
 
 		Map<String, String> errors = new HashMap<>();
 		e.getBindingResult().getFieldErrors().forEach( error-> errors.put( error.getField(), error.getDefaultMessage() ) );
@@ -80,8 +72,8 @@ public class ApiError
 		return createTextResponse( HttpStatus.NOT_FOUND, "HTTP 메서드를 다시 확인하세요." );
 	}
 
-	@ExceptionHandler( BindException.class )// DTO 값 설정 실패
-	public ResponseEntity<String> handleKnownException ( BindException e ) {
+	@ExceptionHandler( org.springframework.validation.BindException.class )// DTO 값 설정 실패
+	public ResponseEntity<String> handleKnownException ( org.springframework.validation.BindException e ) {
 		//// e에 포함된 모든 에러에 대해 메시지를 한 줄씩 출력
 		List<ObjectError> ee = e.getAllErrors();
 		StringBuilder sb = new StringBuilder();
@@ -94,8 +86,8 @@ public class ApiError
 	}
 
 	//// request body
-	@ExceptionHandler( HttpMessageNotReadableException.class )
-	public ResponseEntity<String> handleKnownException ( HttpMessageNotReadableException e ) {
+	@ExceptionHandler( org.springframework.http.converter.HttpMessageNotReadableException.class )
+	public ResponseEntity<String> handleKnownException ( org.springframework.http.converter.HttpMessageNotReadableException e ) {
 
 		Throwable cause0 = e.getCause();
 
@@ -112,15 +104,15 @@ public class ApiError
 		catch( com.fasterxml.jackson.core.JsonParseException cause ){
 			return createTextResponse( HttpStatus.BAD_REQUEST, "json 형식이 올바르지 않습니다." );
 		}
-		catch( UnrecognizedPropertyException cause ){
+		catch( com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException cause ){
 			return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디 중 " + getRefPathStr( cause.getPath() ) + " 필드는 정의되지 않았습니다." );
 		}
 		catch( com.fasterxml.jackson.databind.exc.MismatchedInputException cause ){
 			return createTextResponse( HttpStatus.BAD_REQUEST, "json 형식이 목적 타입과 맞지 않습니다." );
 		}
-		catch( JsonMappingException cause ){
+		catch( com.fasterxml.jackson.databind.JsonMappingException cause ){
 			List<Reference> refPath = cause.getPath();
-			if( refPath == null || refPath.size() == 0 )
+			if( refPath == null || refPath.isEmpty() )
 			    return createTextResponse( HttpStatus.BAD_REQUEST, "요청바디가 있지만 처리할 내용이 없습니다.(예: 공백문자로만 이루어진 요청바디)" );
 
 			Throwable e1 = cause.getCause();
@@ -152,7 +144,7 @@ public class ApiError
 	}
 
 	private String getRefPathStr ( List<Reference> path ) {
-		if( path == null || path.size() == 0 )
+		if( path == null || path.isEmpty() )
 		    return "";
 
 		StringBuilder sb = new StringBuilder();
@@ -175,29 +167,21 @@ public class ApiError
 	}
 
 	//// 요청 파라미터 오류 - multipart
-	@ExceptionHandler( MissingServletRequestPartException.class )
-	public ResponseEntity<String> handleKnownException ( MissingServletRequestPartException e ) {
+	@ExceptionHandler( org.springframework.web.multipart.support.MissingServletRequestPartException.class )
+	public ResponseEntity<String> handleKnownException ( org.springframework.web.multipart.support.MissingServletRequestPartException e ) {
 		return createTextResponse( HttpStatus.BAD_REQUEST,
 		        "요청바디 중 " + e.getRequestPartName() + "은는 필수입니다." );
 	}
 
 	//// 요청 파라미터 오류
-	@ExceptionHandler( MissingServletRequestParameterException.class )
-	public ResponseEntity<String> handleKnownException ( MissingServletRequestParameterException e ) {
+	@ExceptionHandler( org.springframework.web.bind.MissingServletRequestParameterException.class )
+	public ResponseEntity<String> handleKnownException ( org.springframework.web.bind.MissingServletRequestParameterException e ) {
 
 		String type = e.getParameterType();
 		switch( type ){
-		case "Integer":
-		case "Long":
-			type = "정수";
-			break;
-		case "Float":
-		case "Double":
-			type = "실수";
-			break;
-		case "String":
-			type = "텍스트";
-			break;
+		case "Integer", "Long" -> type = "정수";
+		case "Float", "Double" -> type = "실수";
+		case "String" -> type = "텍스트";
 		}
 		return createTextResponse( HttpStatus.BAD_REQUEST,
 		        "요청 파라미터 " + e.getParameterName() + " 은는 필수이며 " + type + " 꼴입니다." );
@@ -209,7 +193,7 @@ public class ApiError
 		Throwable cause0 = e.getMostSpecificCause();
 
 		if( cause0 != null ){
-			if( cause0.getClass().isAssignableFrom( InvalidContentTypeException.class ) ){
+			if( cause0.getClass().isAssignableFrom( org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException.class ) ){
 				msg = "Content-Type을 \"multipart/form-data\"로 설정하십시오.";
 				return createTextResponse( HttpStatus.UNSUPPORTED_MEDIA_TYPE, msg );
 			}
@@ -226,8 +210,8 @@ public class ApiError
 
 	@ExceptionHandler( value = org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class )
 	public ResponseEntity<String> handleKnownException ( org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e ) {
-		Class c = e.getRequiredType();
-		return createTextResponse( HttpStatus.BAD_REQUEST, e.getMessage() );
+		Class<?> c = e.getRequiredType();
+		return createTextResponse( HttpStatus.BAD_REQUEST, c + e.getMessage() );
 	}
 
 	//// ---------------------- unknown exceptions
@@ -268,8 +252,10 @@ public class ApiError
 
 		int count2 = 0;
 		while( e != null ){
-			b.append( "\n===== ERROR MESSAGE(" + e.getClass().getName() + "): " );
-			b.append( e.getMessage() );
+			b.append( "\n===== ERROR MESSAGE(" )
+			        .append( e.getClass().getName() )
+			        .append( "): " )
+			        .append( e.getMessage() );
 			if( ++count2 > max2 ){
 				break;
 			}
@@ -278,11 +264,13 @@ public class ApiError
 			for( StackTraceElement element : stackElements ){
 				if( count1++ >= max1 )
 				    break;
-				b.append( "\n\tAT " );
-				b.append( element.toString() );
+				b.append( "\n\tAT " )
+				        .append( element.toString() );
 			}
 			if( stackElements.length > count1 ){
-				b.append( "\n\t... " + ( stackElements.length - count1 ) + " MORE" );
+				b.append( "\n\t... " )
+				        .append( stackElements.length - count1 )
+				        .append( " MORE" );
 			}
 			e = e.getCause();
 		}
