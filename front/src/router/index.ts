@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useAuthStore } from "@/stores/auth";
 
+import NotFound from '@/views/NotFound.vue';
+
 //// 인증이 필요한 라우트 목록
 const authRequiredRoutes = [
   '/board/post/write',
@@ -22,6 +24,7 @@ const routes = Object.keys(vueFiles).map((filePath) => {
   const name = temp === '' ? 'home' : temp.replace(/\//g, '-');
   const path = '/' + temp;
   const requiresAuth = authRequiredRoutes.includes(path);
+  console.log(`★router - register: ${name} --> ${path}`);
 
   return {
     name,
@@ -30,6 +33,15 @@ const routes = Object.keys(vueFiles).map((filePath) => {
     meta: { requiresAuth }
   };
 });
+routes.push(// 없는 페이지
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound, meta: {
+      requiresAuth: false
+    },
+  }
+);
 
 const router = createRouter({
   history: createWebHistory(),
@@ -40,7 +52,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
 
   // TEST
-  console.log(`라우트 이동: ${from.fullPath} --> ${to.fullPath}`);
+  console.log(`★router: ${from.fullPath} --> ${to.fullPath}`);
 
   const authStore = useAuthStore();
 
