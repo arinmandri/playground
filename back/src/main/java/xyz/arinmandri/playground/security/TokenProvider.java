@@ -1,5 +1,10 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.util.JwtUtil;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -12,11 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
-import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.security.user.User;
-import xyz.arinmandri.util.JwtUtil;
 
 
 @Service
@@ -54,7 +54,7 @@ public class TokenProvider
 		random.nextBytes( bytes );
 		String guestName = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
 
-		String accessToken = generateToken( User.Type.guest, String.valueOf( guestName ), normalAuthority, duration_ag );
+		String accessToken = generateToken( User.Type.guest, String.valueOf( guestName ), guestAuthority, duration_ag );
 
 		return new TokenResponse( accessToken, null, guestAuthority, duration_ag );
 	}
