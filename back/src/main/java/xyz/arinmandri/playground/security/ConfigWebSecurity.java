@@ -1,5 +1,7 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.util.MyPasswordEncoder;
+import java.security.SecureRandom;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class ConfigWebSecurity
 {
 	final private JwtFilter jwtFilter;
+	final private SecureRandom random;
 
 	@Bean
 	public SecurityFilterChain filterChain ( HttpSecurity http ) throws Exception {
@@ -91,5 +94,10 @@ public class ConfigWebSecurity
 		return authentication-> {
 			throw new AuthenticationCredentialsNotFoundException( "JWT authentication only" );
 		};
+	}
+
+	@Bean
+	public MyPasswordEncoder myPasswordEncoder () {
+		return new MyPasswordEncoder( random );
 	}
 }

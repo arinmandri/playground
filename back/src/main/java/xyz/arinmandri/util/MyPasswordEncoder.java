@@ -1,16 +1,14 @@
-package xyz.arinmandri.playground.security;
+package xyz.arinmandri.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
 
-@Component
 @RequiredArgsConstructor
 public class MyPasswordEncoder implements PasswordEncoder
 {
