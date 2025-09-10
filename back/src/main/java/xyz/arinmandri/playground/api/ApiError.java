@@ -1,5 +1,8 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
+import xyz.arinmandri.playground.security.LackAuthExcp;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +17,6 @@ import org.springframework.web.multipart.MultipartException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 
 import lombok.AllArgsConstructor;
-import xyz.arinmandri.playground.api.ApiA.ExceptionalTask;
-import xyz.arinmandri.playground.security.LackAuthExcp;
 
 
 /**
@@ -60,6 +61,17 @@ public class ApiError
 		e.getBindingResult().getFieldErrors().forEach( error-> errors.put( error.getField(), error.getDefaultMessage() ) );
 
 		return ResponseEntity.badRequest().body( errors );
+	}
+
+	@ExceptionHandler( org.springframework.core.convert.ConversionFailedException.class )// spring validation
+	public ResponseEntity<String> handleValidationExceptions ( org.springframework.core.convert.ConversionFailedException e ) {
+
+		String msg = "요청 파라미터 타입이 올바르지 않습니다.";
+		if( e.getValue() != null && e.getTargetType() != null ){
+			msg += " [" + e.getValue() + "] 값을 " + getTypeNameMsg( e.getTargetType().getType() ) + " 타입으로 변환할 수 없습니다.";
+		}
+
+		return ResponseEntity.badRequest().body( msg );
 	}
 
 	@ExceptionHandler( org.springframework.web.servlet.resource.NoResourceFoundException.class )
