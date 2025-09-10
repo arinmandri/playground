@@ -1,10 +1,14 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.playground.core.Loginable;
+import xyz.arinmandri.playground.core.admin.Admember;
+import xyz.arinmandri.playground.core.admin.AdmemberRepo;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
-import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberRepo;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
+
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -28,6 +32,7 @@ public class TokenProvider
 	static public final String CLAIM_SCOPE = CLAIM_PREFIX + "scope";
 	static public final String guestAuthority = "guest";
 	static public final String normalAuthority = "normal";
+	static public final String adminAuthority = "zizon";
 
 	@Value( "${jwt.duration_a}" )
 	private long duration_a;// 액세스토큰 기한
@@ -36,7 +41,9 @@ public class TokenProvider
 	@Value( "${jwt.duration_r}" )
 	private long duration_r;// 리프레시토큰 기한
 
-	final private MKeyBasicRepo MemberBKRepo;
+	final private MKeyBasicRepo mkeyBasicRepo;
+	final private MemberRepo memberRepo;
+	final private AdmemberRepo admemberRepo;
 	final private RefreshTokenRepo refreshTokenRepo;
 
 	final private PasswordEncoder pwEncoder;
@@ -67,7 +74,7 @@ public class TokenProvider
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
 
 		//// 검증
-		MKeyBasic u = MemberBKRepo.findByKeyname( keyname ).orElse( null );
+		MKeyBasic u = mkeyBasicRepo.findByKeyname( keyname ).orElse( null );
 		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
 			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
@@ -76,6 +83,25 @@ public class TokenProvider
 		String refreshToken = issueRefreshToken( u.getOwner() );
 		String accessToken = generateToken( User.Type.normal, String.valueOf( u.getOwner().getId() ), normalAuthority, duration_a );
 		return new TokenResponse( accessToken, refreshToken, normalAuthority, duration_a );
+	}
+
+	/**
+	 * 관리자용 액세스토큰
+	 * 
+	 * @return 액세스토큰
+	 */
+	public TokenResponse issueAccessTokenForAdmin ( String keyname , String password ) throws LackAuthExcp {
+
+		//// 검증
+		Admember u = admemberRepo.findByKeyname( keyname ).orElse( null );
+		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
+			throw new LackAuthExcp( "Incorrect keyname or password" );
+		}
+
+		//// 발급
+		String refreshToken = issueRefreshToken( u );
+		String accessToken = generateToken( User.Type.normal, String.valueOf( u.getId() ), adminAuthority, duration_a );
+		return new TokenResponse( accessToken, refreshToken, adminAuthority, duration_a );
 	}
 
 	/**
@@ -90,10 +116,18 @@ public class TokenProvider
 		if( refreshTokenE0 == null || refreshTokenE0.getExpiresAt().isBefore( Instant.now() ) ){// 이미 만료
 			throw new LackAuthExcp( "refresh token invalid" );
 		}
-		Member member = refreshTokenE0.getOwner();
+		// TODO : type
+		int loginableType = refreshTokenE0.getOwnerType();
+		long id = refreshTokenE0.getOwnerId();
+		Loginable u;
+		switch( loginableType ){
+		case Loginable.OWNER_TYPE_ADMEMBER -> u = admemberRepo.findById( id ).orElse( null );
+		case Loginable.OWNER_TYPE_MEMBER -> u = memberRepo.findById( id ).orElse( null );
+		default -> throw new RuntimeException();// TODO exception
+		}
 
-		String accessToken = generateToken( User.Type.normal, String.valueOf( member.getId() ), normalAuthority, duration_a );
-		String refreshToken = issueRefreshToken( member );
+		String accessToken = generateToken( User.Type.normal, String.valueOf( id ), normalAuthority, duration_a );
+		String refreshToken = issueRefreshToken( u );
 
 		refreshTokenRepo.delete( refreshTokenE0 );// 이전 리프레시토큰 삭제
 
@@ -115,14 +149,32 @@ public class TokenProvider
 	/*
 	 * 리프레시토큰 생성
 	 */
-	private String issueRefreshToken ( Member member ) {
+	private String issueRefreshToken ( Loginable u ) {
 
 		byte[] bytes = new byte[64];
 		random.nextBytes( bytes );
 		String refreshToken = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
 
 		RefreshToken refreshTokenE = new RefreshToken(
-		        member,
+		        u,
+		        refreshToken,
+		        Instant.ofEpochMilli( System.currentTimeMillis() + duration_r * 1000 ) );
+		refreshTokenRepo.save( refreshTokenE );
+
+		return refreshToken;
+	}
+
+	/*
+	 * 리프레시토큰 생성
+	 */
+	private String issueRefreshToken ( Admember admember ) {
+
+		byte[] bytes = new byte[64];
+		random.nextBytes( bytes );
+		String refreshToken = Base64.getUrlEncoder().withoutPadding().encodeToString( bytes );
+
+		RefreshToken refreshTokenE = new RefreshToken(
+		        admember,
 		        refreshToken,
 		        Instant.ofEpochMilli( System.currentTimeMillis() + duration_r * 1000 ) );
 		refreshTokenRepo.save( refreshTokenE );

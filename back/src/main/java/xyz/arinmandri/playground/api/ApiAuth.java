@@ -25,8 +25,7 @@ public class ApiAuth extends ApiA
 	final private TokenProvider tokenProvider;
 	
 	@PostMapping( "/token/guest" )
-	public ResponseEntity<TokenResponse> apiAuthTokenGuest (
-	        @AuthenticationPrincipal UserDetails userDetails ) {
+	public ResponseEntity<TokenResponse> apiAuthTokenGuest () {
 		TokenResponse tokenRes = tokenProvider.issueAccessTokenForGuest();
 		return ResponseEntity.ok()
 		        .body( tokenRes );
@@ -34,11 +33,24 @@ public class ApiAuth extends ApiA
 
 	@PostMapping( "/token/basic" )
 	public ResponseEntity<TokenResponse> apiAuthTokenBasic (
-	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @RequestBody TokenReq req ) {
 		TokenResponse tokenRes;
 		try{
 			tokenRes = tokenProvider.issueAccessTokenByBasicKey( req.keyname, req.password );
+		}
+		catch( LackAuthExcp e ){
+			throw ExceptionalTask.UNAUTHORIZED();
+		}
+		return ResponseEntity.ok()
+		        .body( tokenRes );
+	}
+
+	@PostMapping( "/token/admember" )
+	public ResponseEntity<TokenResponse> apiAuthTokenAdmember (
+	        @RequestBody TokenReq req ) {
+		TokenResponse tokenRes;
+		try{
+			tokenRes = tokenProvider.issueAccessTokenForAdmin( req.keyname, req.password );
 		}
 		catch( LackAuthExcp e ){
 			throw ExceptionalTask.UNAUTHORIZED();

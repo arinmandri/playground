@@ -11,6 +11,21 @@ GRANT USAGE ON SCHEMA "playground" TO "{ 사용자 }";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "{ 사용자 }";
 ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "{ 사용자 }";
 
+
+
+DROP TABLE IF EXISTS "playground"."admember";
+CREATE TABLE "playground"."admember"(-- am
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    ,"keyname" VARCHAR(50) NOT NULL
+        UNIQUE
+    ,"password" CHAR(160) NOT NULL
+    ,"nick" VARCHAR(20) NOT NULL
+    ,"email" VARCHAR(100) NULL
+        UNIQUE
+    ,"propic" VARCHAR(256) NULL
+    ,"created_at" TIMESTAMPTZ NOT NULL
+);
+
 DROP TABLE IF EXISTS "playground"."member";
 CREATE TABLE "playground"."member"(-- m
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
@@ -34,6 +49,8 @@ CREATE TABLE "playground"."mkey_basic"(
 );
 CREATE INDEX "mkey_basic__keyname" ON "playground"."mkey_basic" (keyname);
 
+
+
 DROP TABLE IF EXISTS "playground"."post";
 CREATE TABLE "playground"."post"(-- p
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
@@ -44,11 +61,13 @@ CREATE TABLE "playground"."post"(-- p
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
+
+
 DROP TABLE IF EXISTS "playground"."refresh_token";
 CREATE TABLE "playground"."refresh_token"(
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-    ,"owner__m" INT NOT NULL
-        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+    ,"owner_type" SMALLINT NOT NULL-- 0:관리자 1:일반회원
+    ,"owner_id" INT NOT NULL
     ,"refresh_token" VARCHAR(90) NOT NULL
     ,"expires_at" TIMESTAMPTZ NOT NULL
 );

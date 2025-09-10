@@ -1,7 +1,8 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.core.admin;
 
 import xyz.arinmandri.playground.core.BaseEntity;
 import xyz.arinmandri.playground.core.Loginable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,16 +14,19 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table( schema = "playground" )
-/*
- * 다른 엔터티들이 member에 의존; member은 다른 엔터티에 의존 X
- */
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Member extends BaseEntity
+public class Admember extends BaseEntity
         implements Loginable
 {
+
+	@Column( nullable = false , unique = true )
+	private String keyname;
+
+	@Column( nullable = false )
+	private String password;
 
 	@Column( nullable = false , length = 20 )
 	private String nick;
@@ -32,15 +36,6 @@ public class Member extends BaseEntity
 
 	@Column( length = 256 )
 	private String propic;
-
-	void update ( Member data ) {
-		if( data.nick != null ) nick = data.nick;
-		if( nick.equals( "" ) ) nick = null;
-		if( data.email != null ) email = data.email;
-		if( email.equals( "" ) ) email = null;
-		if( data.propic != null ) propic = data.propic;
-		if( propic.equals( "" ) ) propic = null;
-	}
 
 	@Override
 	public int getLoginableType () {

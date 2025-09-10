@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 public class TokenResponse
 {
-	private String access_token;
-	private String refresh_token;
-	private String token_type = "Bearer";
-	private String scope;
-	private long expires_in;
+	private final String access_token;
+	private final String refresh_token;
+	private final String token_type = "Bearer";
+	private final String scope;
+	private final long expires_in;
 
 	public TokenResponse( String access_token , String refresh_token , String scope , long expires_in ) {
 		this.access_token = access_token;
