@@ -18,7 +18,5 @@ XXX 관리자 페이지는 일단 없음.
 * DB: PostgreSQL
 * 그외: Nginx, PM2
 
-XXX 인증서버...
-XXX 도커도 해봐야지....
 
 
