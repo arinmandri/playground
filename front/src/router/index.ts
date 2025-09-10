@@ -4,6 +4,8 @@ import { useAuthStore } from "@/stores/auth";
 
 import NotFound from '@/views/NotFound.vue';
 
+// TODO 더 구체적으로 권한을 따져야
+
 //// 인증이 필요한 라우트 목록
 const authRequiredRoutes = [
   '/board/post/write',

@@ -118,6 +118,12 @@
 			<version>2.33.0</version>
 		</dependency>
 
+		<!-- ADMIN -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
