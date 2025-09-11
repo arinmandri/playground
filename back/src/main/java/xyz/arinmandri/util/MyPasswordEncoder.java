@@ -12,9 +12,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MyPasswordEncoder implements PasswordEncoder
 {
-	final int saltLength = 16;// 바이트 수. 1바이트에 2글자.
+	private final int saltLength = 16;// 바이트 수. 1바이트에 2글자.
+	private final int encodedResultLength = 128 + saltLength * 2;
 
-	final private SecureRandom random;
+	private final SecureRandom random;
 
 	@Override
 	public String encode ( CharSequence rawPassword ) {
@@ -24,13 +25,11 @@ public class MyPasswordEncoder implements PasswordEncoder
 
 	@Override
 	public boolean matches ( CharSequence rawPassword , String encodedPassword ) {
-		String salt;
-		try{
-			salt = encodedPassword.substring( 0, saltLength * 2 );
-		}
-		catch( StringIndexOutOfBoundsException e ){
-			return false;
-		}
+
+		if( encodedPassword.length() != encodedResultLength )
+		    return false;
+
+		String salt = encodedPassword.substring( 0, saltLength * 2 );
 		String encodedPassword2 = hashWithSalt( rawPassword.toString(), salt );
 		return encodedPassword2.equals( encodedPassword );
 	}
@@ -46,9 +45,7 @@ public class MyPasswordEncoder implements PasswordEncoder
 			return toHexString( md.digest() );
 		}
 		catch( NoSuchAlgorithmException e ){
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			throw new IllegalStateException( "SHA3-512 not supported in this environment 이딴 게 왜 체크예외냐고", e );
 		}
 	}
 
@@ -58,7 +55,7 @@ public class MyPasswordEncoder implements PasswordEncoder
 		return toHexString( bytes );
 	}
 
-	public String toHexString ( byte[] bytes ) {
+	private String toHexString ( byte[] bytes ) {
 		StringBuilder sb = new StringBuilder();
 		for( byte b : bytes ){
 			sb.append( String.format( "%02X", b & 0xFF ) );
