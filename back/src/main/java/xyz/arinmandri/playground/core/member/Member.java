@@ -2,6 +2,7 @@ package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.BaseEntity;
 import xyz.arinmandri.playground.core.Loginable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -32,6 +33,10 @@ public class Member extends BaseEntity
 
 	@Column( length = 256 )
 	private String propic;
+
+	@Column
+	@Builder.Default
+	private boolean approved = false;
 
 	void update ( Member data ) {
 		if( data.nick != null ) nick = data.nick;

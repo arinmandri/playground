@@ -8,6 +8,7 @@
           <th>ID</th>
           <th>nick</th>
           <th>email</th>
+          <th>approved</th>
           <th>…</th>
         </tr>
       </thead>
@@ -16,6 +17,7 @@
           <td>{{ member.id }}</td>
           <td>{{ member.nick }}</td>
           <td>{{ member.email }}</td>
+          <td>{{ member.approved }}</td>
           <td>
             <button @click="editMember(member)">Edit</button>
           </td>
@@ -27,12 +29,16 @@
     <div v-if="showAddForm || editingMember" class="modal">
       <form @submit.prevent="saveMember">
         <label>
-          Nick:
-          <input v-model="form.nick" required />
+          별명:
+          <input type="text" v-model="form.nick" required />
         </label>
         <label>
-          Email:
-          <input v-model="form.email" type="email" />
+          이메일:
+          <input type="email" v-model="form.email" />
+        </label>
+        <label>
+          승인여부:
+          <input type="checkbox" v-model="form.approved" />
         </label>
         <button type="submit">Save</button>
         <button type="button" @click="closeForm">Cancel</button>
@@ -41,56 +47,50 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+
+import type { Member } from '@/types/member';
+
+import api from "@/api/axiosInstanceAdmin";
+
 import { ref, onMounted } from 'vue'
 
-const members = ref([])
+const members = ref<Member[]>([])
 const showAddForm = ref(false)
-const editingMember = ref(null)
-const form = ref({ nick: '', email: '' })
-
-const API_BASE = 'http://localhost:3000/admin/members'
+const editingMember = ref<Member | null>(null)
+const form = ref({ nick: '', email: null as string | null, approved: false })
 
 async function fetchMembers() {
-  const res = await fetch(API_BASE)
-  const data = await res.json()
-  // Spring Data REST returns _embedded
-  members.value = data._embedded?.members || []
+  members.value = (await api.get('/members')).data._embedded.members || [];
 }
 
-function editMember(member) {
+function editMember(member: Member) {
   editingMember.value = member
-  form.value = { nick: member.nick, email: member.email }
+  form.value = {
+    nick: member.nick,
+    email: member.email || null,
+    approved: member.approved,
+  };
   showAddForm.value = false
 }
 
 function closeForm() {
   showAddForm.value = false
   editingMember.value = null
-  form.value = { nick: '', email: '' }
+  form.value = { nick: '', email: null as string | null, approved: false };
 }
 
 async function saveMember() {
   if (editingMember.value) {
-    // Update
-    await fetch(`${API_BASE}/${editingMember.value.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form.value)
-    })
+    api.put('/members/' + editingMember.value.id, form.value);
   } else {
-    // Create
-    await fetch(API_BASE, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form.value)
-    })
+    api.post('/members', form.value);
   }
   closeForm()
   fetchMembers()
 }
 
-onMounted(()=>{
+onMounted(() => {
   fetchMembers();
 });
 </script>
@@ -99,15 +99,19 @@ onMounted(()=>{
 .member-admin {
   padding: 2rem;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
 }
-th, td {
+
+th,
+td {
   border: 1px solid #ccc;
   padding: 0.5rem;
 }
+
 .modal {
   position: fixed;
   top: 20%;

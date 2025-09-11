@@ -33,6 +33,7 @@ CREATE TABLE "playground"."member"(-- m
     ,"email" VARCHAR(100) NULL
         UNIQUE
     ,"propic" VARCHAR(256) NULL
+    ,"approved" BOOLEAN NOT NULL DEFAULT false
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
