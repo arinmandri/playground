@@ -3,15 +3,19 @@ package xyz.arinmandri.playground.api;
 import xyz.arinmandri.playground.core.EntityHandler;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
+import xyz.arinmandri.playground.core.admin.Admember;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.security.user.UserAdmin;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,21 +47,26 @@ public class ApiMember extends ApiA
 	public ResponseEntity<apiWhoamiRes> apiWhoami (
 	        @AuthenticationPrincipal User u ) {
 
-		String type = u.getType().toString();
 		String nick;
 		String propic = null;
+
 		switch( u ){
+		case UserGuest ug -> nick = ug.getCode();
 		case UserNormal un -> {
 			Member m = getMemberFrom( un );
 			nick = m.getNick();
 			propic = m.getPropic();
 		}
-		case UserGuest ug -> nick = ug.getCode();
+		case UserAdmin un -> {
+			Admember m = getMemberFrom( un );
+			nick = m.getNick();
+			propic = m.getPropic();
+		}
 		default -> throw new RuntimeException();// TODO exception
 		}
 		return ResponseEntity.ok()
 		        .body( new apiWhoamiRes(
-		                type,
+		                u.getType().toString(),
 		                nick,
 		                propic ) );
 	}

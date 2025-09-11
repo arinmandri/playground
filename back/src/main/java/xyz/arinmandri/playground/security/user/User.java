@@ -35,6 +35,8 @@ public abstract class User
 			return new UserGuest( authorities, parts[1] );
 		case normal:
 			return new UserNormal( authorities, Long.valueOf( parts[1] ) );
+		case admin:
+			return new UserAdmin( authorities, Long.valueOf( parts[1] ) );
 		}
 		throw new RuntimeException();// TODO exception
 	}
@@ -76,6 +78,7 @@ public abstract class User
 	public enum Type
 	{
 		guest,
+		admin,
 		normal,
 		;
 	}

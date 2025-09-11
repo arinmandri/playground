@@ -78,6 +78,7 @@ public class TokenProvider
 		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
 			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
+		// TODO 미승인이면 손님과 같다 ??? roles랑 scope로 구별해야지.
 
 		//// 발급
 		String refreshToken = issueRefreshToken( u.getOwner() );
@@ -100,7 +101,7 @@ public class TokenProvider
 
 		//// 발급
 		String refreshToken = issueRefreshToken( u );
-		String accessToken = generateToken( User.Type.normal, String.valueOf( u.getId() ), adminAuthority, duration_a );
+		String accessToken = generateToken( User.Type.admin, String.valueOf( u.getId() ), adminAuthority, duration_a );
 		return new TokenResponse( accessToken, refreshToken, adminAuthority, duration_a );
 	}
 
@@ -116,7 +117,6 @@ public class TokenProvider
 		if( refreshTokenE0 == null || refreshTokenE0.getExpiresAt().isBefore( Instant.now() ) ){// 이미 만료
 			throw new LackAuthExcp( "refresh token invalid" );
 		}
-		// TODO : type
 		int loginableType = refreshTokenE0.getOwnerType();
 		long id = refreshTokenE0.getOwnerId();
 		Loginable u;

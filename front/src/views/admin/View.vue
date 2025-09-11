@@ -1,8 +1,10 @@
+<!-- 이것도 주소가 admin 홈 아니고 로그인 페이지 주소 따로 있어야 하나  -->
 <template>
   <div class="login-view">
+    <h1>Hello Admin</h1>
     <form @submit.prevent="onSubmit" class="login-form">
       <div>
-        <label for="keyname">Key</label>
+        <label for="keyname">KEY</label>
         <input id="keyname" v-model="form.keyname" type="text" required autocomplete="username" />
       </div>
       <div>
@@ -14,7 +16,6 @@
       </button>
       <div v-if="error" class="error">{{ error }}</div>
     </form>
-    <router-link to="/member/join">가입</router-link>
   </div>
 </template>
 
@@ -42,8 +43,8 @@ const onSubmit = async () => {
   error.value = ''
   loading.value = true
   try {
-    await authStore.loginWithBasicKey(form.value.keyname, form.value.password);
-    router.push(route.query.redirect?.toString() || "/");
+    await authStore.loginAsAdmin(form.value.keyname, form.value.password);
+    router.push(route.query.redirect?.toString() || "/admin/member");
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Login failed'
   } finally {

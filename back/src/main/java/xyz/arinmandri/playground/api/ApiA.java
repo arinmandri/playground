@@ -1,8 +1,11 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.core.admin.Admember;
+import xyz.arinmandri.playground.core.admin.AdmemberRepo;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
+import xyz.arinmandri.playground.security.user.UserAdmin;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public abstract class ApiA
 	@Autowired
 	MKeyBasicRepo mkeyBasicRepo;
 
+	@Autowired
+	AdmemberRepo admemberRepo;
+
 	/**
 	 * UserDetails --> Member
 	 */
@@ -39,6 +45,20 @@ public abstract class ApiA
 			        } ).getOwner();
 		}
 		throw new LackAuthExcp( "회원이어야 합니다." );
+	}
+
+	protected Member getMemberFrom ( UserNormal u ) {
+		return mkeyBasicRepo.findByOwnerId( u.getMemberId() )
+		        .orElseThrow( ()-> {
+			        throw new LackAuthExcp( "없는 회원입니다." );
+		        } ).getOwner();
+	}
+
+	protected Admember getMemberFrom ( UserAdmin u ) {
+		return admemberRepo.findById( u.getAdmemberId() )
+		        .orElseThrow( ()-> {
+			        throw new LackAuthExcp( "없는 관리자입니다." );
+		        } );
 	}
 
 	/**

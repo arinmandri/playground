@@ -54,6 +54,12 @@ export const useAuthStore = defineStore("auth", {
       this.whoami();
       this.isLoggedIn = false;
     },
+    async loginAsAdmin(keyname: string, password: string) {
+      const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/admember`, { keyname, password })).data;
+      setTokens(access_token, refresh_token);
+      this.whoami();
+      this.isLoggedIn = true;
+    },
     async loginWithBasicKey(keyname: string, password: string) {
       const { access_token, refresh_token } = (await axios.post(`${API_BASE}/auth/token/basic`, { keyname, password })).data;
       setTokens(access_token, refresh_token);
