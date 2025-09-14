@@ -53,6 +53,10 @@ body {
   border: 0px solid black;
 }
 
+.hidden {
+  display: none;
+}
+
 button,
 input,
 select,
