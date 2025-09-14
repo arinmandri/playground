@@ -2,16 +2,10 @@
   <div class="edit-member">
     <h2>Edit Member Info</h2>
     <form @submit.prevent="submitForm">
-      <div>
-        <label for="input-nick">Nickname:</label>
-        <input id="input-nick" v-model="form.nick" type="text" required />
-      </div>
-      <div>
-        <label for="input-email">Email:</label>
-        <input id="input-email" v-model="form.email" type="email" />
-      </div>
+      <InputText :title="'별명'" v-model:textValue="form.nick" :isRequired="true" />
+      <InputText :title="'이메일 주소'" v-model:textValue="form.email" :isRequired="false" />
       <InputAttachmentFile :title="'프사'" v-model:fileAndPreview="propic" />
-      <button type="submit" :disabled="loading">Save</button>
+      <button type="submit" :disabled="loading">저장</button>
     </form>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="success" class="success">Profile updated successfully!</div>
@@ -20,6 +14,7 @@
 
 <script setup lang="ts">
 
+import InputText from '@/components/InputText.vue';
 import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
 
 import type { FileAndPreview } from '@/types';
@@ -106,18 +101,6 @@ async function submitForm() {
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-}
-
-.edit-member label {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.edit-member input[type="text"],
-.edit-member input[type="email"] {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
 }
 
 .error {

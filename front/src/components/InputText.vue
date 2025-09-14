@@ -1,0 +1,36 @@
+<!--
+form 속에 텍스트필드 1개.
+-->
+<template>
+  <div class="inputBox input-text">
+    <p class="inputTitle">{{ props.title }}</p>
+    <label>
+      <input type="text" :value="props.textValue" @input="onValueChange" :required="props.isRequired" />
+    </label>
+  </div>
+</template>
+
+<script setup lang="ts">
+
+const props = defineProps<{
+  title: string;
+  textValue: string;
+  isRequired: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:textValue", exportProps: string): void;
+}>();
+
+function onValueChange(event: Event) {
+  const value = (event.target as HTMLInputElement).value.trim();
+  emit("update:textValue", value);
+}
+
+</script>
+
+<style scoped>
+.inputTitle {
+  font-weight: bold;
+}
+</style>

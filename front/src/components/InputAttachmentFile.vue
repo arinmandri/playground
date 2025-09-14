@@ -16,7 +16,7 @@ form 속에 파일 1개 첨부 부분.
       파일 삭제
     </button>
 
-    <div class="">
+    <div class="hidden">
       <p><b>fieldValue</b>: {{ props.fileAndPreview.fieldValue }}</p>
       <p><b>preview</b>: {{ props.fileAndPreview.preview }}</p>
     </div>
@@ -73,4 +73,9 @@ function clearFile() {
 </script>
 
 <style scoped>
+.inputTitle {
+  font-weight: bold;
+}
 </style>
+
+
