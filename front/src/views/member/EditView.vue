@@ -10,7 +10,7 @@
         <label for="input-email">Email:</label>
         <input id="input-email" v-model="form.email" type="email" />
       </div>
-      <InputAttachmentFile v-model:fileAndPreview="propic" />
+      <InputAttachmentFile :title="'프사'" v-model:fileAndPreview="propic" />
       <button type="submit" :disabled="loading">Save</button>
     </form>
     <div v-if="error" class="error">{{ error }}</div>
