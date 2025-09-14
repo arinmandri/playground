@@ -95,9 +95,7 @@ async function submitForm() {
   //// 프사 파일 업로드
   if (propicFile) {
     try {
-      const formData = new FormData();
-      formData.append('file', propicFile);
-      const { id: fileId } = (await api.postFormData(formData)).data;
+      const { id: fileId } = (await api.uploadFile(propicFile)).data;
       form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
     } catch (err) {
       error.value = 'Failed to upload profile picture.';

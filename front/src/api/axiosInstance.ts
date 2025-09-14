@@ -28,6 +28,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 
 const URL_FILE_ADD = '/file/add';
+const URL_FILES_ADD = '/file/sadd';
 
 const ax = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -39,7 +40,7 @@ const ax = axios.create({
 });
 
 ax.interceptors.request.use(async (config) => {
-  let token = await getEnsuredAccessToken();
+  const token = await getEnsuredAccessToken();
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -60,9 +61,25 @@ const api = {
       attemptRequest();
     });
   },
-  postFormData: async (formData: FormData): Promise<AxiosResponse<any, any>> => {
+  uploadFile: async (file: File): Promise<AxiosResponse<any, any>> => {
+    const formData = new FormData();
+    formData.append('file', file);
     return new Promise((resolve, reject) => {
       const attemptRequest = attemptRequestOf(resolve, reject, ax.post, URL_FILE_ADD, formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
+      attemptRequest();
+    });
+  },
+  uploadFiles: async (files: File[]): Promise<AxiosResponse<any, any>> => {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    return new Promise((resolve, reject) => {
+      const attemptRequest = attemptRequestOf(resolve, reject, ax.post, URL_FILES_ADD, formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' }
         }
