@@ -13,13 +13,13 @@
       <div>
         <label for="input-propic">Profile Picture:</label>
         <input id="input-propic" type="file" @change="onPropicFileChange" accept="image/*" />
-        <div v-if="propicPreview">
-          <img :src="propicPreview" alt="프사" style="max-width: 100px; max-height: 100px;" />
+        <div v-if="propic.preview">
+          <img :src="propic.preview" alt="프사" style="max-width: 100px; max-height: 100px;" />
         </div>
         <button type="button" @click="removePropic">프사 지우기</button>
         // TEST<br>
         propic: {{ form.propic }}<br>
-        propicPreview: {{ propicPreview }}<br>
+        propicPreview: {{ propic.preview }}<br>
       </div>
       <button type="submit" :disabled="loading">Save</button>
     </form>
@@ -30,10 +30,11 @@
 
 <script setup lang="ts">
 
+import type { FileAndPreview } from '@/types';
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
+import api from '@/api/axiosInstance';
 
 import { ref, onMounted } from 'vue';
-import api from '@/api/axiosInstance';
 
 const SERVER_TEMP_FILE_ID_PREFIX = '!';
 
@@ -42,7 +43,11 @@ const form = ref({
   email: '',
   propic: '',
 })
-const propicPreview = ref('');
+
+const propic = ref<FileAndPreview>({
+  file: null,
+  preview: '',
+});
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
 const success = ref(false)
@@ -59,7 +64,7 @@ async function fetchMemberInfo() {
     form.value.nick = data.nick || '';
     form.value.email = data.email || '';
     form.value.propic = data.propic || '';
-    propicPreview.value = data.propic;
+    propic.value.preview = data.propic;
   } catch (err) {
     error.value = 'Failed to load member info.'
   } finally {
@@ -69,21 +74,19 @@ async function fetchMemberInfo() {
 
 const propicRender = new FileReader();
 propicRender.onload = function (e: any) {
-  propicPreview.value = e.target.result;
+  propic.value.preview = e.target.result;
 }
-
-let propicFile: File | null = null;
 
 function onPropicFileChange(e: any) {
   const file = e.target.files[0];
   if (!file) return;
-  propicFile = file;
+  propic.value.file = file;
   propicRender.readAsDataURL(file);
 }
 
 function removePropic() {
-  propicFile = null;
-  propicPreview.value = '';
+  propic.value.file = null;
+  propic.value.preview = '';
   form.value.propic = '';
 }
 
@@ -93,9 +96,9 @@ async function submitForm() {
   success.value = false;
 
   //// 프사 파일 업로드
-  if (propicFile) {
+  if (propic.value.file) {
     try {
-      const { id: fileId } = (await api.uploadFile(propicFile)).data;
+      const { id: fileId } = (await api.uploadFile(propic.value.file)).data;
       form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
     } catch (err) {
       error.value = 'Failed to upload profile picture.';
