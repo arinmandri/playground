@@ -1,5 +1,10 @@
 <!--
 form 속에 텍스트필드 1개.
+
+호출 예시
+import InputText from '@/components/InputText.vue';
+const form = ref({nick: ''})
+<InputText :title="'별명'" v-model:textValue="form.nick" :isRequired="true" />
 -->
 <template>
   <div class="inputBox input-text">
