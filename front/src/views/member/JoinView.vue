@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 
-import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth'; const authStore = useAuthStore();
+import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
 import api from "@/api/axiosInstance";
 

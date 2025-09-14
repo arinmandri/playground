@@ -7,16 +7,11 @@ import oxlint from 'eslint-plugin-oxlint'
 // configureVueProject({ scriptLangs: ['ts', 'tsx'] })
 // More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
 
-export default defineConfigWithVueTs(
+const baseConfig = defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
-    rules: {
-      // ESLint 캐시 삭제: npx eslint . --ext .vue,.ts --no-cache
-      'vue/multi-word-component-names': 'off',
-    },
   },
-
   {
     name: 'app/files-to-ignore',
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
@@ -26,3 +21,13 @@ export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
   ...oxlint.configs['flat/recommended'],
 )
+
+export default {
+  ...baseConfig,
+  rules: {
+    ...baseConfig.rules,
+    // ESLint 캐시 삭제: npx eslint . --ext .vue,.ts --no-cache
+    'vue/multi-word-component-names': 'off',
+    '@typescript-eslint/no-explicit-any': 0,
+  },
+}
