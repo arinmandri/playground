@@ -1,4 +1,5 @@
 <template>
+  <router-link to="/board/post/write"><button>글쓰기</button></router-link>
   <div v-if="postListPack.list.length > 0">
     <div class="posts">
       <div class="post" v-for="post in postListPack.list" :key="post.id">
@@ -16,7 +17,6 @@
     </div>
   </div>
   <div v-else>게시글이 없다.</div>
-  <router-link to="/board/post/write"><button class="writeBtn">✎</button></router-link>
 </template>
 
 <script setup lang="ts">
@@ -84,20 +84,5 @@ function clickMoreBtn() {
 .listEnd {
   text-align: center;
   margin: 20px 0;
-}
-
-.writeBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #4a90e2;
-  color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 40%;
-  font-size: 1.5rem;
-  text-align: center;
-  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s, box-shadow 0.2s;
 }
 </style>
