@@ -5,6 +5,7 @@ import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
+
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -110,6 +111,10 @@ public class TokenProvider
 		                CLAIM_USER, userId,
 		                CLAIM_SCOPE, scope ),
 		        expi );
+	}
+
+	public void deleteRefreshToken ( String refreshToken ) {
+		// TODO
 	}
 
 	/*

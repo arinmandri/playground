@@ -62,6 +62,17 @@ public class ApiAuth extends ApiA
 		        .body( tokenRes );
 	}
 
+	@PostMapping( "/logout" )
+	public ResponseEntity<Void> apiAuthLogout (
+	        @AuthenticationPrincipal UserDetails userDetails ,
+	        @RequestBody TokenRefreshReq req ) {
+
+		// TODO 주인 맞나 확인
+		tokenProvider.deleteRefreshToken( req.refreshToken );
+
+		return ResponseEntity.ok()
+		        .body( null );
+	}
 	@Getter
 	@Setter
 	static public class TokenReq
