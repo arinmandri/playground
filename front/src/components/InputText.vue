@@ -9,7 +9,7 @@ const form = ref({nick: ''})
 -->
 <template>
   <div class="inputBox input-text">
-    <p class="inputTitle">{{ props.title }}</p>
+    <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <label>
       <input type="text" :value="props.textValue" @input="onValueChange" :required="props.isRequired" />
     </label>
@@ -19,7 +19,7 @@ const form = ref({nick: ''})
 <script setup lang="ts">
 
 const props = defineProps<{
-  title: string;
+  title?: string;
   textValue: string;
   isRequired: boolean;
 }>();

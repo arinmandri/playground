@@ -12,7 +12,7 @@ import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
 -->
 <template>
   <div class="inputBox input-attachment-file">
-    <p class="inputTitle">{{ props.title }}</p>
+    <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <label>
       <input type="file" accept="image/*" class="hidden" @change="onFileChange" ref="fileInput" />
       <span>파일 선택</span>
@@ -40,7 +40,7 @@ import { ref } from "vue";
 
 
 const props = defineProps<{
-  title: string;
+  title?: string;
   fileAndPreview: FileAndPreview;
 }>();
 
