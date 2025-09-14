@@ -5,8 +5,7 @@
       <textarea id="content" v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
       <button type="submit" :disabled="loading">Submit</button>
     </form>
-    <p v-if="error" class="error">{{ error
-    }}</p>
+    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 

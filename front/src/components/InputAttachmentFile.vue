@@ -1,6 +1,14 @@
 <!--
 form 속에 파일 1개 첨부 부분.
 기존 파일 불러오거나 새 파일 선택, 미리보기 제공.
+
+
+사용 예시
+import type { FileAndPreview } from '@/types';
+import { FileAndPreviewDefaultInitial } from '@/types';
+const fileField1 = ref<FileAndPreview>(FileAndPreviewDefaultInitial);
+import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
+<InputAttachmentFile :title="'프사'" v-model:fileAndPreview="fileField1" />
 -->
 <template>
   <div class="inputBox input-attachment-file">
