@@ -24,7 +24,7 @@ import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
       파일 삭제
     </button>
 
-    <div class="hidden">
+    <div class="">
       <p><b>fieldValue</b>: {{ props.fileAndPreview.fieldValue }}</p>
       <p><b>preview</b>: {{ props.fileAndPreview.preview }}</p>
     </div>
@@ -50,6 +50,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
   (e: 'update:fileAndPreview', exportProps: FileAndPreview | null): void;
+  (e: 'clear'): void;
 }>();
 
 function onFileChange(event: Event) {
@@ -72,6 +73,7 @@ function clearFile() {
   internalProps.value.preview = '';
   internalProps.value.fieldValue = '';
   emit('update:fileAndPreview', getFileAndPreviewDefaultInitial());
+  emit('clear');
 }
 </script>
 

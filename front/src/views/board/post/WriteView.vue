@@ -2,8 +2,9 @@
   <div class="write-post-view">
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
-      <textarea id="content" v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
-      <button type="submit" :disabled="loading">Submit</button>
+      <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
+      <InputAttachmentFileList :title="'첨부파일'" v-model:fileAndPreviews="attachments" :maxLength="5" />
+      <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
     <p v-if="error" class="error">{{ error }}</p>
   </div>
@@ -11,11 +12,16 @@
 
 <script lang="ts" setup>
 
+import InputAttachmentFileList from '@/components/InputAttachmentFileList.vue';
+
 import api from "@/api/axiosInstance";
+import type { FileAndPreview } from "@/types";
+import { getFileAndPreviewDefaultInitial } from "@/types";
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
 
+const attachments = ref<FileAndPreview[]>([getFileAndPreviewDefaultInitial()]);
 const content = ref('')
 const loading = ref(false)
 const error = ref('')
