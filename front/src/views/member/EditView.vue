@@ -57,10 +57,6 @@ async function fetchMemberInfo() {
   }
 }
 
-const propicRender = new FileReader();
-propicRender.onload = function (e: any) {
-  propic.value.preview = e.target.result;
-}
 async function submitForm() {
   loading.value = true;
   error.value = '';

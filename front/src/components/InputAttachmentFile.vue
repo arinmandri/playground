@@ -59,11 +59,7 @@ function onFileChange(event: Event) {
   internalProps.value.newFile = selectedFile;
 
   if (selectedFile) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      internalProps.value.preview = reader.result as string;
-    };
-    reader.readAsDataURL(selectedFile);
+    internalProps.value.preview = URL.createObjectURL(selectedFile);
     emit('update:fileAndPreview', internalProps.value);
   }
 }
