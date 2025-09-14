@@ -10,17 +10,7 @@
         <label for="input-email">Email:</label>
         <input id="input-email" v-model="form.email" type="email" />
       </div>
-      <div>
-        <label for="input-propic">Profile Picture:</label>
-        <input id="input-propic" type="file" @change="onPropicFileChange" accept="image/*" />
-        <div v-if="propic.preview">
-          <img :src="propic.preview" alt="프사" style="max-width: 100px; max-height: 100px;" />
-        </div>
-        <button type="button" @click="removePropic">프사 지우기</button>
-        // TEST<br>
-        propic: {{ form.propic }}<br>
-        propicPreview: {{ propic.preview }}<br>
-      </div>
+      <InputAttachmentFile v-model:fileAndPreview="propic" />
       <button type="submit" :disabled="loading">Save</button>
     </form>
     <div v-if="error" class="error">{{ error }}</div>
@@ -30,7 +20,10 @@
 
 <script setup lang="ts">
 
+import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
+
 import type { FileAndPreview } from '@/types';
+import { FileAndPreviewDefaultInitial } from '@/types';
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 import api from '@/api/axiosInstance';
 
@@ -41,13 +34,10 @@ const SERVER_TEMP_FILE_ID_PREFIX = '!';
 const form = ref({
   nick: '',
   email: '',
-  propic: '',
 })
 
-const propic = ref<FileAndPreview>({
-  newFile: null,
-  preview: '',
-});
+const propic = ref<FileAndPreview>(FileAndPreviewDefaultInitial);
+
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
 const success = ref(false)
@@ -63,7 +53,7 @@ async function fetchMemberInfo() {
     const { data } = await api.get('/member/me');
     form.value.nick = data.nick || '';
     form.value.email = data.email || '';
-    form.value.propic = data.propic || '';
+    propic.value.fieldValue = data.propic || '';
     propic.value.preview = data.propic;
   } catch (err) {
     error.value = 'Failed to load member info.'
@@ -76,20 +66,6 @@ const propicRender = new FileReader();
 propicRender.onload = function (e: any) {
   propic.value.preview = e.target.result;
 }
-
-function onPropicFileChange(e: any) {
-  const file = e.target.files[0];
-  if (!file) return;
-  propic.value.newFile = file;
-  propicRender.readAsDataURL(file);
-}
-
-function removePropic() {
-  propic.value.newFile = null;
-  propic.value.preview = '';
-  form.value.propic = '';
-}
-
 async function submitForm() {
   loading.value = true;
   error.value = '';
@@ -99,7 +75,7 @@ async function submitForm() {
   if (propic.value.newFile) {
     try {
       const { id: fileId } = (await api.uploadFile(propic.value.newFile)).data;
-      form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
+      propic.value.fieldValue = SERVER_TEMP_FILE_ID_PREFIX + fileId;
     } catch (err) {
       error.value = 'Failed to upload profile picture.';
       loading.value = false;
@@ -111,7 +87,7 @@ async function submitForm() {
     await api.post('/member/me/edit', {
       nick: form.value.nick,
       email: form.value.email,
-      propic: form.value.propic,
+      propic: propic.value.fieldValue,
     });
     success.value = true;
     authStore.whoami();
