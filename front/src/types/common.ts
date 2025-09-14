@@ -10,6 +10,6 @@ export interface SimpleListPack<T> {
 }
 
 export interface FileAndPreview {
-  file: File | null;
+  newFile: File | null;
   preview: string | null;
 }

@@ -45,7 +45,7 @@ const form = ref({
 })
 
 const propic = ref<FileAndPreview>({
-  file: null,
+  newFile: null,
   preview: '',
 });
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
@@ -80,12 +80,12 @@ propicRender.onload = function (e: any) {
 function onPropicFileChange(e: any) {
   const file = e.target.files[0];
   if (!file) return;
-  propic.value.file = file;
+  propic.value.newFile = file;
   propicRender.readAsDataURL(file);
 }
 
 function removePropic() {
-  propic.value.file = null;
+  propic.value.newFile = null;
   propic.value.preview = '';
   form.value.propic = '';
 }
@@ -96,9 +96,9 @@ async function submitForm() {
   success.value = false;
 
   //// 프사 파일 업로드
-  if (propic.value.file) {
+  if (propic.value.newFile) {
     try {
-      const { id: fileId } = (await api.uploadFile(propic.value.file)).data;
+      const { id: fileId } = (await api.uploadFile(propic.value.newFile)).data;
       form.value.propic = SERVER_TEMP_FILE_ID_PREFIX + fileId;
     } catch (err) {
       error.value = 'Failed to upload profile picture.';
