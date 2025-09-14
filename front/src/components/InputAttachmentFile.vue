@@ -64,9 +64,8 @@ function clearFile() {
   if (fileInput.value) {
     fileInput.value.value = "";
   }
-  // XXX internalProps.value = FileAndPreviewDefaultInitial 따위는 안 돼 거지같다.
   internalProps.value.newFile = null;
-  internalProps.value.preview = null;
+  internalProps.value.preview = '';
   internalProps.value.fieldValue = '';
   emit('update:fileAndPreview', FileAndPreviewDefaultInitial);
 }
