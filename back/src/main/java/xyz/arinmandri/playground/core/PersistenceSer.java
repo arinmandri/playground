@@ -6,8 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import xyz.arinmandri.playground.core.BaseEntity.ConstraintDesc;
-
 
 public class PersistenceSer
 {
@@ -15,9 +13,9 @@ public class PersistenceSer
 
 	protected Pageable defaultPageable = PageRequest.of( 0, pageSizeDefault, Sort.by( "id" ).descending() );
 
-	public void maybeThrowsUniqueViolated ( DataIntegrityViolationException e , ConstraintDesc constraint ) throws UniqueViolated {
-		if( isByConstraintUnique( e, constraint.constraintName ) )
-		    throw new UniqueViolated( e, constraint.msg );
+	public void maybeThrowsUniqueViolated ( DataIntegrityViolationException e , String constName , String msg ) throws UniqueViolated {
+		if( isByConstraintUnique( e, constName ) )
+		    throw new UniqueViolated( e, msg );
 	}
 	/**
 	 * 예외가 유니크 위반 때문에 났는지 확인

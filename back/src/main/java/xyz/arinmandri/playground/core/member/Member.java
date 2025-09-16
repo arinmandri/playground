@@ -1,13 +1,14 @@
 package xyz.arinmandri.playground.core.member;
 
+import xyz.arinmandri.playground.core.BaseEntityWithId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import xyz.arinmandri.playground.core.BaseEntity;
 
 @Entity
 @Table( schema = "playground" )
@@ -18,7 +19,7 @@ import xyz.arinmandri.playground.core.BaseEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Member extends BaseEntity
+public class Member extends BaseEntityWithId
 {
 
 	@Column( nullable = false , length = 20 )

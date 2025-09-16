@@ -1,15 +1,16 @@
 package xyz.arinmandri.playground.core.member;
 
+import xyz.arinmandri.playground.core.BaseEntityWithId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import xyz.arinmandri.playground.core.BaseEntity;
 
 
 @Entity( name = "mkey_basic" )
@@ -18,7 +19,7 @@ import xyz.arinmandri.playground.core.BaseEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-public class MKeyBasic extends BaseEntity
+public class MKeyBasic extends BaseEntityWithId
 {
 	@JoinColumn( name = "owner__m" , nullable = false )
 	@OneToOne
