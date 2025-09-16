@@ -33,6 +33,34 @@ public class ApiBoard extends ApiA
 
 	final private PostRepo postRepo;
 
+	@GetMapping( "/post/{id}" )
+	public ResponseEntity<Post> apiPostGet (
+	        @PathVariable long id ) {
+
+		Post p;
+		try{
+			p = postSer.get( id );
+		}
+		catch( NoSuchEntity e ){
+			throw ExceptionalTask.NOT_FOUND();
+		}
+		return ResponseEntity.ok()
+		        .body( p );
+	}
+
+	@GetMapping( "/post/list" )
+	public ResponseEntity<CursorPage<Post>> apiPostList (
+	        @RequestParam( required = false ) Long cursor ) {
+
+		CursorPage<Post> p;
+		p = cursor == null
+		        ? postSer.list()
+		        : postSer.list( cursor );
+
+		return ResponseEntity.ok()
+		        .body( p );
+	}
+
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
@@ -109,33 +137,5 @@ public class ApiBoard extends ApiA
 
 		postSer.del( p );
 		return ResponseEntity.ok().build();
-	}
-
-	@GetMapping( "/post/{id}" )
-	public ResponseEntity<Post> apiPostGet (
-	        @PathVariable long id ) {
-
-		Post p;
-		try{
-			p = postSer.get( id );
-		}
-		catch( NoSuchEntity e ){
-			throw ExceptionalTask.NOT_FOUND();
-		}
-		return ResponseEntity.ok()
-		        .body( p );
-	}
-
-	@GetMapping( "/post/list" )
-	public ResponseEntity<CursorPage<Post>> apiPostList (
-	        @RequestParam( required = false ) Long cursor ) {
-
-		CursorPage<Post> p;
-		p = cursor == null
-		        ? postSer.list()
-		        : postSer.list( cursor );
-
-		return ResponseEntity.ok()
-		        .body( p );
 	}
 }
