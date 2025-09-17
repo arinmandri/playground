@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MKeyBasic extends BaseEntityWithId
 {
-	@JoinColumn( name = "owner__m" , nullable = false )
+	@JoinColumn( name = "belongs_to__m" , nullable = false )
 	@OneToOne
 	private Member owner;
 

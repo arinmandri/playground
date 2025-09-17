@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.playground.core.member.Member;
 import java.time.Instant;
 
 import jakarta.persistence.Column;
@@ -10,9 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import xyz.arinmandri.playground.core.member.Member;
 
 
 @Entity
@@ -27,7 +28,7 @@ public class RefreshToken
 	@Column( updatable = false )
 	private Long id;
 
-	@JoinColumn( name = "owner__m" , nullable = false , updatable = false )
+	@JoinColumn( name = "belongs_to__m" , nullable = false , updatable = false )
 	@ManyToOne
 	private Member owner;
 

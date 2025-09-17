@@ -29,7 +29,7 @@ public abstract class PAttachment extends BaseEntityWithoutId
 	)
 	private Long id;
 
-	@JoinColumn( name = "owner__p" )
+	@JoinColumn( name = "belongs_to__p" )
 	@ManyToOne
 	@Setter
 	private Post post;

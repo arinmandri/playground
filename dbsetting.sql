@@ -25,7 +25,7 @@ CREATE TABLE "playground"."member"(-- m
 DROP TABLE IF EXISTS "playground"."mkey_basic";
 CREATE TABLE "playground"."mkey_basic"(
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-    ,"owner__m" INT NOT NULL
+    ,"belongs_to__m" INT NOT NULL
         UNIQUE
         -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
     ,"keyname" VARCHAR(50) NOT NULL
@@ -51,7 +51,7 @@ CREATE TABLE "playground"."post"(-- p
 DROP TABLE IF EXISTS "playground"."p_att_image";
 CREATE TABLE "playground"."p_att_image"(
     "id" BIGINT PRIMARY KEY
-    ,"owner__p" INT NOT NULL
+    ,"belongs_to__p" INT NOT NULL
         REFERENCES "playground"."post"
     ,"order" SMALLINT NOT NULL
     ,"url" VARCHAR(500) NOT NULL
@@ -61,7 +61,7 @@ CREATE TABLE "playground"."p_att_image"(
 DROP TABLE IF EXISTS "playground"."p_att_file";
 CREATE TABLE "playground"."p_att_file"(
     "id" BIGINT  PRIMARY KEY
-    ,"owner__p" INT NOT NULL
+    ,"belongs_to__p" INT NOT NULL
         REFERENCES "playground"."post"
     ,"order" SMALLINT NOT NULL
     ,"url" VARCHAR(500) NOT NULL
@@ -85,7 +85,7 @@ GRANT USAGE, SELECT, UPDATE ON SEQUENCE "playground"."pattachment_seq" TO "{ 사
 DROP TABLE IF EXISTS "playground"."refresh_token";
 CREATE TABLE "playground"."refresh_token"(
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-    ,"owner__m" INT NOT NULL
+    ,"belongs_to__m" INT NOT NULL
         -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
     ,"refresh_token" VARCHAR(90) NOT NULL
     ,"expires_at" TIMESTAMPTZ NOT NULL
