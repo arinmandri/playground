@@ -48,8 +48,8 @@ CREATE TABLE "playground"."post"(-- p
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
-DROP TABLE IF EXISTS "playground"."p_att_image";
-CREATE TABLE "playground"."p_att_image"(
+DROP TABLE IF EXISTS "playground"."p_attachment_image";
+CREATE TABLE "playground"."p_attachment_image"(
     "id" BIGINT PRIMARY KEY
     ,"belongs_to__p" INT NOT NULL
         REFERENCES "playground"."post"
@@ -58,8 +58,8 @@ CREATE TABLE "playground"."p_att_image"(
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
-DROP TABLE IF EXISTS "playground"."p_att_file";
-CREATE TABLE "playground"."p_att_file"(
+DROP TABLE IF EXISTS "playground"."p_attachment_file";
+CREATE TABLE "playground"."p_attachment_file"(
     "id" BIGINT  PRIMARY KEY
     ,"belongs_to__p" INT NOT NULL
         REFERENCES "playground"."post"

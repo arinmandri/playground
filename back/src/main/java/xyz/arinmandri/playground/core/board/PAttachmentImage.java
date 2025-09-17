@@ -6,25 +6,20 @@ import jakarta.persistence.Table;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 
 @Entity
-@Table( schema = "playground" , name = "p_att_file" )
+@Table( schema = "playground" , name = "p_attachment_image" )
 @Builder
 @Getter
-public class PAttFile extends PAttachment
+public class PAttachmentImage extends PAttachment
 {
 
 	@Override
 	public String getType () {
-		return "file";
+		return "image";
 	}
 
 	@Column( nullable = false )
 	String url;
-
-	@Column( nullable = false )
-	@Setter
-	Integer size;
 }

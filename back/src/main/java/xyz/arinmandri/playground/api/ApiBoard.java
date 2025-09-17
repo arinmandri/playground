@@ -2,8 +2,8 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.board.PAttFile;
-import xyz.arinmandri.playground.core.board.PAttImage;
+import xyz.arinmandri.playground.core.board.PAttachmentFile;
+import xyz.arinmandri.playground.core.board.PAttachmentImage;
 import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostRepo;
@@ -90,7 +90,7 @@ public class ApiBoard extends ApiA
 
 			//// 파일 타입인 경우 size 추가
 			//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
-			if( att instanceof PAttFile attFile ){
+			if( att instanceof PAttachmentFile attFile ){
 				String fileField = reqAttSrc.url();
 				if( fileField != null && fileField.startsWith( "!" ) ){
 					String ltfId = fileField.substring( 1 );
@@ -173,8 +173,8 @@ public class ApiBoard extends ApiA
 		public static final String type = "image";// TODO 도메인에서가져와?
 
 		@Override
-		public PAttImage toEntity () {
-			return PAttImage.builder()
+		public PAttachmentImage toEntity () {
+			return PAttachmentImage.builder()
 			        .url( url )
 			        .build();
 		}
@@ -186,8 +186,8 @@ public class ApiBoard extends ApiA
 		public static final String type = "file";// TODO 도메인에서가져와?
 
 		@Override
-		public PAttFile toEntity () {
-			return PAttFile.builder()
+		public PAttachmentFile toEntity () {
+			return PAttachmentFile.builder()
 			        .url( url )
 			        .build();
 		}
