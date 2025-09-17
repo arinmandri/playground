@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
@@ -24,5 +25,6 @@ public class PAttFile extends PAttachment
 	String url;
 
 	@Column( nullable = false )
+	@Setter
 	Integer size;
 }

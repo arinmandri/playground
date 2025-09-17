@@ -2,6 +2,7 @@ package xyz.arinmandri.playground.core.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -61,7 +62,7 @@ public class LocalFileSer
 	 * 
 	 * @return 생성된 임시파일
 	 */
-	public LocalTempFile createTempFile ( MultipartFile multipartFile ){
+	public LocalTempFile createTempFile ( MultipartFile multipartFile ) {
 		if( multipartFile == null || multipartFile.isEmpty() )
 		    return null;// TODO exception
 
@@ -76,7 +77,7 @@ public class LocalFileSer
 			return null;
 		}
 
-		return new LocalTempFile( id, path );
+		return new LocalTempFile( id, path, (int) ( multipartFile.getSize() >> 10 ) );
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class LocalFileSer
 	 * 
 	 * @return 생성된 임시파일 목록. 입력 순서와 같다.
 	 */
-	public List<LocalTempFile> createTempFiles ( List<MultipartFile> multipartFiles ){
+	public List<LocalTempFile> createTempFiles ( List<MultipartFile> multipartFiles ) {
 		if( multipartFiles == null || multipartFiles.isEmpty() )
 		    return List.of();
 
@@ -94,13 +95,13 @@ public class LocalFileSer
 	}
 
 	/**
-	 * 임시파일 id --> 경로
+	 * 임시파일 id --> 그 임시파일 찾음
 	 *
 	 * @param id
-	 * @return 그 임시파일의 경로.
+	 * @return 그 임시파일.
 	 *         없으면 null.
 	 */
-	public Path getTempFilePath ( String id ){
+	public LocalTempFile getTempFile ( String id ) {
 		if( id == null || id.isBlank() )
 		    return null;
 
@@ -111,23 +112,35 @@ public class LocalFileSer
 		for( int offset = 0 ; offset < l ; offset++ ){
 			int idx = ( currentBucketIndex - offset + l ) % l;
 			Path path = Paths.get( getTempBucketDir( idx ) + "/" + id );
-			if( path.toFile().exists() )
-			    return path;
+			if( path.toFile().exists() ){
+				try{
+					int size = (int) ( Files.size( path ) >> 10 );
+					return new LocalTempFile( id, path, size );
+				}
+				catch( IOException e ){
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return null;
 	}
 
-	private String generateRandomFileName (){
+	public List<LocalTempFile> getTempFiles ( List<String> ids ) {
+		return ids.stream().map( this::getTempFile ).toList();
+	}
+
+	private String generateRandomFileName () {
 		byte[] randomBytes = new byte[tempFileNameLength];
 		random.nextBytes( randomBytes );
 		return Base64.getUrlEncoder().withoutPadding().encodeToString( randomBytes ).toLowerCase();
 	}
 
-	private String getTempBucketDir ( int index ){
+	private String getTempBucketDir ( int index ) {
 		return tempDirBase + "/" + currentBucketNames[index];
 	}
 
-	private String getTempBucketDir (){
+	private String getTempBucketDir () {
 		return getTempBucketDir( currentBucketIndex );
 	}
 
@@ -137,7 +150,7 @@ public class LocalFileSer
 	 * @param fileName
 	 * @return 확장자(소문자), 없으면 빈 문자열
 	 */
-	public String getExtension ( String fileName ){
+	public String getExtension ( String fileName ) {
 
 		int li = fileName.lastIndexOf( "." );
 		if( li < 0 || li >= fileName.length() - 1 ){
@@ -150,14 +163,14 @@ public class LocalFileSer
 	 * 버킷 교대
 	 */
 	@Scheduled( cron = "0 */30 * * * *" )
-	public void rotateBucket (){
+	public void rotateBucket () {
 		int newIndex = ( currentBucketIndex + 1 ) % currentBucketNames.length;
 		File folder = new File( getTempBucketDir( newIndex ) );
-		clearFolderRecursive( folder );
+		// clearFolderRecursive( folder );// LOCAL TEST
 		currentBucketIndex = newIndex;
 	}
 
-	private void clearFolderRecursive ( File folder ){
+	private void clearFolderRecursive ( File folder ) {
 		File[] contents = folder.listFiles();
 		if( contents != null ){
 			for( File f : contents ){

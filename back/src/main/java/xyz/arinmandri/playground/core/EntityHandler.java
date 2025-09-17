@@ -1,16 +1,17 @@
 package xyz.arinmandri.playground.core;
 
-import java.nio.file.Path;
+import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalTempFile;
+import xyz.arinmandri.playground.core.file.S3Ser;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
-import xyz.arinmandri.playground.core.file.LocalFileSer;
-import xyz.arinmandri.playground.core.file.S3Ser;
 
 
+// XXX 이런 컴포넌트가 있다는 게 이 앱의 구조가 이상한 거야.
 @Service
 @AllArgsConstructor
 public class EntityHandler
@@ -29,8 +30,8 @@ public class EntityHandler
 
 		if( fileField != null && fileField.startsWith( "!" ) ){
 			String ltfId = fileField.substring( 1 );
-			Path ltfPath = localFileSer.getTempFilePath( ltfId );
-			String uploadedUrl = s3Ser.s3Upload( ltfPath ).toString();
+			LocalTempFile ltf = localFileSer.getTempFile( ltfId );
+			String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
 			req = cloneWith.apply( req, uploadedUrl );
 		}
 		return req;

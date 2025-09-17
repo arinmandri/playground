@@ -9,11 +9,14 @@ import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostRepo;
 import xyz.arinmandri.playground.core.board.PostSer;
+import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 
@@ -38,6 +42,7 @@ public class ApiBoard extends ApiA
 	final EntityHandler entityHandler;
 
 	final PostSer postSer;
+	final LocalFileSer localFileSer;
 
 	final private PostRepo postRepo;
 
@@ -77,23 +82,30 @@ public class ApiBoard extends ApiA
 		Member m = getMemberFrom( userDetails );
 
 		//// 파일 업로드 처리
-		List<EditPostReqAttachment> attachmentsReq = new ArrayList<>();
-		for( EditPostReqAttachment attachment : req.attachments ){
+		List<PAttachment> atts = new ArrayList<>();
+		for( EditPostReqAttachment reqAttSrc : req.attachments ){
 
-			attachment = entityHandler.uploadFileField( attachment,
+			EditPostReqAttachment reqAtt = entityHandler.uploadFileField( reqAttSrc,
 			        ( r )-> r.url(),
 			        ( r , v )-> r.withUrl( v ) );
-			attachmentsReq.add( attachment );
+
+			PAttachment att = reqAtt.toEntity();
+
+			//// 파일 타입인 경우 size 추가
+			//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
+			if( att instanceof PAttFile attFile ){
+				String fileField = reqAttSrc.url();
+				if( fileField != null && fileField.startsWith( "!" ) ){
+					String ltfId = fileField.substring( 1 );
+					LocalTempFile ltf = localFileSer.getTempFile( ltfId );
+					attFile.setSize( ltf.size() );
+				}
+			}
+			atts.add( att );
 		}
 
-		// TODO 파일 타입인 경우 size
-
-		List<PAttachment> attachments2 = attachmentsReq.stream()
-		        .map( a-> a.toEntity() )
-		        .toList();
-
 		Post p = req.toEntity( m );
-		p = postSer.add( p, attachments2 );
+		p = postSer.add( p, atts );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
 	}
