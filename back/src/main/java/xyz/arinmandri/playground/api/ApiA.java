@@ -1,10 +1,15 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalTempFile;
+import xyz.arinmandri.playground.core.file.S3Ser;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +32,12 @@ public abstract class ApiA
 {
 	@Autowired
 	MKeyBasicRepo mkeyBasicRepo;
+
+	@Autowired
+	LocalFileSer localFileSer;
+
+	@Autowired
+	S3Ser s3Ser;
 
 	/**
 	 * UserDetails --> Member
@@ -88,5 +99,22 @@ public abstract class ApiA
 		protected static ExceptionalTask INTERNAL_SERVER_ERROR () {
 			return new ExceptionalTask( HttpStatus.INTERNAL_SERVER_ERROR, "아무튼 내 탓인 듯함." );
 		}
+	}
+
+	/**
+	 * 파일필드가 업로드타입인 경우 업로드 후 그 URL을 fileField으로 넣어준다.
+	 * 용례: r = thisMethod( r, (r)->r.getter(), (r,v)->r.with(v) )
+	 */
+	public < T > T uploadFileField ( T req , Function<T, String> getter , BiFunction<T, String, T> cloneWith ) {
+
+		String fileField = getter.apply( req );
+
+		if( fileField != null && fileField.startsWith( "!" ) ){
+			String ltfId = fileField.substring( 1 );
+			LocalTempFile ltf = localFileSer.getTempFile( ltfId );
+			String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+			req = cloneWith.apply( req, uploadedUrl );
+		}
+		return req;
 	}
 }

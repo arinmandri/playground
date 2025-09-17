@@ -1,7 +1,6 @@
 package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
-import xyz.arinmandri.playground.core.EntityHandler;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.board.PAttFile;
 import xyz.arinmandri.playground.core.board.PAttImage;
@@ -39,8 +38,6 @@ import lombok.With;
 @RequiredArgsConstructor
 public class ApiBoard extends ApiA
 {
-	final EntityHandler entityHandler;
-
 	final PostSer postSer;
 	final LocalFileSer localFileSer;
 
@@ -85,7 +82,7 @@ public class ApiBoard extends ApiA
 		List<PAttachment> atts = new ArrayList<>();
 		for( EditPostReqAttachment reqAttSrc : req.attachments ){
 
-			EditPostReqAttachment reqAtt = entityHandler.uploadFileField( reqAttSrc,
+			EditPostReqAttachment reqAtt = uploadFileField( reqAttSrc,
 			        ( r )-> r.url(),
 			        ( r , v )-> r.withUrl( v ) );
 

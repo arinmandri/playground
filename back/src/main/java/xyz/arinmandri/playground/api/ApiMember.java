@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.EntityHandler;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
@@ -9,9 +8,11 @@ import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,7 +36,6 @@ public class ApiMember extends ApiA
 {
 
 	final MemberSer memberSer;
-	final EntityHandler entityHandler;
 
 	final private PasswordEncoder pwEncoder;
 
@@ -104,7 +104,7 @@ public class ApiMember extends ApiA
 			apiMemberAddBasicReq.apiMemberAddBasicReqKey keyReq = req.key;
 
 			// 프사 필드 업로드 처리
-			memberReq = entityHandler.uploadFileField( memberReq,
+			memberReq = uploadFileField( memberReq,
 			        ( r )-> r.propic(),
 			        ( r , v )-> r.withPropic( v ) );
 
@@ -163,7 +163,7 @@ public class ApiMember extends ApiA
 		Member me = getMemberFrom( u );
 
 		// 프사 필드 업로드 처리
-		req = entityHandler.uploadFileField( req,
+		req = uploadFileField( req,
 		        ( r )-> r.propic(),
 		        ( r , v )-> r.withPropic( v ) );
 
