@@ -57,14 +57,13 @@ CREATE TABLE "playground"."p_att_image"(
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
-DROP TABLE IF EXISTS "playground"."p_att_ex1";
-CREATE TABLE "playground"."p_att_ex1"(-- TEST 사실 게시글에 이미지 말고 올릴 것도 없다. 그래도 이미지 외에도 첨부물의 종류가 여럿이 가능하게 하고 싶다. 이것은 그냥 '이미지가 아닌 다른 첨부물'을 나타낸다. 나중에 뭐로든지 대체하려고 한다. 투표라든지.
+DROP TABLE IF EXISTS "playground"."p_att_file";
+CREATE TABLE "playground"."p_att_file"(
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"owner__p" INT NOT NULL
         REFERENCES "playground"."post"
     ,"order" SMALLINT NOT NULL
-    ,"text1" VARCHAR(500) NOT NULL
-    ,"int1" INT NOT NULL
+    ,"url" VARCHAR(500) NOT NULL
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 

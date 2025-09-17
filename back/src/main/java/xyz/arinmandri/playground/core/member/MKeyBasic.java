@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

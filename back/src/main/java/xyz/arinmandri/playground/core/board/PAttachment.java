@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.core.board;
 
 import xyz.arinmandri.playground.core.BaseEntityWithoutId;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +11,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
+
 import lombok.Getter;
 
 
@@ -26,4 +28,9 @@ public abstract class PAttachment extends BaseEntityWithoutId
 	@JoinColumn( name = "owner__p" )
 	@ManyToOne
 	private Post post;
+
+	@Column
+	private Integer order;
+
+	public abstract String getType ();
 }
