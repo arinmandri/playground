@@ -10,6 +10,7 @@ CREATE USER "{ 사용자 }" WITH PASSWORD '{ 비번 }';
 GRANT USAGE ON SCHEMA "playground" TO "{ 사용자 }";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "{ 사용자 }";
 ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "{ 사용자 }";
+ALTER ROLE "{ 사용자 }" SET search_path = "playground", public;
 
 DROP TABLE IF EXISTS "playground"."member";
 CREATE TABLE "playground"."member"(-- m
@@ -49,7 +50,7 @@ CREATE TABLE "playground"."post"(-- p
 
 DROP TABLE IF EXISTS "playground"."p_att_image";
 CREATE TABLE "playground"."p_att_image"(
-    "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    "id" BIGINT PRIMARY KEY
     ,"owner__p" INT NOT NULL
         REFERENCES "playground"."post"
     ,"order" SMALLINT NOT NULL
@@ -59,13 +60,25 @@ CREATE TABLE "playground"."p_att_image"(
 
 DROP TABLE IF EXISTS "playground"."p_att_file";
 CREATE TABLE "playground"."p_att_file"(
-    "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    "id" BIGINT  PRIMARY KEY
     ,"owner__p" INT NOT NULL
         REFERENCES "playground"."post"
     ,"order" SMALLINT NOT NULL
     ,"url" VARCHAR(500) NOT NULL
+    ,"size" SMALLINT NOT NULL -- 단위: KB
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
+
+DROP SEQUENCE IF EXISTS "playground"."pattachment_seq";
+CREATE SEQUENCE "playground"."pattachment_seq"
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 50
+;
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE "playground"."pattachment_seq" TO "{ 사용자 }"
+;
 
 
 

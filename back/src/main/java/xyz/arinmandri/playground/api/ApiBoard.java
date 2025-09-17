@@ -1,13 +1,19 @@
 package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
+import xyz.arinmandri.playground.core.EntityHandler;
 import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.board.PAttFile;
+import xyz.arinmandri.playground.core.board.PAttImage;
+import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostRepo;
 import xyz.arinmandri.playground.core.board.PostSer;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,15 +25,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 
 @RestController
 @RequiredArgsConstructor
 public class ApiBoard extends ApiA
 {
+	final EntityHandler entityHandler;
 
 	final PostSer postSer;
 
@@ -68,19 +76,35 @@ public class ApiBoard extends ApiA
 
 		Member m = getMemberFrom( userDetails );
 
+		//// 파일 업로드 처리
+		List<EditPostReqAttachment> attachmentsReq = new ArrayList<>();
+		for( EditPostReqAttachment attachment : req.attachments ){
+
+			attachment = entityHandler.uploadFileField( attachment,
+			        ( r )-> r.url(),
+			        ( r , v )-> r.withUrl( v ) );
+			attachmentsReq.add( attachment );
+		}
+
+		// TODO 파일 타입인 경우 size
+
+		List<PAttachment> attachments2 = attachmentsReq.stream()
+		        .map( a-> a.toEntity() )
+		        .toList();
+
 		Post p = req.toEntity( m );
-		p = postSer.add( p );
+		p = postSer.add( p, attachments2 );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
 	}
 
-	@AllArgsConstructor
-	@Getter
-	static public class AddPostReq
+	static public record AddPostReq(
+	        String content ,
+	        List<EditPostReqAttachment> attachments )
 	{
-		private String content;
 
 		Post toEntity ( Member author ) {
+
 			return Post.builder()
 			        .author( author )
 			        .content( content )
@@ -92,7 +116,7 @@ public class ApiBoard extends ApiA
 	public ResponseEntity<Post> apiPostEdit (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
-	        @RequestBody EditReq req ) throws LackAuthExcp {
+	        @RequestBody EditPostReq req ) throws LackAuthExcp {
 
 		Member m = getMemberFrom( userDetails );
 
@@ -108,15 +132,54 @@ public class ApiBoard extends ApiA
 		        .body( p );
 	}
 
-	@AllArgsConstructor
-	@Getter
-	static public class EditReq
+	static public record EditPostReq(
+	        String content ,
+	        List<EditPostReqAttachment> attachments )
 	{
-		private String content;
 
 		Post toEntity () {
 			return Post.builder()
 			        .content( content )
+			        .build();
+		}
+	}
+
+	@JsonTypeInfo( use = JsonTypeInfo.Id.NAME , include = JsonTypeInfo.As.PROPERTY , property = "type" )
+	@JsonSubTypes( {
+	        @JsonSubTypes.Type( value = EditPostReqAttachmentImage.class , name = EditPostReqAttachmentImage.type ),
+	        @JsonSubTypes.Type( value = EditPostReqAttachmentFile.class , name = EditPostReqAttachmentFile.type )
+	} )
+	static public interface EditPostReqAttachment
+	{
+		public String url ();
+
+		public EditPostReqAttachment withUrl ( String url );
+
+		public PAttachment toEntity ();
+	}
+
+	static public record EditPostReqAttachmentImage(
+	        @With String url ) implements EditPostReqAttachment
+	{
+		public static final String type = "image";// TODO 도메인에서가져와?
+
+		@Override
+		public PAttImage toEntity () {
+			return PAttImage.builder()
+			        .url( url )
+			        .build();
+		}
+	}
+
+	static public record EditPostReqAttachmentFile(
+	        @With String url ) implements EditPostReqAttachment
+	{
+		public static final String type = "file";// TODO 도메인에서가져와?
+
+		@Override
+		public PAttFile toEntity () {
+			return PAttFile.builder()
+			        .url( url )
 			        .build();
 		}
 	}
