@@ -3,7 +3,8 @@
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
       <div v-for="(_, index) in attachments" :key="index">
-        <InputAttachment v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
+        <InputAttachment v-model:attachment="(attachments[index] as Attachment)"
+          @clear="attachments.splice(index, 1)" />
       </div>
       <div v-if="attachments.length < props.maxLength">
         <InputAttachment :title="'첨부물 추가'" :attachment="getNullAttachment()" @select-new="onSelectNewFile" />
@@ -19,7 +20,7 @@
 import InputAttachment from '@/components/InputAttachment.vue';
 
 import type { Attachment } from "@/types";
-import { getNullAttachment } from "@/types";
+import { ATT_TYPE, FileAndPreview, getNullAttachment } from "@/types";
 
 import { ref, defineExpose } from "vue";
 
@@ -44,14 +45,17 @@ const attachments = ref<Attachment[]>([]);
 function onSelectNewFile(newAttachment: Attachment) {
   attachments.value.push({
     attType: newAttachment.attType,
-    attData: { ...newAttachment.attData },
+    attData: {
+      typeImage: newAttachment.attData.typeImage?.copy() || null,
+      typeFile: newAttachment.attData.typeFile?.copy() || null
+    },
   });
-  emit('update:attachments', attachments.value);
+  emit('update:attachments', attachments.value as Attachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
 }
 
 function uploadFiles() {
   console.log('============== uploadFiles')// TODO
-  emit('update:attachments', attachments.value);
+  emit('update:attachments', attachments.value as Attachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
 }
 
 </script>

@@ -40,8 +40,7 @@
 <script setup lang="ts">
 
 import type { Attachment } from "@/types";
-import { getNullFileAndPreview, getNullAttachment } from "@/types";
-import { ATT_TYPE } from "@/types";
+import { ATT_TYPE, FileAndPreview, getNullAttachment } from "@/types";
 
 const props = defineProps<{
   title?: string;
@@ -59,15 +58,13 @@ const emit = defineEmits<{
 function onImageSelect(event: Event) {
   clearInternal();
   internalData.attType = ATT_TYPE.image;
-  internalData.attData.typeImage = getNullFileAndPreview();
+  internalData.attData.typeImage = FileAndPreview.getNull();
 
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
 
-  internalData.attData.typeImage.newFile = selectedFile;
-
   if (selectedFile) {
-    internalData.attData.typeImage.preview = URL.createObjectURL(selectedFile);
+    internalData.attData.typeImage.setFile(selectedFile);
     emit('update:attachment', internalData);
     emit('select-new', internalData);
   }
@@ -76,15 +73,13 @@ function onImageSelect(event: Event) {
 function onFileSelect(event: Event) {
   clearInternal();
   internalData.attType = ATT_TYPE.file;
-  internalData.attData.typeFile = getNullFileAndPreview();
+  internalData.attData.typeFile = FileAndPreview.getNull();
 
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
 
-  internalData.attData.typeFile.newFile = selectedFile;
-
   if (selectedFile) {
-    internalData.attData.typeFile.preview = URL.createObjectURL(selectedFile);
+    internalData.attData.typeFile.setFile(selectedFile);
     emit('update:attachment', internalData);
     emit('select-new', internalData);
   }

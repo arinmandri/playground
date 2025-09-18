@@ -17,21 +17,18 @@
 import InputText from '@/components/InputText.vue';
 import InputImage from '@/components/InputImage.vue';
 
-import type { FileAndPreview } from '@/types';
-import { getNullFileAndPreview } from '@/types';
+import { FileAndPreview } from '@/types';
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 import api from '@/api/axiosInstance';
 
-import { ref, onMounted } from 'vue';
-
-const SERVER_TEMP_FILE_ID_PREFIX = '!';
+import { ref, type Ref, onMounted } from 'vue';
 
 const form = ref({
   nick: '',
   email: '',
 })
 
-const propic = ref<FileAndPreview>(getNullFileAndPreview());
+const propic = ref<FileAndPreview>(FileAndPreview.getNull()) as Ref<FileAndPreview>;
 
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
@@ -48,8 +45,9 @@ async function fetchMemberInfo() {
     const { data } = await api.get('/member/me');
     form.value.nick = data.nick || '';
     form.value.email = data.email || '';
-    propic.value.fieldValue = data.propic || '';
-    propic.value.preview = data.propic;
+    propic.value = data.propic == null
+      ? FileAndPreview.newOne()
+      : FileAndPreview.ofExisting(data.propic);
   } catch (err) {
     error.value = 'Failed to load member info.'
   } finally {
@@ -63,10 +61,10 @@ async function submitForm() {
   success.value = false;
 
   //// 프사 파일 업로드
-  if (propic.value.newFile) {
+  if (propic.value.hasNewFile) {
     try {
-      const { id: fileId } = (await api.uploadFile(propic.value.newFile)).data;
-      propic.value.fieldValue = SERVER_TEMP_FILE_ID_PREFIX + fileId;
+      const { id: fileId } = (await api.uploadFile(propic.value.fileNN)).data;
+      propic.value.setFieldValue(fileId);
     } catch (err) {
       error.value = 'Failed to upload profile picture.';
       loading.value = false;

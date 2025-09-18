@@ -3,7 +3,7 @@
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
       <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
-      <InputAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="attachments" :maxLength="5" />
+      <InputAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as Attachment[])" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
     <button @click="callAttachmentsFunction">자식함수TEST</button><!-- TEST -->

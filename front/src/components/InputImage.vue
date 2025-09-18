@@ -5,8 +5,6 @@ form 속에 파일 1개 첨부 부분.
 
 사용 예시
 import type { FileAndPreview } from '@/types';
-import { getNullFileAndPreview } from '@/types';
-const fileField1 = ref<FileAndPreview>(getNullFileAndPreview());
 import { THIS } from '@/components/{ THIS }.vue';
 <{ THIS } :title="'프사'" v-model:fileAndPreview="fileField1" />
 -->
@@ -24,6 +22,10 @@ import { THIS } from '@/components/{ THIS }.vue';
       파일 삭제
     </button>
 
+    <button type="button" @click="resetFile">
+      돌림
+    </button>
+
     <div class="">
       <p><b>fieldValue</b>: {{ props.fileAndPreview.fieldValue }}</p>
       <p><b>preview</b>: {{ props.fileAndPreview.preview }}</p>
@@ -33,9 +35,8 @@ import { THIS } from '@/components/{ THIS }.vue';
 
 <script setup lang="ts">
 
-import type { FileAndPreview } from "@/types";
+import { FileAndPreview } from "@/types";
 
-import { ref } from "vue";
 
 
 const props = defineProps<{
@@ -43,31 +44,31 @@ const props = defineProps<{
   fileAndPreview: FileAndPreview;
 }>();
 
-const internalProps = ref<FileAndPreview>(props.fileAndPreview);
-
 const emit = defineEmits<{
   (e: 'update:fileAndPreview', exportProps: FileAndPreview | null): void;
-  (e: 'clear'): void;
 }>();
 
 function onFileChange(event: Event) {
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
 
-  internalProps.value.newFile = selectedFile;
-
   if (selectedFile) {
-    internalProps.value.preview = URL.createObjectURL(selectedFile);
-    emit('update:fileAndPreview', internalProps.value);
+    const temp = props.fileAndPreview;
+    temp.setFile(selectedFile);
+    emit('update:fileAndPreview', temp as FileAndPreview);
   }
 }
 
 function clearFile() {
-  internalProps.value.newFile = null;
-  internalProps.value.preview = '';
-  internalProps.value.fieldValue = '';
-  emit('update:fileAndPreview', internalProps.value);
-  emit('clear');
+  const temp = props.fileAndPreview;
+  temp.clear();
+  emit('update:fileAndPreview', temp as FileAndPreview);
+}
+
+function resetFile() {
+  const temp = props.fileAndPreview;
+  temp.reset();
+  emit('update:fileAndPreview', temp);
 }
 </script>
 
