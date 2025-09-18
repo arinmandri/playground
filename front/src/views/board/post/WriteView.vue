@@ -3,7 +3,7 @@
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
       <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
-      <InputAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as Attachment[])" :maxLength="5" />
+      <PAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
     <button @click="callAttachmentsFunction">자식함수TEST</button><!-- TEST -->
@@ -13,21 +13,21 @@
 
 <script lang="ts" setup>
 
-import InputAttachmentList from '@/components/InputAttachmentList.vue';
+import PAttachmentList from '@/components/board/PAttachmentList.vue';
 
 import api from "@/api/axiosInstance";
-import type { Attachment } from "@/types";
+import type { PAttachment } from "@/types";
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
 
-interface InputAttachmentList {
+interface PAttachmentList {
   uploadFiles: () => void
 }
 
-const attachments = ref<Attachment[]>([]);
+const attachments = ref<PAttachment[]>([]);
 const content = ref('')
-const attachmentsComp = ref<InputAttachmentList>();
+const attachmentsComp = ref<PAttachmentList>();
 const loading = ref(false)
 const error = ref('')
 

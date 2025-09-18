@@ -39,19 +39,19 @@
 
 <script setup lang="ts">
 
-import type { Attachment } from "@/types";
+import type { PAttachment } from "@/types";
 import { ATT_TYPE, FileAndPreview, getNullAttachment } from "@/types";
 
 const props = defineProps<{
   title?: string;
-  attachment: Attachment;
+  attachment: PAttachment;
 }>();
 
-let internalData = props.attachment as Attachment;
+let internalData = props.attachment as PAttachment;
 
 const emit = defineEmits<{
-  (e: 'update:attachment', exportProps: Attachment): void;
-  (e: 'select-new', exportProps: Attachment): void;
+  (e: 'update:attachment', exportProps: PAttachment): void;
+  (e: 'select-new', exportProps: PAttachment): void;
   (e: 'clear'): void;
 }>();
 

@@ -18,11 +18,11 @@ export interface Post {
 /**
  * 게시글 첨부물
  */
-export interface Attachment {
+export interface PAttachment {
   attType: ATT_TYPE | null;// null: 첨부물 없음
-  attData: AttachmentData;
+  attData: PAttachmentData;
 }
-export const getNullAttachment: () => Attachment = () => ({
+export const getNullAttachment: () => PAttachment = () => ({
   attType: null,
   attData: getNullAttachmentData(),
 });
@@ -36,11 +36,11 @@ export enum ATT_TYPE {
  * 게시글 첨부물 타입별 데이터
  * 한 가지 필드만 값을 가지고 나머지는 null이 되도록 관리하라.
  */
-export interface AttachmentData {
+export interface PAttachmentData {
   typeImage: FileAndPreview | null;
   typeFile: FileAndPreview | null;
 }
-export const getNullAttachmentData: () => AttachmentData = () => ({
+export const getNullAttachmentData: () => PAttachmentData = () => ({
   typeImage: null,
   typeFile: null,
 });

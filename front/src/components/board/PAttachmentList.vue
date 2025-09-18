@@ -3,11 +3,10 @@
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
       <div v-for="(_, index) in attachments" :key="index">
-        <InputAttachment v-model:attachment="(attachments[index] as Attachment)"
-          @clear="attachments.splice(index, 1)" />
+        <PAttachmentCom v-model:attachment="(attachments[index] as PAttachment)" @clear="attachments.splice(index, 1)" />
       </div>
       <div v-if="attachments.length < props.maxLength">
-        <InputAttachment :title="'첨부물 추가'" :attachment="getNullAttachment()" @select-new="onSelectNewFile" />
+        <PAttachmentCom :title="'첨부물 추가'" :attachment="getNullAttachment()" @select-new="onSelectNewFile" />
       </div>
     </div>
   </div>
@@ -17,9 +16,9 @@
 
 <script setup lang="ts">
 
-import InputAttachment from '@/components/InputAttachment.vue';
+import PAttachmentCom from '@/components/board/PAttachment.vue';
 
-import type { Attachment } from "@/types";
+import type { PAttachment } from "@/types";
 import { ATT_TYPE, FileAndPreview, getNullAttachment } from "@/types";
 
 import { ref, defineExpose } from "vue";
@@ -27,12 +26,12 @@ import { ref, defineExpose } from "vue";
 
 const props = defineProps<{
   title?: string;
-  attachments: Attachment[];
+  attachments: PAttachment[];
   maxLength: number;// 첨부물 최대 개수
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:attachments', exportProps: Attachment[]): void;
+  (e: 'update:attachments', exportProps: PAttachment[]): void;
 }>();
 
 defineExpose({
@@ -40,9 +39,9 @@ defineExpose({
 });
 
 
-const attachments = ref<Attachment[]>([]);
+const attachments = ref<PAttachment[]>([]);
 
-function onSelectNewFile(newAttachment: Attachment) {
+function onSelectNewFile(newAttachment: PAttachment) {
   attachments.value.push({
     attType: newAttachment.attType,
     attData: {
@@ -50,12 +49,12 @@ function onSelectNewFile(newAttachment: Attachment) {
       typeFile: newAttachment.attData.typeFile?.copy() || null
     },
   });
-  emit('update:attachments', attachments.value as Attachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
+  emit('update:attachments', attachments.value as PAttachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
 }
 
 function uploadFiles() {
   console.log('============== uploadFiles')// TODO
-  emit('update:attachments', attachments.value as Attachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
+  emit('update:attachments', attachments.value as PAttachment[]);// TODO ?????????? 돌았나왜갑자기 강제캐스팅없으면안됨?
 }
 
 </script>
