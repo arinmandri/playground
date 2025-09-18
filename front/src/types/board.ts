@@ -64,6 +64,13 @@ export class PAttachment {
     return null;
   }
 
+  setFileIfSettable(tempFileId: string): void {
+    if (this._attType == ATT_TYPE.image)
+      this._attData.typeImage?.setTempFileId(tempFileId);
+    if (this._attType == ATT_TYPE.file)
+      this._attData.typeFile?.setTempFileId(tempFileId);
+  }
+
   get attType(): ATT_TYPE | null {
     return this._attType;
   }

@@ -2,7 +2,7 @@
   <div class="write-post-view">
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
-      <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
+      <textarea v-model="content" type="text">뭐 쓸라고 했더라</textarea>
       <PAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>

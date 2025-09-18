@@ -13,19 +13,32 @@ export interface SimpleListPack<T> {
  * 첨부파일 + 미리보기 + 제출시 사용할 값
  * 
  * 새 항목을 만드는 경우
- * - newFile: 새로 선택한 파일
- * - preview: null --(파일 선택)--> 새로 선택한 파일에서 만들어진 미리보기
- * - fieldValue: null --(파일 업로드 API 호출)--> 첨부파일의 임시파일id
+ * |---초기
+ * |---|---newFile: null
+ * |---|---preview: ''
+ * |---|---fieldValue: null
+ * |---파일 선택
+ * |---|---newFile: 선택한 파일
+ * |---|---preview: 새로 선택한 파일에서 만들어진 미리보기
+ * |---임시등록 후: 백엔드의 임시파일id
+ * |---|---fieldValue: 임시파일id
+ * |---파일서버 업로드 후: 업로드된 url
+ * |---|---preview: url
+ * |---|---fieldValue: url
  * 
- * 기존 항목 수정하는 경우, 파일을 새로 선택하지 않는 경우
- * - newFile: null
- * - preview: 기존 항목의 URL
- * - fieldValue: 기존 항목의 URL
- * 
- * 기존 항목 수정하는 경우, 파일을 새로 선택하는 경우
- * - newFile: 새로 선택한 파일
- * - preview: 기존 항목의 URL --(파일 선택)--> 새로 선택한 파일에서 만들어진 미리보기
- * - fieldValue: 기존 항목의 URL --(파일 업로드 API 호출)--> 첨부파일의 임시파일id
+ * 기존 항목 수정하는 경우
+ * |---초기
+ * |---|---newFile: null
+ * |---|---preview: 기존 항목의 URL
+ * |---|---fieldValue: 기존 항목의 URL
+ * |---파일 선택
+ * |---|---newFile: 선택한 파일
+ * |---|---preview: 새로 선택한 파일에서 만들어진 미리보기
+ * |---임시등록 후: 백엔드의 임시파일id
+ * |---|---fieldValue: 임시파일id
+ * |---파일서버 업로드 후: 업로드된 url
+ * |---|---preview: 새 파일 url
+ * |---|---fieldValue: 새 파일 url
  */
 export class FileAndPreview {
   private _newFile: File | null;// 첨부 파일
@@ -92,8 +105,13 @@ export class FileAndPreview {
     this._hasChanged = false;
   }
 
-  setFieldValue(tempFileId: string) {
+  setTempFileId(tempFileId: string) {
     this._fieldValue = SERVER_TEMP_FILE_ID_PREFIX + tempFileId;
+  }
+
+  setDoneUrl(url: string) {
+    this._fieldValue = url;
+    this._preview = url;
   }
 
   get hasNewFile() {

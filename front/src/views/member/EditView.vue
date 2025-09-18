@@ -64,7 +64,7 @@ async function submitForm() {
   if (propic.value.hasNewFile) {
     try {
       const { id: fileId } = (await api.uploadFile(propic.value.fileNN)).data;
-      propic.value.setFieldValue(fileId);
+      propic.value.setTempFileId(fileId);
     } catch (err) {
       error.value = 'Failed to upload profile picture.';
       loading.value = false;
@@ -80,6 +80,7 @@ async function submitForm() {
     });
     success.value = true;
     authStore.whoami();
+    // XXX 이 페이지도 새로고침 해야 하나?
   } catch (err) {
     error.value = 'Failed to update member info.';
   } finally {

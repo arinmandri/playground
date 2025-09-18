@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 
+import api from '@/api/axiosInstance';
 import PAttachmentCom from '@/components/board/PAttachment.vue';
 
 import { PAttachment } from "@/types";
@@ -46,7 +47,26 @@ function onSelectNewFile(newAttachment: PAttachment) {
 }
 
 function uploadFiles() {
-  console.log('============== uploadFiles')// TODO
+  const fs = [] as File[];
+  const atts = [] as PAttachment[];
+  props.attachments.forEach((att) => {
+    const f = att.getFileIfExists();
+    if (f != null) {
+      fs.push(f);
+      atts.push(att);
+    }
+  });
+  if (fs.length > 0) {
+    api.uploadFiles(fs).then((res) => {
+      const ltfs = res.data;// 길이 = atts 길이
+      for (let i = 0; i < atts.length; i += 1) {
+        const ltf = ltfs[i];
+        const att = atts[i];
+        att.setFileIfSettable(ltf.id);
+        // TODO 오류시 처리 어케함 진짜
+      }
+    });
+  }
   emit('update:attachments', attachments.value);
 }
 
