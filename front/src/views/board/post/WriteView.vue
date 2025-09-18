@@ -3,9 +3,10 @@
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
       <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
-      <InputAttachmentList :title="'첨부파일'" v-model:attachments="attachments" :maxLength="5" />
+      <InputAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="attachments" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
+    <button @click="callAttachmentsFunction">자식함수TEST</button><!-- TEST -->
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
@@ -20,8 +21,13 @@ import type { Attachment } from "@/types";
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
 
+interface InputAttachmentList {
+  uploadFiles: () => void
+}
+
 const attachments = ref<Attachment[]>([]);
 const content = ref('')
+const attachmentsComp = ref<InputAttachmentList>();
 const loading = ref(false)
 const error = ref('')
 
@@ -40,6 +46,12 @@ const submitPost = async () => {
     loading.value = false
   }
 }
+
+// TEST
+function callAttachmentsFunction() {
+  attachmentsComp.value?.uploadFiles();
+}
+
 </script>
 
 <style scoped>

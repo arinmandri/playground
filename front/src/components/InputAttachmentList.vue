@@ -21,7 +21,7 @@ import InputAttachment from '@/components/InputAttachment.vue';
 import type { Attachment } from "@/types";
 import { getNullAttachment } from "@/types";
 
-import { ref } from "vue";
+import { ref, defineExpose } from "vue";
 
 
 const props = defineProps<{
@@ -34,6 +34,10 @@ const emit = defineEmits<{
   (e: 'update:attachments', exportProps: Attachment[]): void;
 }>();
 
+defineExpose({
+  uploadFiles
+});
+
 
 const attachments = ref<Attachment[]>([]);
 
@@ -42,6 +46,11 @@ function onSelectNewFile(newAttachment: Attachment) {
     attType: newAttachment.attType,
     attData: { ...newAttachment.attData },
   });
+  emit('update:attachments', attachments.value);
+}
+
+function uploadFiles() {
+  console.log('============== uploadFiles')// TODO
   emit('update:attachments', attachments.value);
 }
 
