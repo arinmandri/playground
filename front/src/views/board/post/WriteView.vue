@@ -3,7 +3,7 @@
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
       <textarea v-model="content" type="text" required>뭐 쓸라고 했더라</textarea>
-      <InputAttachmentFileList :title="'첨부파일'" v-model:fileAndPreviews="attachments" :maxLength="5" />
+      <InputAttachmentList :title="'첨부파일'" v-model:fileAndPreviews="attachments" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
     <p v-if="error" class="error">{{ error }}</p>
@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 
-import InputAttachmentFileList from '@/components/InputAttachmentFileList.vue';
+import InputAttachmentList from '@/components/InputAttachmentList.vue';
 
 import api from "@/api/axiosInstance";
 import type { FileAndPreview } from "@/types";

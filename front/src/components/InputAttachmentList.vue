@@ -3,7 +3,7 @@
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
       <div v-for="(fap, index) in faps" :key="index">
-        <InputAttachmentFile v-model:fileAndPreview="faps[index]" @clear="faps.splice(index, 1)" />
+        <!-- <InputAttachment v-model:fileAndPreview="faps[index]" @clear="faps.splice(index, 1)" /> -->
       </div>
       <div v-if="faps.length < props.maxLength">
         <input type="file" accept="image/*" @change="onSelectNewFile" /><!-- 파일 추가 -->
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 
-import InputAttachmentFile from '@/components/InputImage.vue';
+// import InputAttachment from '@/components/InputAttachment.vue';
 
 import type { FileAndPreview } from "@/types";
 
