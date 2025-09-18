@@ -1,4 +1,5 @@
 import type { Member } from './member';
+import type { FileAndPreview } from './common';
 
 export interface PostRaw {
   id: number;
@@ -13,3 +14,33 @@ export interface Post {
   createdAt: Date;
   createdAtPretty: string;
 }
+
+/**
+ * 게시글 첨부물
+ */
+export interface Attachment {
+  attType: ATT_TYPE | null;// null: 첨부물 없음
+  attData: AttachmentData;
+}
+export const getNullAttachment: () => Attachment = () => ({
+  attType: null,
+  attData: getNullAttachmentData(),
+});
+
+export enum ATT_TYPE {
+  image,
+  file,
+}
+
+/**
+ * 게시글 첨부물 타입별 데이터
+ * 한 가지 필드만 값을 가지고 나머지는 null이 되도록 관리하라.
+ */
+export interface AttachmentData {
+  typeImage: FileAndPreview | null;
+  typeFile: FileAndPreview | null;
+}
+export const getNullAttachmentData: () => AttachmentData = () => ({
+  typeImage: null,
+  typeFile: null,
+});

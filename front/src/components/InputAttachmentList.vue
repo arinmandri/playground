@@ -3,10 +3,10 @@
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
       <div v-for="(fap, index) in faps" :key="index">
-        <!-- <InputAttachment v-model:fileAndPreview="faps[index]" @clear="faps.splice(index, 1)" /> -->
+        <InputAttachment v-model:attachment="faps[index]" @clear="faps.splice(index, 1)" />
       </div>
       <div v-if="faps.length < props.maxLength">
-        <input type="file" accept="image/*" @change="onSelectNewFile" /><!-- 파일 추가 -->
+        <InputAttachment :title="'첨부물 추가'" :attachment="getNullAttachment()" @select-new="onSelectNewFile" />
       </div>
     </div>
   </div>
@@ -16,40 +16,33 @@
 
 <script setup lang="ts">
 
-// import InputAttachment from '@/components/InputAttachment.vue';
+import InputAttachment from '@/components/InputAttachment.vue';
 
-import type { FileAndPreview } from "@/types";
+import type { Attachment } from "@/types";
+import { getNullAttachment } from "@/types";
 
 import { ref } from "vue";
 
 
 const props = defineProps<{
   title?: string;
-  fileAndPreviews: FileAndPreview[];
+  attachments: Attachment[];
   maxLength: number;// 첨부물 최대 개수
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:fileAndPreviews', exportProps: FileAndPreview[]): void;
+  (e: 'update:attachments', exportProps: Attachment[]): void;
 }>();
 
 
-const faps = ref<FileAndPreview[]>([]);
+const faps = ref<Attachment[]>([]);
 
-function onSelectNewFile(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const selectedFile = target.files?.[0] ?? null;
-
-  if (selectedFile) {
-    faps.value.push({
-      newFile: selectedFile,
-      preview: URL.createObjectURL(selectedFile),
-      fieldValue: null,
-    });
-    emit('update:fileAndPreviews', faps.value);
-  }
-
-  target.value = '';// 새 파일을 선택할 수 있도록 초기화
+function onSelectNewFile(newAttachment: Attachment) {
+  faps.value.push({
+    attType: newAttachment.attType,
+    attData: { ...newAttachment.attData },
+  });
+  emit('update:attachments', faps.value);
 }
 
 </script>
