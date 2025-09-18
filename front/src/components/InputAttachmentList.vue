@@ -2,10 +2,10 @@
   <div class="inputBox input-attachment-file-list">
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
-      <div v-for="(fap, index) in faps" :key="index">
-        <InputAttachment v-model:attachment="faps[index]" @clear="faps.splice(index, 1)" />
+      <div v-for="(_, index) in attachments" :key="index">
+        <InputAttachment v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
       </div>
-      <div v-if="faps.length < props.maxLength">
+      <div v-if="attachments.length < props.maxLength">
         <InputAttachment :title="'첨부물 추가'" :attachment="getNullAttachment()" @select-new="onSelectNewFile" />
       </div>
     </div>
@@ -35,14 +35,14 @@ const emit = defineEmits<{
 }>();
 
 
-const faps = ref<Attachment[]>([]);
+const attachments = ref<Attachment[]>([]);
 
 function onSelectNewFile(newAttachment: Attachment) {
-  faps.value.push({
+  attachments.value.push({
     attType: newAttachment.attType,
     attData: { ...newAttachment.attData },
   });
-  emit('update:attachments', faps.value);
+  emit('update:attachments', attachments.value);
 }
 
 </script>
