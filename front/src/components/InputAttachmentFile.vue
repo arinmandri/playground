@@ -7,8 +7,8 @@ form 속에 파일 1개 첨부 부분.
 import type { FileAndPreview } from '@/types';
 import { getFileAndPreviewDefaultInitial } from '@/types';
 const fileField1 = ref<FileAndPreview>(getFileAndPreviewDefaultInitial());
-import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
-<InputAttachmentFile :title="'프사'" v-model:fileAndPreview="fileField1" />
+import { THIS } from '@/components/{ THIS }.vue';
+<{ THIS } :title="'프사'" v-model:fileAndPreview="fileField1" />
 -->
 <template>
   <div class="inputBox input-attachment-file">
@@ -34,7 +34,6 @@ import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
 <script setup lang="ts">
 
 import type { FileAndPreview } from "@/types";
-import { getFileAndPreviewDefaultInitial } from '@/types';
 
 import { ref } from "vue";
 
@@ -72,7 +71,7 @@ function clearFile() {
   internalProps.value.newFile = null;
   internalProps.value.preview = '';
   internalProps.value.fieldValue = '';
-  emit('update:fileAndPreview', getFileAndPreviewDefaultInitial());
+  emit('update:fileAndPreview', internalProps.value);
   emit('clear');
 }
 </script>
