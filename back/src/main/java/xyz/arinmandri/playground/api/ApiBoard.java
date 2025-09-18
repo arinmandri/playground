@@ -2,9 +2,9 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
+import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.PAttachmentFile;
 import xyz.arinmandri.playground.core.board.PAttachmentImage;
-import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.Post;
 import xyz.arinmandri.playground.core.board.PostRepo;
 import xyz.arinmandri.playground.core.board.PostSer;
@@ -80,25 +80,27 @@ public class ApiBoard extends ApiA
 
 		//// 파일 업로드 처리
 		List<PAttachment> atts = new ArrayList<>();
-		for( EditPostReqAttachment reqAttSrc : req.attachments ){
+		if( req.attachments != null ){
+			for( EditPostReqAttachment reqAttSrc : req.attachments ){
 
-			EditPostReqAttachment reqAtt = uploadFileField( reqAttSrc,
-			        ( r )-> r.url(),
-			        ( r , v )-> r.withUrl( v ) );
+				EditPostReqAttachment reqAtt = uploadFileField( reqAttSrc,
+				        ( r )-> r.url(),
+				        ( r , v )-> r.withUrl( v ) );
 
-			PAttachment att = reqAtt.toEntity();
+				PAttachment att = reqAtt.toEntity();
 
-			//// 파일 타입인 경우 size 추가
-			//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
-			if( att instanceof PAttachmentFile attFile ){
-				String fileField = reqAttSrc.url();
-				if( fileField != null && fileField.startsWith( "!" ) ){
-					String ltfId = fileField.substring( 1 );
-					LocalTempFile ltf = localFileSer.getTempFile( ltfId );
-					attFile.setSize( ltf.size() );
+				//// 파일 타입인 경우 size 추가
+				//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
+				if( att instanceof PAttachmentFile attFile ){
+					String fileField = reqAttSrc.url();
+					if( fileField != null && fileField.startsWith( "!" ) ){
+						String ltfId = fileField.substring( 1 );
+						LocalTempFile ltf = localFileSer.getTempFile( ltfId );
+						attFile.setSize( ltf.size() );
+					}
 				}
+				atts.add( att );
 			}
-			atts.add( att );
 		}
 
 		Post p = req.toEntity( m );
