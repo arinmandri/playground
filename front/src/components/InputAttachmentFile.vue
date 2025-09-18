@@ -14,7 +14,7 @@ import { THIS } from '@/components/{ THIS }.vue';
   <div class="inputBox input-attachment-file">
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <label>
-      <input type="file" accept="image/*" class="hidden" @change="onFileChange" ref="fileInput" />
+      <input type="file" accept="image/*" class="hidden" @change="onFileChange" />
       <span>파일 선택</span>
     </label>
 
@@ -45,8 +45,6 @@ const props = defineProps<{
 
 const internalProps = ref<FileAndPreview>(props.fileAndPreview);
 
-const fileInput = ref<HTMLInputElement | null>(null);
-
 const emit = defineEmits<{
   (e: 'update:fileAndPreview', exportProps: FileAndPreview | null): void;
   (e: 'clear'): void;
@@ -65,9 +63,6 @@ function onFileChange(event: Event) {
 }
 
 function clearFile() {
-  if (fileInput.value) {
-    fileInput.value.value = "";
-  }
   internalProps.value.newFile = null;
   internalProps.value.preview = '';
   internalProps.value.fieldValue = '';
