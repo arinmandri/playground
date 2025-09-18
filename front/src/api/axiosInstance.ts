@@ -61,7 +61,7 @@ const api = {
       attemptRequest();
     });
   },
-  uploadFile: async (file: File): Promise<AxiosResponse<any, any>> => {
+  uploadFile: async (file: File): Promise<AxiosResponse<UploadFileResponse, FormData>> => {
     const formData = new FormData();
     formData.append('file', file);
     return new Promise((resolve, reject) => {
@@ -73,7 +73,7 @@ const api = {
       attemptRequest();
     });
   },
-  uploadFiles: async (files: File[]): Promise<AxiosResponse<any, any>> => {
+  uploadFiles: async (files: File[]): Promise<AxiosResponse<UploadFileResponse[], FormData>> => {
     const formData = new FormData();
     files.forEach(file => {
       formData.append('files', file);
@@ -89,12 +89,14 @@ const api = {
   },
 }
 
+export interface UploadFileResponse {
+  // TODO 이거 실패시의 응답이 없어
+  id: string;
+}
+
+
 const RETRY_MAX = 3;
 
-// TEST
-// api.post(, formData, {
-//     headers: { 'Content-Type': 'multipart/form-data' }
-//   })
 function attemptRequestOf(
   resolve: any,
   reject: any,
