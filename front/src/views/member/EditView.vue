@@ -4,7 +4,7 @@
     <form @submit.prevent="submitForm">
       <InputText :title="'별명'" v-model:textValue="form.nick" :isRequired="true" />
       <InputText :title="'이메일 주소'" v-model:textValue="form.email" :isRequired="false" />
-      <InputAttachmentFile :title="'프사'" v-model:fileAndPreview="propic" />
+      <InputImage :title="'프사'" v-model:fileAndPreview="propic" />
       <button type="submit" :disabled="loading">저장</button>
     </form>
     <div v-if="error" class="error">{{ error }}</div>
@@ -15,7 +15,7 @@
 <script setup lang="ts">
 
 import InputText from '@/components/InputText.vue';
-import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
+import InputImage from '@/components/InputImage.vue';
 
 import type { FileAndPreview } from '@/types';
 import { getFileAndPreviewDefaultInitial } from '@/types';

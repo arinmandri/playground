@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 
-import InputAttachmentFile from '@/components/InputAttachmentFile.vue';
+import InputAttachmentFile from '@/components/InputImage.vue';
 
 import type { FileAndPreview } from "@/types";
 
