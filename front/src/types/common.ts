@@ -32,7 +32,7 @@ export interface FileAndPreview {
   preview: string;// 미리보기 (기존 항목을 불러온 경우 기존 항목의 URL, 새 항목을 만들거나 기존 항목을 수정하는 경우 새로 선택한 파일에서 만들어진 미리보기)
   fieldValue: string | null;// form의 필드에 바인딩할 값 (기존 항목을 불러온 경우 기존 항목의 URL, 새 항목을 만들거나 기존 항목을 수정하는 경우 첨부파일의 임시파일id)
 }
-export const getFileAndPreviewDefaultInitial: () => FileAndPreview = () => ({
+export const getNullFileAndPreview: () => FileAndPreview = () => ({
   newFile: null,
   preview: '',
   fieldValue: null,

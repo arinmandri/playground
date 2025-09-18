@@ -40,7 +40,7 @@
 <script setup lang="ts">
 
 import type { Attachment } from "@/types";
-import { getFileAndPreviewDefaultInitial, getNullAttachment } from "@/types";
+import { getNullFileAndPreview, getNullAttachment } from "@/types";
 import { ATT_TYPE } from "@/types";
 
 const props = defineProps<{
@@ -59,7 +59,7 @@ const emit = defineEmits<{
 function onImageSelect(event: Event) {
   clearInternal();
   internalData.attType = ATT_TYPE.image;
-  internalData.attData.typeImage = getFileAndPreviewDefaultInitial();
+  internalData.attData.typeImage = getNullFileAndPreview();
 
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
@@ -76,7 +76,7 @@ function onImageSelect(event: Event) {
 function onFileSelect(event: Event) {
   clearInternal();
   internalData.attType = ATT_TYPE.file;
-  internalData.attData.typeFile = getFileAndPreviewDefaultInitial();
+  internalData.attData.typeFile = getNullFileAndPreview();
 
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;

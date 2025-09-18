@@ -5,8 +5,8 @@ form 속에 파일 1개 첨부 부분.
 
 사용 예시
 import type { FileAndPreview } from '@/types';
-import { getFileAndPreviewDefaultInitial } from '@/types';
-const fileField1 = ref<FileAndPreview>(getFileAndPreviewDefaultInitial());
+import { getNullFileAndPreview } from '@/types';
+const fileField1 = ref<FileAndPreview>(getNullFileAndPreview());
 import { THIS } from '@/components/{ THIS }.vue';
 <{ THIS } :title="'프사'" v-model:fileAndPreview="fileField1" />
 -->

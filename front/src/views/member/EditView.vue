@@ -18,7 +18,7 @@ import InputText from '@/components/InputText.vue';
 import InputImage from '@/components/InputImage.vue';
 
 import type { FileAndPreview } from '@/types';
-import { getFileAndPreviewDefaultInitial } from '@/types';
+import { getNullFileAndPreview } from '@/types';
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 import api from '@/api/axiosInstance';
 
@@ -31,7 +31,7 @@ const form = ref({
   email: '',
 })
 
-const propic = ref<FileAndPreview>(getFileAndPreviewDefaultInitial());
+const propic = ref<FileAndPreview>(getNullFileAndPreview());
 
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')
