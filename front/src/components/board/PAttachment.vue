@@ -39,15 +39,12 @@
 
 <script setup lang="ts">
 
-import type { PAttachment } from "@/types";
-import { ATT_TYPE, FileAndPreview, getNullAttachment } from "@/types";
+import { PAttachment, ATT_TYPE } from "@/types";
 
 const props = defineProps<{
   title?: string;
   attachment: PAttachment;
 }>();
-
-let internalData = props.attachment as PAttachment;
 
 const emit = defineEmits<{
   (e: 'update:attachment', exportProps: PAttachment): void;
@@ -56,44 +53,33 @@ const emit = defineEmits<{
 }>();
 
 function onImageSelect(event: Event) {
-  clearInternal();
-  internalData.attType = ATT_TYPE.image;
-  internalData.attData.typeImage = FileAndPreview.getNull();
-
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
 
   if (selectedFile) {
-    internalData.attData.typeImage.setFile(selectedFile);
-    emit('update:attachment', internalData);
-    emit('select-new', internalData);
+    const temp = props.attachment;
+    temp.setImage(selectedFile);
+    emit('update:attachment', temp);
+    emit('select-new', temp);
   }
 }
 
 function onFileSelect(event: Event) {
-  clearInternal();
-  internalData.attType = ATT_TYPE.file;
-  internalData.attData.typeFile = FileAndPreview.getNull();
-
   const target = event.target as HTMLInputElement;
   const selectedFile = target.files?.[0] ?? null;
 
   if (selectedFile) {
-    internalData.attData.typeFile.setFile(selectedFile);
-    emit('update:attachment', internalData);
-    emit('select-new', internalData);
+    const temp = props.attachment;
+    temp.setFile(selectedFile);
+    emit('update:attachment', temp);
+    emit('select-new', temp);
   }
 }
 
-function clearInternal() {
-  const keys = Object.keys(props.attachment.attData);
-  props.attachment.attData.typeImage = null;
-  props.attachment.attData.typeFile = null;
-}
-
 function clearFile() {
-  internalData = getNullAttachment();
-  emit('update:attachment', internalData);
+  const temp = props.attachment;
+  temp.clear();
+  emit('update:attachment', temp);
   emit('clear');
 }
 </script>

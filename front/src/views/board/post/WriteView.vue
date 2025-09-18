@@ -16,7 +16,7 @@
 import PAttachmentList from '@/components/board/PAttachmentList.vue';
 
 import api from "@/api/axiosInstance";
-import type { PAttachment } from "@/types";
+import { PAttachment } from "@/types";
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
