@@ -74,6 +74,7 @@ function clearFile() {
 <style scoped>
 .inputTitle {
   font-weight: bold;
+  font-size: 80%;
 }
 </style>
 
