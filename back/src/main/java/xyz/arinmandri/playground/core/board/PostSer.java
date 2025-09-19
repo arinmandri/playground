@@ -52,6 +52,7 @@ public class PostSer extends PersistenceSer
 	public Long add ( Z_PostAdd addPostReq , List<PAttachment> attachments , Member author ) {
 
 		Post p = repo.save( addPostReq.toEntity( author ) );
+		p.setAttachments( attachments );
 
 		if( attachments != null ){
 			int order = 1;
@@ -82,7 +83,8 @@ public class PostSer extends PersistenceSer
 	public static List<Y_PAttachment> collectAttachments ( List<? extends Y_PAttachment>... attachmentsSomeTypeLists ) {
 		List<Y_PAttachment> atts = new ArrayList<>();
 		for( List<? extends Y_PAttachment> list : attachmentsSomeTypeLists ){
-			atts.addAll( list );
+			if( list != null )
+			    atts.addAll( list );
 		}
 		atts.sort( ( a , b )-> Integer.compare( a.getOrder(), b.getOrder() ) );
 		return atts;

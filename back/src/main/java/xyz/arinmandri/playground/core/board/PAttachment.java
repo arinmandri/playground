@@ -30,7 +30,7 @@ public abstract class PAttachment extends BaseEntityWithoutId
 	        name = "p_attachment_seq",
 	        sequenceName = "wwwwwwwwwwwwwwwwwwwwwwwwww",// 아니 진짜 이건 그냥 이름 설정인데 이건 왜 안되냐고 심지어 다른 컴퓨터에서 됐는데 왜 안 됨
 	        schema = "wwwwwwwwwwwwwwwwwwwwwwwwwwdddddddddddddddddddddddddd",// 스키마 명시했는데 Hibernate가 `select nextval('pattachment_seq')`라고 찾음 ㅡㅡ
-	        allocationSize = -999999999// XXX 아니 진짜 뭐냐 버그인가? 설정이 안 된다. org.hibernate.MappingException: The increment size of the [pattachment_seq] sequence is set to [50] in the entity mapping while the associated database sequence increment size is [{내가 DB에서 만든 시퀀스의 INCREMENT BY 값}]. 어느 다른 수를 적어도 50이라고만 한다. 결국에는 DB에서의 저 값을 50으로 맞췄다.
+	        allocationSize = 50// XXX 아니 진짜 뭐냐 버그인가? 설정이 안 된다. org.hibernate.MappingException: The increment size of the [pattachment_seq] sequence is set to [50] in the entity mapping while the associated database sequence increment size is [{내가 DB에서 만든 시퀀스의 INCREMENT BY 값}]. 어느 다른 수를 적어도 50이라고만 한다. 결국에는 DB에서의 저 값을 50으로 맞췄다.
 	)
 	private Long id;
 

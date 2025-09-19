@@ -3,7 +3,9 @@ package xyz.arinmandri.playground.core.board;
 import xyz.arinmandri.playground.core.BaseEntityWithId;
 import xyz.arinmandri.playground.core.member.Member;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,5 +53,19 @@ class Post extends BaseEntityWithId
 
 	void update ( Post data ) {
 		if( data.content != null ) content = data.content;
+	}
+
+	void setAttachments ( List<PAttachment> list ) {
+		this.attachments = list;
+		List<PAttachmentImage> listImage = new ArrayList<>();
+		List<PAttachmentFile> listFile = new ArrayList<>();
+		for( PAttachment item : list ){
+			if( item instanceof PAttachmentImage itemImage )
+			    listImage.add( itemImage );
+			if( item instanceof PAttachmentFile itemFile )
+			    listFile.add( itemFile );
+		}
+		this.attachmentsImage = listImage;
+		this.attachmentsFile = listFile;
 	}
 }
