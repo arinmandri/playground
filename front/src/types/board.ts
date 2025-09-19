@@ -71,11 +71,13 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
-  toApiSendingForm(): PAttachmentForApiSending {
+  toApiSendingForm(): PAttachmentForApiSending | null {
+    if (this._attType == null)
+      return null;
+
     const a = {
-      // TODO
-      type: 'image',
-      url: 'https://arinmandri.s3.ap-northeast-2.amazonaws.com/jvhtizk7qkhsycz47krl8lkm7pu-de-r.png',
+      type: this._attType,
+      ...this._attData.toApiSendingForm(this._attType)
     };
     return a;
   }
@@ -90,8 +92,8 @@ export class PAttachment {
 }
 
 export enum ATT_TYPE {
-  image,
-  file,
+  image = 'image',
+  file = 'file',
 }
 
 /**
@@ -136,6 +138,20 @@ class PAttachmentData {
     this.clear();
     this._typeFile = FileAndPreview.newOne();
     this._typeFile.setFile(newFile);
+  }
+
+  toApiSendingForm(attType: ATT_TYPE): any {
+    if (attType == ATT_TYPE.image) {
+      return {
+        url: this._typeImage?.fieldValue
+      }
+    }
+    if (attType == ATT_TYPE.file) {
+      return {
+        url: this._typeFile?.fieldValue
+      }
+    }
+    return null;
   }
 
   get typeImage(): FileAndPreview | null {
