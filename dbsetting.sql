@@ -69,15 +69,15 @@ CREATE TABLE "playground"."p_attachment_file"(
     ,"created_at" TIMESTAMPTZ NOT NULL
 );
 
-DROP SEQUENCE IF EXISTS "playground"."pattachment_seq";
-CREATE SEQUENCE "playground"."pattachment_seq"
+DROP SEQUENCE IF EXISTS "playground"."p_attachment_seq";
+CREATE SEQUENCE "playground"."p_attachment_seq"
     START WITH 1
     INCREMENT BY 50
     NO MINVALUE
     NO MAXVALUE
     CACHE 50
 ;
-GRANT USAGE, SELECT, UPDATE ON SEQUENCE "playground"."pattachment_seq" TO "{ 사용자 }"
+GRANT USAGE, SELECT, UPDATE ON SEQUENCE "playground"."p_attachment_seq" TO "{ 사용자 }"
 ;
 
 
