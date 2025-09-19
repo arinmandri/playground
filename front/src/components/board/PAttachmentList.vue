@@ -21,7 +21,7 @@ import PAttachmentCom from '@/components/board/PAttachment.vue';
 
 import { PAttachment } from "@/types";
 
-import { ref, type Ref, defineExpose } from "vue";
+import { defineExpose } from "vue";
 
 
 const props = defineProps<{
@@ -39,17 +39,18 @@ defineExpose({
 });
 
 
-const attachments = ref<PAttachment[]>([]) as Ref<PAttachment[]>;
-
 function onSelectNewFile(newAttachment: PAttachment) {
-  attachments.value.push(newAttachment.copy());
-  emit('update:attachments', attachments.value);
+  const attachments = props.attachments;
+  attachments.push(newAttachment.copy());
+  emit('update:attachments', attachments);
 }
 
 function uploadFiles() {
+  const attachments = props.attachments;
+
   const fs = [] as File[];
   const atts = [] as PAttachment[];
-  props.attachments.forEach((att) => {
+  attachments.forEach((att) => {
     const f = att.getFileIfExists();
     if (f != null) {
       fs.push(f);
@@ -65,9 +66,9 @@ function uploadFiles() {
         att.setFileIfSettable(ltf.id);
         // TODO 오류시 처리 어케함 진짜
       }
+      emit('update:attachments', attachments);
     });
   }
-  emit('update:attachments', attachments.value);
 }
 
 </script>
