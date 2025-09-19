@@ -98,15 +98,15 @@ export enum ATT_TYPE {
 
 /**
  * 게시글 첨부물 타입별 데이터
- * 한 가지 필드만 값을 가지고 나머지는 null이 되도록 관리하라.
+ * 한 가지 필드만 값을 가지고 나머지는 undefined이 되도록 관리하라.
  */
 class PAttachmentData {
-  private _typeImage: FileAndPreview | null;
-  private _typeFile: FileAndPreview | null;
+  private _typeImage: FileAndPreview | undefined;
+  private _typeFile: FileAndPreview | undefined;
 
   private constructor(
-    typeImage: FileAndPreview | null = null,
-    typeFile: FileAndPreview | null = null
+    typeImage: FileAndPreview | undefined = undefined,
+    typeFile: FileAndPreview | undefined = undefined
   ) {
     this._typeImage = typeImage;
     this._typeFile = typeFile;
@@ -124,8 +124,8 @@ class PAttachmentData {
   }
 
   clear(): void {
-    this._typeImage = null;
-    this._typeFile = null;
+    this._typeImage = undefined;
+    this._typeFile = undefined;
   }
 
   setImage(newFile: File): void {
@@ -154,11 +154,11 @@ class PAttachmentData {
     return null;
   }
 
-  get typeImage(): FileAndPreview | null {
+  get typeImage(): FileAndPreview | undefined {
     return this._typeImage;
   }
 
-  get typeFile(): FileAndPreview | null {
+  get typeFile(): FileAndPreview | undefined {
     return this._typeFile;
   }
 }
