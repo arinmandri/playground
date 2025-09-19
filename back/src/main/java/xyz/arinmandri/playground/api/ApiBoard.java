@@ -4,11 +4,12 @@ import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.board.PAttachment;
 import xyz.arinmandri.playground.core.board.PAttachmentFile;
-import xyz.arinmandri.playground.core.board.PAttachmentImage;
-import xyz.arinmandri.playground.core.board.Post;
-import xyz.arinmandri.playground.core.board.PostRepo;
 import xyz.arinmandri.playground.core.board.PostSer;
-import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.board.Y_PostDetail;
+import xyz.arinmandri.playground.core.board.Y_PostListItem;
+import xyz.arinmandri.playground.core.board.Z_PAttachmentEdit;
+import xyz.arinmandri.playground.core.board.Z_PostAdd;
+import xyz.arinmandri.playground.core.board.Z_PostEdit;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import lombok.RequiredArgsConstructor;
-import lombok.With;
 
 
 @RestController
@@ -42,15 +38,12 @@ import lombok.With;
 public class ApiBoard extends ApiA
 {
 	final PostSer postSer;
-	final LocalFileSer localFileSer;
-
-	final private PostRepo postRepo;
 
 	@GetMapping( "/post/{id}" )
-	public ResponseEntity<Post> apiPostGet (
+	public ResponseEntity<Y_PostDetail> apiPostGet (
 	        @PathVariable long id ) {
 
-		Post p;
+		Y_PostDetail p;
 		try{
 			p = postSer.get( id );
 		}
@@ -62,10 +55,10 @@ public class ApiBoard extends ApiA
 	}
 
 	@GetMapping( "/post/list" )
-	public ResponseEntity<CursorPage<Post>> apiPostList (
+	public ResponseEntity<CursorPage<Y_PostListItem>> apiPostList (
 	        @RequestParam( required = false ) Long cursor ) {
 
-		CursorPage<Post> p;
+		CursorPage<Y_PostListItem> p;
 		p = cursor == null
 		        ? postSer.list()
 		        : postSer.list( cursor );
@@ -75,19 +68,20 @@ public class ApiBoard extends ApiA
 	}
 
 	@PostMapping( "/post/add" )
-	public ResponseEntity<Post> apiPostAdd (
+	public ResponseEntity<Y_PostDetail> apiPostAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody @Valid AddPostReq req
+	        @RequestBody
+	        @Valid Z_PostAdd req
 	) {
 
-		Member m = getMemberFrom( userDetails );
+		Member me = getMemberFrom( userDetails );
 
 		//// 파일 업로드 처리
 		List<PAttachment> atts = new ArrayList<>();
-		if( req.attachments != null ){
-			for( EditPostReqAttachment reqAttSrc : req.attachments ){
+		if( req.attachments() != null ){
+			for( Z_PAttachmentEdit reqAttSrc : req.attachments() ){
 
-				EditPostReqAttachment reqAtt = uploadFileField( reqAttSrc,
+				Z_PAttachmentEdit reqAtt = uploadFileField( reqAttSrc,
 				        ( r )-> r.url(),
 				        ( r , v )-> r.withUrl( v ) );
 
@@ -107,113 +101,56 @@ public class ApiBoard extends ApiA
 			}
 		}
 
-		Post p = req.toEntity( m );
-		p = postSer.add( p, atts );
+		Long id = postSer.add( req, atts, me );
+
+		Y_PostDetail p;
+		try{
+			p = postSer.get( id );
+		}
+		catch( NoSuchEntity e ){
+			throw ExceptionalTask.NOT_FOUND();// TODO 이 경우가 나와???
+		}
+
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
 	}
 
-	static public record AddPostReq(
-	        String content ,
-	        List<@NotNull EditPostReqAttachment> attachments )
-	{
-
-		Post toEntity ( Member author ) {
-
-			return Post.builder()
-			        .author( author )
-			        .content( content )
-			        .build();
-		}
-	}
-
 	@PostMapping( "/post/{id}/edit" )
-	public ResponseEntity<Post> apiPostEdit (
+	public ResponseEntity<Y_PostDetail> apiPostEdit (
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        @PathVariable long id ,
-	        @RequestBody EditPostReq req ) throws LackAuthExcp {
+	        @RequestBody Z_PostEdit req
+	) throws LackAuthExcp , NoSuchEntity {
 
 		Member m = getMemberFrom( userDetails );
 
-		Post p = postRepo.findById( id )
-		        .orElseThrow( ()-> ExceptionalTask.NOT_FOUND() );
+		Y_PostDetail p = postSer.get( id );
 
 		if( !p.getAuthor().equals( m ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		p = postSer.edit( p, req.toEntity() );
+		postSer.edit( id, req );
+
 		return ResponseEntity.ok()
 		        .body( p );
-	}
-
-	static public record EditPostReq(
-	        String content ,
-	        List<EditPostReqAttachment> attachments )
-	{
-
-		Post toEntity () {
-			return Post.builder()
-			        .content( content )
-			        .build();
-		}
-	}
-
-	@JsonTypeInfo( use = JsonTypeInfo.Id.NAME , include = JsonTypeInfo.As.PROPERTY , property = "type" )
-	@JsonSubTypes( {
-	        @JsonSubTypes.Type( value = EditPostReqAttachmentImage.class , name = EditPostReqAttachmentImage.type ),
-	        @JsonSubTypes.Type( value = EditPostReqAttachmentFile.class , name = EditPostReqAttachmentFile.type )
-	} )
-	static public interface EditPostReqAttachment
-	{
-		public String url ();
-
-		public EditPostReqAttachment withUrl ( String url );
-
-		public PAttachment toEntity ();
-	}
-
-	static public record EditPostReqAttachmentImage(
-	        @With String url ) implements EditPostReqAttachment
-	{
-		public static final String type = "image";// TODO 도메인에서가져와?
-
-		@Override
-		public PAttachmentImage toEntity () {
-			return PAttachmentImage.builder()
-			        .url( url )
-			        .build();
-		}
-	}
-
-	static public record EditPostReqAttachmentFile(
-	        @With String url ) implements EditPostReqAttachment
-	{
-		public static final String type = "file";// TODO 도메인에서가져와?
-
-		@Override
-		public PAttachmentFile toEntity () {
-			return PAttachmentFile.builder()
-			        .url( url )
-			        .build();
-		}
 	}
 
 	@PostMapping( "/post/{id}/del" )
 	public ResponseEntity<Void> apiPostDel (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @PathVariable long id ) throws LackAuthExcp {
+	        @PathVariable long id
+	) throws LackAuthExcp , NoSuchEntity {
 
 		Member m = getMemberFrom( userDetails );
 
-		Post p = postRepo.findById( id )
-		        .orElseThrow( ()-> ExceptionalTask.NOT_FOUND() );
+		Y_PostDetail p = postSer.get( id );
 
 		if( !p.getAuthor().equals( m ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		postSer.del( p );
+		postSer.del( id );
 		return ResponseEntity.ok().build();
 	}
 }

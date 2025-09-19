@@ -3,6 +3,8 @@ package xyz.arinmandri.playground.core.board;
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
+import xyz.arinmandri.playground.core.member.Member;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,19 +23,35 @@ public class PostSer extends PersistenceSer
 	final private PAttachmentRepo attRepo;
 
 	@Transactional( readOnly = true )
-	public Post get ( long id ) throws NoSuchEntity {
-		return repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Post.class , id ) );
+	public Y_PostDetail get ( long id ) throws NoSuchEntity {
+		return repo.findById( id, Y_PostDetail.class );// TODO ??? 이거 없으면 어케 되는 거임
 	}
 
-	@Transactional
-	public void del ( Post post ) {
-		repo.delete( post );
+	@Transactional( readOnly = true )
+	public CursorPage<Y_PostListItem> list () {
+		List<Y_PostListItem> rows = repo.findAllByOrderByIdDesc( defaultPageable );
+		return new CursorPage<>( rows, pageSize );
 	}
 
+	@Transactional( readOnly = true )
+	public CursorPage<Y_PostListItem> list ( Long cursor ) {
+		List<Y_PostListItem> rows = repo.findByIdLessThanOrderByIdDesc( cursor, defaultPageable );
+		return new CursorPage<>( rows, pageSize );
+	}
+
+	/**
+	 * 게시글 추가
+	 * 
+	 * @param addPostReq
+	 * @param attachments
+	 * @param author
+	 * @return 생성된 게시글의 id
+	 */
 	@Transactional
-	public Post add ( Post post , List<PAttachment> attachments ) {
-		Post p = repo.save( post );
+	public Long add ( Z_PostAdd addPostReq , List<PAttachment> attachments , Member author ) {
+
+		Post p = repo.save( addPostReq.toEntity( author ) );
+
 		if( attachments != null ){
 			int order = 1;
 			for( PAttachment attachment : attachments ){
@@ -42,24 +60,21 @@ public class PostSer extends PersistenceSer
 				attRepo.save( attachment );
 			}
 		}
-		return p;
+
+		return p.getId();
 	}
 
 	@Transactional
-	public Post edit ( Post postOriginal , Post postNew ) {
-		postOriginal.update( postNew );
-		return postOriginal;
+	public void edit ( Long originalId , Z_PostEdit newData ) {
+		Post postOriginal = repo.findById( originalId ).get();
+		Post newOne = newData.toEntity();
+		postOriginal.update( newOne );
 	}
 
-	@Transactional( readOnly = true )
-	public CursorPage<Post> list () {
-		List<Post> rows = repo.findAllByOrderByIdDesc( defaultPageable );
-		return new CursorPage<>( rows, pageSize );
-	}
-
-	@Transactional( readOnly = true )
-	public CursorPage<Post> list ( Long cursor ) {
-		List<Post> rows = repo.findByIdLessThanOrderByIdDesc( cursor, defaultPageable );
-		return new CursorPage<>( rows, pageSize );
+	@Transactional
+	public void del ( Long id ) throws NoSuchEntity {
+		Post p = repo.findById( id )
+		        .orElseThrow( ()-> new NoSuchEntity( Post.class, id ) );
+		repo.delete( p );
 	}
 }

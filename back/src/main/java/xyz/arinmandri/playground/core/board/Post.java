@@ -19,12 +19,12 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table( schema = "playground" )
+@Table( schema = "playground" , name = "post" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Post extends BaseEntityWithId
+class Post extends BaseEntityWithId
 {
 	@Id
 	@Column( updatable = false )

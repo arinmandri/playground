@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepo extends JpaRepository<Post, Long>
 {
-	public List<Post> findAllByOrderByIdDesc ( Pageable pagable );
+	< T > T findById ( Long id , Class<T> type );
 
-	public List<Post> findByIdLessThanOrderByIdDesc ( Long beforeId , Pageable pageable );
+	List<Y_PostListItem> findAllByOrderByIdDesc ( Pageable pagable );
+
+	List<Y_PostListItem> findByIdLessThanOrderByIdDesc ( Long beforeId , Pageable pageable );
 }

@@ -7,20 +7,21 @@ import lombok.Getter;
 
 /**
  * 커서 기반 페이징 응답
+ * XXX Long id로만 하는 중
  * 
- * @param <E> 엔터티 타입
+ * @param <E> 프로젝션 타입
  */
 @Getter
-public class CursorPage< E extends BaseEntity >
+public class CursorPage< E extends VPagable<Long> >
 {
-	private List<E> list;
-	private Long nextCursor;
-	private int size;
+	private final List<E> list;
+	private final Long nextCursor;
+	private final int size;
 
 	public CursorPage( List<E> list , int size ) {
 		super();
 		this.list = list;
-		this.nextCursor = list.isEmpty() ? null : list.get( list.size() - 1 ).getId();
+		this.nextCursor = list.isEmpty() ? null : list.get( list.size() - 1 ).cursor();
 		this.size = size;
 	}
 }
