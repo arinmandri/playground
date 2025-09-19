@@ -5,6 +5,7 @@ import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
 import xyz.arinmandri.playground.core.member.Member;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class PostSer extends PersistenceSer
 			int order = 1;
 			for( PAttachment attachment : attachments ){
 				attachment.setOrder( order++ );
-				attachment.setPost( p );
+				attachment.setBelongsTo( p );
 				attRepo.save( attachment );
 			}
 		}
@@ -76,5 +77,14 @@ public class PostSer extends PersistenceSer
 		Post p = repo.findById( id )
 		        .orElseThrow( ()-> new NoSuchEntity( Post.class, id ) );
 		repo.delete( p );
+	}
+
+	public static List<Y_PAttachment> collectAttachments ( List<? extends Y_PAttachment>... attachmentsSomeTypeLists ) {
+		List<Y_PAttachment> atts = new ArrayList<>();
+		for( List<? extends Y_PAttachment> list : attachmentsSomeTypeLists ){
+			atts.addAll( list );
+		}
+		atts.sort( ( a , b )-> Integer.compare( a.getOrder(), b.getOrder() ) );
+		return atts;
 	}
 }

@@ -14,11 +14,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Entity
+@Entity( name = "p_attachment" )
 @Inheritance( strategy = InheritanceType.TABLE_PER_CLASS )
+@NoArgsConstructor
 @Getter
 public abstract class PAttachment extends BaseEntityWithoutId
 {
@@ -33,9 +35,9 @@ public abstract class PAttachment extends BaseEntityWithoutId
 	private Long id;
 
 	@JoinColumn( name = "belongs_to__p" )
-	@ManyToOne
+	@ManyToOne( targetEntity = Post.class )
 	@Setter
-	private Post post;
+	private Post belongsTo;
 
 	@Column
 	@Setter
