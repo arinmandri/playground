@@ -111,6 +111,7 @@ public class ApiBoard extends ApiA
 
 	static public record AddPostReq(
 	        String content ,
+	        // TODO 배열의 각 요소가 not null
 	        List<EditPostReqAttachment> attachments )
 	{
 

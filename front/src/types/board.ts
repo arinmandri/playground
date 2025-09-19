@@ -71,6 +71,15 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
+  toApiSendingForm(): PAttachmentForApiSending {
+    const a = {
+      // TODO
+      type: 'image',
+      url: 'https://arinmandri.s3.ap-northeast-2.amazonaws.com/jvhtizk7qkhsycz47krl8lkm7pu-de-r.png',
+    };
+    return a;
+  }
+
   get attType(): ATT_TYPE | null {
     return this._attType;
   }
@@ -136,4 +145,8 @@ class PAttachmentData {
   get typeFile(): FileAndPreview | null {
     return this._typeFile;
   }
+}
+
+interface PAttachmentForApiSending {
+  type: string;
 }

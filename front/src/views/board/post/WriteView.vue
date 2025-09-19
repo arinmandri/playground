@@ -18,25 +18,28 @@ import PAttachmentList from '@/components/board/PAttachmentList.vue';
 import api from "@/api/axiosInstance";
 import { PAttachment } from "@/types";
 
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
 
 interface PAttachmentList {
-  uploadFiles: () => void
+  uploadFiles: () => Promise<void>
 }
 
 const attachments = ref<PAttachment[]>([]);
 const content = ref('')
-const attachmentsComp = ref<PAttachmentList>();
+const attachmentsComp = ref<PAttachmentList>() as Ref<PAttachmentList>;
 const loading = ref(false)
 const error = ref('')
 
-const submitPost = async () => {
+async function submitPost() {
   error.value = ''
   loading.value = true
   try {
+    await attachmentsComp.value.uploadFiles();
+    const attsToSend = attachments.value.map(attRaw => attRaw.toApiSendingForm());
     await api.post('/post/add', {
-      content: content.value
+      content: content.value,
+      attachments: attsToSend,
     });
     content.value = ''
     router.push('/board');
