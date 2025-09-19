@@ -16,6 +16,9 @@ import xyz.arinmandri.playground.security.LackAuthExcp;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -74,7 +77,8 @@ public class ApiBoard extends ApiA
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Post> apiPostAdd (
 	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody AddPostReq req ) {
+	        @RequestBody @Valid AddPostReq req
+	) {
 
 		Member m = getMemberFrom( userDetails );
 
@@ -111,8 +115,7 @@ public class ApiBoard extends ApiA
 
 	static public record AddPostReq(
 	        String content ,
-	        // TODO 배열의 각 요소가 not null
-	        List<EditPostReqAttachment> attachments )
+	        List<@NotNull EditPostReqAttachment> attachments )
 	{
 
 		Post toEntity ( Member author ) {
