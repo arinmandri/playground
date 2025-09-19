@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.security;
 
 import xyz.arinmandri.util.MyPasswordEncoder;
+
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -28,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * 스프링 시큐리티 설정
  * 
- * @see xyz.arinmandri.playground.api.MyErrorCon
  */
 @Configuration
 @RequiredArgsConstructor

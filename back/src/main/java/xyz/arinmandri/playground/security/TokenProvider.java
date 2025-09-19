@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
+/**
+ * JWT 액세스토큰, 그냥 리프레시 토큰 발행
+ */
 @Service
 @RequiredArgsConstructor
 public class TokenProvider

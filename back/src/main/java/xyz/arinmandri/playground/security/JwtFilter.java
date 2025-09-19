@@ -1,5 +1,8 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.util.JwtUtil;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
@@ -18,8 +21,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.security.user.User;
-import xyz.arinmandri.util.JwtUtil;
+
+
+/**
+ * JWT 토큰으로 인증하는 스프링 시큐리티 필터
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter
@@ -33,7 +39,8 @@ public class JwtFilter extends OncePerRequestFilter
 	protected void doFilterInternal (
 	        @NonNull HttpServletRequest request ,
 	        @NonNull HttpServletResponse response ,
-	        @NonNull FilterChain filterChain ) throws ServletException , IOException {
+	        @NonNull FilterChain filterChain
+	) throws ServletException , IOException {
 
 		String authorizationHeader = request.getHeader( HEADER_AUTHORIZATION );
 		String token = ( authorizationHeader != null && authorizationHeader.startsWith( TOKEN_PREFIX ) )
