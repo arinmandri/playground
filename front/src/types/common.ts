@@ -45,6 +45,8 @@ export class FileAndPreview {
   private _newFile_init: File | null;
   private _preview: string;// 미리보기 (기존 항목을 불러온 경우 기존 항목의 URL, 새 항목을 만들거나 기존 항목을 수정하는 경우 새로 선택한 파일에서 만들어진 미리보기)
   private _preview_init: string;
+  private _name: string;// 파일 이름
+  private _name_init: string;
   private _fieldValue: string | null;// form의 필드에 바인딩할 값 (기존 항목을 불러온 경우 기존 항목의 URL, 새 항목을 만들거나 기존 항목을 수정하는 경우 첨부파일의 임시파일id)
   private _fieldValue_init: string | null;
 
@@ -53,12 +55,15 @@ export class FileAndPreview {
   private constructor(
     newFile: File | null = null,
     preview: string = '',
+    name: string = '',
     fieldValue: string | null = null
   ) {
     this._newFile = newFile;
     this._newFile_init = newFile;
     this._preview = preview;
     this._preview_init = preview;
+    this._name = name;
+    this._name_init = name;
     this._fieldValue = fieldValue;
     this._fieldValue_init = fieldValue;
 
@@ -73,7 +78,8 @@ export class FileAndPreview {
     return new FileAndPreview(
       this._newFile,
       this._preview,
-      this._fieldValue
+      this._name,
+      this._fieldValue,
     );
   }
 
@@ -88,6 +94,7 @@ export class FileAndPreview {
   clear() {
     this._newFile = null;
     this._preview = '';
+    this._name = '';
     this._fieldValue = null;
     this._hasChanged = true;
   }
@@ -95,6 +102,7 @@ export class FileAndPreview {
   reset() {
     this._newFile = this._newFile_init;
     this._preview = this._preview_init;
+    this._name = this._name_init;
     this._fieldValue = this._fieldValue_init;
     this._hasChanged = false;
   }
@@ -102,6 +110,7 @@ export class FileAndPreview {
   setFile(newFile: File) {
     this._newFile = newFile;
     this._preview = URL.createObjectURL(newFile);
+    this._name = newFile.name;
     this._hasChanged = false;
   }
 
@@ -130,6 +139,10 @@ export class FileAndPreview {
 
   get preview() {
     return this._preview;
+  }
+
+  get name() {
+    return this._name;
   }
 
   get fieldValue() {
