@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-@Entity( name = "p_attachment_image" )
-@Table( schema = "playground" , name = "p_attachment_image" )
+@Entity
+@Table( name = "p_attachment_image" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

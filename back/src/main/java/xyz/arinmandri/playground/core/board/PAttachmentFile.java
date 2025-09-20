@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Entity( name = "p_attachment_file" )
-@Table( schema = "playground" , name = "p_attachment_file" )
+@Entity
+@Table( name = "p_attachment_file" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

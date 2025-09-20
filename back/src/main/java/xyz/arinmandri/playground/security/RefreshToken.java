@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.security;
 
 import xyz.arinmandri.playground.core.member.Member;
+
 import java.time.Instant;
 
 import jakarta.persistence.Column;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table( schema = "playground" )
+@Table( name = "refresh_token" )
 @NoArgsConstructor
 @Getter
 public class RefreshToken

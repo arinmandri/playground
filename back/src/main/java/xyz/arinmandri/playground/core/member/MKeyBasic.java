@@ -14,8 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-@Entity( name = "mkey_basic" )
-@Table( schema = "playground" )
+@Entity
+@Table( name = "mkey_basic" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
