@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -32,11 +33,23 @@ public class Member extends BaseEntityWithId
 	private String propic;
 
 	void update ( Member data ) {
-		if( data.nick != null ) nick = data.nick;
-		if( nick.equals( "" ) ) nick = null;
-		if( data.email != null ) email = data.email;
-		if( email.equals( "" ) ) email = null;
-		if( data.propic != null ) propic = data.propic;
-		if( propic.equals( "" ) ) propic = null;
+		if( data.nick != null ){
+			if( data.nick.equals( "" ) )
+			    nick = null;
+			else
+			    nick = data.nick;
+		}
+		if( data.email != null ){
+			if( data.email.equals( "" ) )
+			    email = null;
+			else
+			    email = data.email;
+		}
+		if( data.propic != null ){
+			if( data.propic.equals( "" ) )
+			    propic = null;
+			else
+			    propic = data.propic;
+		}
 	}
 }

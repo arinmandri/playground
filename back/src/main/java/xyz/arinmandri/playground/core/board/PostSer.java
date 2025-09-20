@@ -49,17 +49,22 @@ public class PostSer extends PersistenceSer
 	 * @return 생성된 게시글의 id
 	 */
 	@Transactional
-	public Long add ( Z_PostAdd addPostReq , List<PAttachment> attachments , Member author ) {
+	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Member author ) {
 
-		Post p = repo.save( addPostReq.toEntity( author ) );
-		p.setAttachments( attachments );
+		Post p = addPostReq.toEntity( author );
+		p = repo.save( p );
 
-		if( attachments != null ){
-			int order = 1;
-			for( PAttachment attachment : attachments ){
-				attachment.setOrder( order++ );
-				attachment.setBelongsTo( p );
-				attRepo.save( attachment );
+		if( addAttachmentsReq != null ){
+			List<PAttachment> atts = new ArrayList<>();
+
+			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
+				PAttachment att = reqAtt.toEntity();
+				atts.add( att );
+			}
+			
+			p.setAttachments( atts );
+			for( PAttachment item : atts ){
+				attRepo.save( item );
 			}
 		}
 

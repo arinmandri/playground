@@ -5,7 +5,7 @@ import java.util.List;
 
 public record Z_PostEdit (
         String content ,
-        List<Z_PAttachmentEdit> attachments )
+        List<Z_PAttachmentAdd> attachments )
 {
 
 	Post toEntity () {

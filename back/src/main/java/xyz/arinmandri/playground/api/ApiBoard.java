@@ -2,12 +2,11 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.board.PAttachment;
-import xyz.arinmandri.playground.core.board.PAttachmentFile;
 import xyz.arinmandri.playground.core.board.PostSer;
 import xyz.arinmandri.playground.core.board.Y_PostDetail;
 import xyz.arinmandri.playground.core.board.Y_PostListItem;
-import xyz.arinmandri.playground.core.board.Z_PAttachmentEdit;
+import xyz.arinmandri.playground.core.board.Z_PAttachmentAdd;
+import xyz.arinmandri.playground.core.board.Z_PAttachmentFileAdd;
 import xyz.arinmandri.playground.core.board.Z_PostAdd;
 import xyz.arinmandri.playground.core.board.Z_PostEdit;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
@@ -77,31 +76,29 @@ public class ApiBoard extends ApiA
 		Member me = getMemberFrom( userDetails );
 
 		//// 파일 업로드 처리
-		List<PAttachment> atts = new ArrayList<>();
+		List<Z_PAttachmentAdd> attReq = new ArrayList<>();
 		if( req.attachments() != null ){
-			for( Z_PAttachmentEdit reqAttSrc : req.attachments() ){
+			for( Z_PAttachmentAdd reqAttSrc : req.attachments() ){
 
-				Z_PAttachmentEdit reqAtt = uploadFileField( reqAttSrc,
+				Z_PAttachmentAdd reqAtt = uploadFileField( reqAttSrc,
 				        ( r )-> r.url(),
 				        ( r , v )-> r.withUrl( v ) );
 
-				PAttachment att = reqAtt.toEntity();
-
 				//// 파일 타입인 경우 size 추가
 				//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
-				if( att instanceof PAttachmentFile attFile ){
+				if( reqAttSrc instanceof Z_PAttachmentFileAdd attFile ){
 					String fileField = reqAttSrc.url();
 					if( fileField != null && fileField.startsWith( "!" ) ){
 						String ltfId = fileField.substring( 1 );
 						LocalTempFile ltf = localFileSer.getTempFile( ltfId );
-						attFile.setSize( ltf.size() );
+//						attFile.setSize( ltf.size() );// TODO
 					}
 				}
-				atts.add( att );
+				attReq.add( reqAttSrc );
 			}
 		}
 
-		Long id = postSer.add( req, atts, me );
+		Long id = postSer.add( req, attReq, me );
 
 		Y_PostDetail p;
 		try{

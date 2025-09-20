@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Getter
-public class PAttachmentFile extends PAttachment
+class PAttachmentFile extends PAttachment
 {
 
 	@Override

@@ -22,7 +22,7 @@ import lombok.Setter;
 @Inheritance( strategy = InheritanceType.TABLE_PER_CLASS )
 @NoArgsConstructor
 @Getter
-public abstract class PAttachment extends BaseEntityWithoutId
+abstract class PAttachment extends BaseEntityWithoutId
 {
 	@Id
 	@GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "p_attachment_seq" )

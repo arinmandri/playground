@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class PAttachmentImage extends PAttachment
+class PAttachmentImage extends PAttachment
 {
 
 	@Override

@@ -50,9 +50,14 @@ class Post extends BaseEntityWithId
 
 	void setAttachments ( List<PAttachment> list ) {
 		this.attachments = list;
+
+		int order = 1;
 		List<PAttachmentImage> listImage = new ArrayList<>();
 		List<PAttachmentFile> listFile = new ArrayList<>();
 		for( PAttachment item : list ){
+			item.setOrder( order++ );
+			item.setBelongsTo( this );
+
 			if( item instanceof PAttachmentImage itemImage )
 			    listImage.add( itemImage );
 			if( item instanceof PAttachmentFile itemFile )
