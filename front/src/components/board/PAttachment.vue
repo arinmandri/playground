@@ -3,7 +3,7 @@
 <template>
   <div class="inputBox input-attachment-file">
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
-    <p>att type: {{ props.attachment.attType }}</p><!-- TEST -->
+    <p class="hidden">att type: {{ props.attachment.attType }}</p>
 
     <div v-if="props.attachment.attType == null">
       <label>

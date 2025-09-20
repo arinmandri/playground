@@ -6,7 +6,6 @@
       <PAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])" :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
-    <button @click="callAttachmentsFunction">자식함수TEST</button><!-- TEST -->
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
@@ -48,11 +47,6 @@ async function submitPost() {
   } finally {
     loading.value = false
   }
-}
-
-// TEST
-function callAttachmentsFunction() {
-  attachmentsComp.value?.uploadFiles();
 }
 
 </script>
