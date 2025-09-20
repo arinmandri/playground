@@ -7,6 +7,7 @@ import xyz.arinmandri.playground.core.board.Y_PostDetail;
 import xyz.arinmandri.playground.core.board.Y_PostListItem;
 import xyz.arinmandri.playground.core.board.Z_PAttachmentAdd;
 import xyz.arinmandri.playground.core.board.Z_PAttachmentFileAdd;
+import xyz.arinmandri.playground.core.board.Z_PAttachmentImageAdd;
 import xyz.arinmandri.playground.core.board.Z_PostAdd;
 import xyz.arinmandri.playground.core.board.Z_PostEdit;
 import xyz.arinmandri.playground.core.member.Member;
@@ -74,17 +75,25 @@ public class ApiBoard extends ApiA
 		//// 파일 업로드 처리
 		if( req.attachments() != null ){
 			for( Z_PAttachmentAdd reqAtt : req.attachments() ){
-
-				uploadFileField( reqAtt,
-				        ( r )-> r.getUrl(),
-				        ( r , ltf )-> {
-					        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
-					        r.setUrl( uploadedUrl );
-					        if( reqAtt instanceof Z_PAttachmentFileAdd attFile ){
+				if( reqAtt instanceof Z_PAttachmentImageAdd attImage ){
+					uploadFileField( attImage,
+					        ( r )-> r.getUrl(),
+					        ( r , ltf )-> {
+						        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+						        r.setUrl( uploadedUrl );
+						        return null;
+					        } );
+				}
+				if( reqAtt instanceof Z_PAttachmentFileAdd attFile ){
+					uploadFileField( attFile,
+					        ( r )-> r.getUrl(),
+					        ( r , ltf )-> {
+						        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
-					        }
-					        return null;
-				        } );
+						        return null;
+					        } );
+				}
 			}
 		}
 

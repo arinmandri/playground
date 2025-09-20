@@ -11,9 +11,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 } )
 public abstract class Z_PAttachmentAdd
 {
-	public abstract String getUrl ();
-
-	public abstract void setUrl ( String url );
-
 	abstract PAttachment toEntity ();
 }
