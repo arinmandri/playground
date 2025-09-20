@@ -76,12 +76,10 @@ public class ApiBoard extends ApiA
 		if( req.attachments() != null ){
 			for( Z_PAttachmentAdd reqAtt : req.attachments() ){
 				if( reqAtt instanceof Z_PAttachmentImageAdd attImage ){
-					uploadFileField( attImage,
+					uploadAndSetFileField( attImage,
 					        ( r )-> r.getUrl(),
-					        ( r , ltf )-> {
-						        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
-						        r.setUrl( uploadedUrl );
-						        return null;
+					        ( r , url )-> {
+						        r.setUrl( url );
 					        } );
 				}
 				if( reqAtt instanceof Z_PAttachmentFileAdd attFile ){

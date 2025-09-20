@@ -8,6 +8,7 @@ import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -107,27 +108,38 @@ public abstract class ApiA
 	 * 용례: r = thisMethod( r, (r)->r.getter(), (r,v)->r.with(v) )
 	 * 
 	 * @param <T>                파일 필드를 가진 입력용 DTO의 타입.
-	 * @param req                파일 필드를 가진 입력용 DTO.
+	 * @param reqDTO                파일 필드를 가진 입력용 DTO.
 	 * @param fileFieldGetter    입력용 DTO에서 파일 필드를 가져오는 함수.
 	 * @param afterUploadWithLtf 파일 필드 값이 업로드타입인 경우 업로드 완료 후 그 URL을 갖고 실행할 함수.
 	 * @return afterUlpoad 실행 결과. 리턴값으로 입력값을 대체하려면 afterUploadWithLtf에서 대체할 값을 반환하게 하라.
 	 *         파일 필드 값이 업로드타입이 아니면 그냥 입력용 DTO를 그대로 반환.
 	 */
-	public < T > T uploadFileField ( T req , Function<T, String> fileFieldGetter , BiFunction<T, LocalTempFile, T> afterUploadWithLtf ) {
+	public < T > T uploadFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiFunction<T, LocalTempFile, T> afterUploadWithLtf ) {
 
-		String fileField = fileFieldGetter.apply( req );
+		String fileField = fileFieldGetter.apply( reqDTO );
 
 		if( fileField != null && fileField.startsWith( "!" ) ){
 			String ltfId = fileField.substring( 1 );
 			LocalTempFile ltf = localFileSer.getTempFile( ltfId );
-			req = afterUploadWithLtf.apply( req, ltf );
+			reqDTO = afterUploadWithLtf.apply( reqDTO, ltf );
 		}
-		return req;
+		return reqDTO;
 	}
 
-	public < T > T uploadAndApplyFileField ( T req , Function<T, String> fileFieldGetter , BiFunction<T, String, T> afterUploadWithUrl ) {
+	public < T > void uploadAndSetFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiConsumer<T, String> afterUploadWithUrl ) {
+		uploadFileField(
+		        reqDTO,
+		        fileFieldGetter,
+		        ( r , ltf )-> {
+			        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+			        afterUploadWithUrl.accept( r, uploadedUrl );
+			        return null;
+		        } );
+	}
+
+	public < T > T uploadAndCloneWithNewFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiFunction<T, String, T> afterUploadWithUrl ) {
 		return uploadFileField(
-		        req,
+		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
 			        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
