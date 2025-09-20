@@ -11,20 +11,21 @@
         <span>이미지 선택</span>
       </label>
       <label>
-        <input type="file" accept="image/*" class="hidden" @change="onFileSelect" />
+        <input type="file" accept="*" class="hidden" @change="onFileSelect" />
         <span>파일 선택</span>
       </label>
     </div>
 
     <div v-if="props.attachment.attType != null">
-      <img v-if="props.attachment.attType == ATT_TYPE.image" :src="props.attachment.attData.typeImage?.preview" alt="이미지 미리보기" />
+      <img class="image-preview" v-if="props.attachment.attType == ATT_TYPE.image"
+        :src="props.attachment.attData.typeImage?.preview" alt="이미지 미리보기" />
     </div>
 
-    <button type="button" @click="clearFile">
+    <button type="button" v-if="props.attachment.attType != null" @click="clearFile">
       파일 삭제
     </button>
 
-    <div><!-- TEST -->
+    <div class="hidden">
       <div v-if="props.attachment.attType == ATT_TYPE.image">
         <p><b>fieldValue</b>: {{ props.attachment.attData.typeImage?.fieldValue }}</p>
         <p><b>preview</b>: {{ props.attachment.attData.typeImage?.preview }}</p>
@@ -91,5 +92,10 @@ function clearFile() {
 
 label {
   border: 1px dotted grey;
+}
+
+.image-preview {
+  max-width: 200px;
+  max-height: 200px;
 }
 </style>

@@ -11,8 +11,24 @@ export interface Post {
   id: number;
   content: string;
   author: Member;
+  attachments: Y_PAttachment[];
   createdAt: Date;
   createdAtPretty: string;
+}
+
+export interface Y_PAttachment {
+  type: ATT_TYPE;
+  id: number;
+  order: number;
+}
+
+export interface Y_PAttachmentImage extends Y_PAttachment {
+  url: string;
+}
+
+export interface Y_PAttachmentFile extends Y_PAttachment {
+  url: string;
+  size: number;
 }
 
 /**

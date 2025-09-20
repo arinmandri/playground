@@ -4,6 +4,17 @@
     <div class="posts">
       <div class="post" v-for="post in postListPack.list" :key="post.id">
         <p class="content">{{ post.content }}</p>
+        <div>
+          <div v-for="attachment in post.attachments">
+            <img class="attachment-image" v-if="attachment.type == ATT_TYPE.image"
+              :src="(attachment as Y_PAttachmentImage).url" />
+            <p v-if="attachment.type == ATT_TYPE.file">
+              <a :href="(attachment as Y_PAttachmentFile).url" download>
+                파일 {{ (attachment as Y_PAttachmentFile).size }}KB
+              </a>
+            </p>
+          </div>
+        </div>
         <div class="author">
           <span>{{ post.author.nick }}</span>
         </div>
@@ -20,7 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Post } from "@/types/board";
+import type { Post, Y_PAttachmentImage, Y_PAttachmentFile } from "@/types/board";
+import { ATT_TYPE } from "@/types/board";
 import type { SimpleListPack } from "@/types/index";
 import { fetchPostList } from "@/service/boardService"
 
@@ -81,6 +93,10 @@ function clickMoreBtn() {
   text-align: right;
 }
 
+.attachment-image {
+  max-width: 200px;
+  max-height: 200px;
+}
 .listEnd {
   text-align: center;
   margin: 20px 0;
