@@ -1,6 +1,6 @@
 <template>
   <div class="edit-member">
-    <h2>Edit Member Info</h2>
+    <h2>내 정보 바꾸기</h2>
     <form @submit.prevent="submitForm">
       <InputText :title="'별명'" v-model:textValue="form.nick" :isRequired="true" />
       <InputText :title="'이메일 주소'" v-model:textValue="form.email" :isRequired="false" />

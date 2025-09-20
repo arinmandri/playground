@@ -15,6 +15,7 @@
             </p>
           </div>
         </div>
+        <hr />
         <div class="author">
           <span>{{ post.author.nick }}</span>
         </div>
@@ -80,9 +81,13 @@ function clickMoreBtn() {
   color: #333;
 }
 
+.post hr {
+  border: 2px solid #8882;
+  margin: 18px 4px;
+}
 .post .author {
   font-size: 0.95rem;
-  color: #4a90e2;
+  color: var(--point-blue);
   margin-bottom: 4px;
 }
 

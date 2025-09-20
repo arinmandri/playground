@@ -1,25 +1,25 @@
 <template>
-  <div>
-    <nav>
-      <ul id="globalMenu">
-        <li><router-link to="/">홈</router-link></li>
-        <li><router-link to="/board">게시판</router-link></li>
-      </ul>
-      <div id="user">
-        <div v-if="isLoggedIn">
-          <router-link to="/member/myplace">
-            <img id="user-propic" v-if="user.propic" :src="user.propic"> {{ user.nick }} 님 입장
-          </router-link>
-        </div>
-        <div v-else>
-          <span><router-link to="/member/login">손님 입장하세요</router-link></span>
-        </div>
-      </div>
-    </nav>
+  <nav>
+    <ul id="globalMenu">
+      <li><router-link to="/">홈</router-link></li>
+      <li><router-link to="/board">게시판</router-link></li>
+    </ul>
+  </nav>
 
-    <div id="routerViewDiv">
-      <router-view />
+  <div id="user">
+    <div v-if="isLoggedIn">
+      <router-link to="/member/myplace">
+        <span>{{ user.nick }} 님 입장</span>
+        <img id="user-propic" v-if="user.propic" :src="user.propic">
+      </router-link>
     </div>
+    <div v-else>
+      <span><router-link to="/member/login">손님 입장하세요</router-link></span>
+    </div>
+  </div>
+
+  <div id="routerViewDiv">
+    <router-view />
   </div>
 </template>
 
@@ -39,12 +39,21 @@ onMounted(async () => {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
+:root {
+  --point-blue: #4a90e2;
+}
+
 body {
   min-width: 320px;
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
   color: #333;
   line-height: 1.6;
+}
+
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 * {
@@ -65,9 +74,8 @@ textarea {
 }
 
 nav {
-  background-color: #eee;
+  background-color: #fff;
   padding: 10px;
-  position: sticky;
   top: 0;
 }
 
@@ -78,18 +86,25 @@ nav {
 }
 
 #routerViewDiv {
-  max-width: 840px;
-  margin: 0 auto;
+  margin: 8px auto 20px auto;
   padding: 20px 0;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  background-color: #f6f6f6;
 }
 
 #routerViewDiv>* {
   margin: 0 20px;
 }
 
+#user {
+  padding: 10px;
+  text-align: right;
+}
+
 #user-propic {
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
+  border-top-left-radius: 30%;
+  border-bottom-right-radius: 30%;
 }
 </style>
