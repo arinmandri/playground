@@ -104,11 +104,11 @@ public abstract class ApiA
 	}
 
 	/**
-	 * 파일필드가 업로드타입인 경우 업로드 후 그 URL을 가지고 어쩌고 한다.
+	 * 파일 필드가 업로드타입인 경우 해당 로컬임시파일을 가지고 입력용 DTO에 뭔가 한다.
 	 * 용례: r = thisMethod( r, (r)->r.getter(), (r,v)->r.with(v) )
 	 * 
 	 * @param <T>                파일 필드를 가진 입력용 DTO의 타입.
-	 * @param reqDTO                파일 필드를 가진 입력용 DTO.
+	 * @param reqDTO             파일 필드를 가진 입력용 DTO.
 	 * @param fileFieldGetter    입력용 DTO에서 파일 필드를 가져오는 함수.
 	 * @param afterUploadWithLtf 파일 필드 값이 업로드타입인 경우 업로드 완료 후 그 URL을 갖고 실행할 함수.
 	 * @return afterUlpoad 실행 결과. 리턴값으로 입력값을 대체하려면 afterUploadWithLtf에서 대체할 값을 반환하게 하라.
@@ -126,6 +126,14 @@ public abstract class ApiA
 		return reqDTO;
 	}
 
+	/**
+	 * 파일 필드가 업로드타입인 경우 업로드 후 그 URL을 가지고 입력용 DTO에 어쩌고 한다.
+	 * 
+	 * @param <T>                파일 필드를 가진 입력용 DTO의 타입.
+	 * @param reqDTO             파일 필드를 가진 입력용 DTO.
+	 * @param fileFieldGetter    입력용 DTO에서 파일 필드를 가져오는 함수.
+	 * @param afterUploadWithUrl URL을 가지고 입력용 DTO에 어쩌고 하기
+	 */
 	public < T > void uploadAndSetFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiConsumer<T, String> afterUploadWithUrl ) {
 		uploadFileField(
 		        reqDTO,
@@ -137,6 +145,15 @@ public abstract class ApiA
 		        } );
 	}
 
+	/**
+	 * 파일 필드가 업로드타입인 경우 업로드 후 그 URL을 가지고 입력용 DTO에 어쩌고 한다.
+	 * 
+	 * @param <T>                파일 필드를 가진 입력용 DTO의 타입.
+	 * @param reqDTO             파일 필드를 가진 입력용 DTO.
+	 * @param fileFieldGetter    입력용 DTO에서 파일 필드를 가져오는 함수.
+	 * @param afterUploadWithUrl URL을 가지고 입력용 DTO에 어쩌고 하고 새 DTO를 반환.
+	 * @return afterUploadWithUrl 적용 결과.
+	 */
 	public < T > T uploadAndCloneWithNewFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiFunction<T, String, T> afterUploadWithUrl ) {
 		return uploadFileField(
 		        reqDTO,
