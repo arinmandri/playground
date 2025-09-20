@@ -9,12 +9,8 @@ import xyz.arinmandri.playground.core.board.Z_PAttachmentAdd;
 import xyz.arinmandri.playground.core.board.Z_PAttachmentFileAdd;
 import xyz.arinmandri.playground.core.board.Z_PostAdd;
 import xyz.arinmandri.playground.core.board.Z_PostEdit;
-import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.validation.Valid;
 
@@ -76,29 +72,23 @@ public class ApiBoard extends ApiA
 		Member me = getMemberFrom( userDetails );
 
 		//// 파일 업로드 처리
-		List<Z_PAttachmentAdd> attReq = new ArrayList<>();
 		if( req.attachments() != null ){
-			for( Z_PAttachmentAdd reqAttSrc : req.attachments() ){
+			for( Z_PAttachmentAdd reqAtt : req.attachments() ){
 
-				Z_PAttachmentAdd reqAtt = uploadFileField( reqAttSrc,
-				        ( r )-> r.url(),
-				        ( r , v )-> r.withUrl( v ) );
-
-				//// 파일 타입인 경우 size 추가
-				//// XXX 저 위에 uploadFileField이랑 이거랑 해서 좀 중복이 있는데.
-				if( reqAttSrc instanceof Z_PAttachmentFileAdd attFile ){
-					String fileField = reqAttSrc.url();
-					if( fileField != null && fileField.startsWith( "!" ) ){
-						String ltfId = fileField.substring( 1 );
-						LocalTempFile ltf = localFileSer.getTempFile( ltfId );
-//						attFile.setSize( ltf.size() );// TODO
-					}
-				}
-				attReq.add( reqAttSrc );
+				uploadFileField( reqAtt,
+				        ( r )-> r.getUrl(),
+				        ( r , ltf )-> {
+					        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+					        r.setUrl( uploadedUrl );
+					        if( reqAtt instanceof Z_PAttachmentFileAdd attFile ){
+						        attFile.setSize( ltf.size() );
+					        }
+					        return null;
+				        } );
 			}
 		}
 
-		Long id = postSer.add( req, attReq, me );
+		Long id = postSer.add( req, req.attachments(), me );
 
 		Y_PostDetail p;
 		try{

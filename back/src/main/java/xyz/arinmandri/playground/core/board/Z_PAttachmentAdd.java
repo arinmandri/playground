@@ -9,12 +9,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type( value = Z_PAttachmentImageAdd.class, name = Z_PAttachmentImageAdd.type ),
         @JsonSubTypes.Type( value = Z_PAttachmentFileAdd.class, name = Z_PAttachmentFileAdd.type )
 } )
-public interface Z_PAttachmentAdd
+public abstract class Z_PAttachmentAdd
 {
-	public String url ();
+	public abstract String getUrl ();
 
-	public Z_PAttachmentAdd withUrl ( String url );
+	public abstract void setUrl ( String url );
 
-	public PAttachment toEntity ();
-
+	abstract PAttachment toEntity ();
 }

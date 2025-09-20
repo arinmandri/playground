@@ -104,7 +104,7 @@ public class ApiMember extends ApiA
 			apiMemberAddBasicReq.apiMemberAddBasicReqKey keyReq = req.key;
 
 			// 프사 필드 업로드 처리
-			memberReq = uploadFileField( memberReq,
+			memberReq = uploadAndApplyFileField( memberReq,
 			        ( r )-> r.propic(),
 			        ( r , v )-> r.withPropic( v ) );
 
@@ -163,7 +163,7 @@ public class ApiMember extends ApiA
 		Member me = getMemberFrom( u );
 
 		// 프사 필드 업로드 처리
-		req = uploadFileField( req,
+		req = uploadAndApplyFileField( req,
 		        ( r )-> r.propic(),
 		        ( r , v )-> r.withPropic( v ) );
 
