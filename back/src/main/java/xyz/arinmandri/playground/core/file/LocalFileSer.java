@@ -35,22 +35,24 @@ public class LocalFileSer
 	private final int tempFileNameLength = 24;
 
 	final private String tempDirBase;
-	final private String[] currentBucketNames = { "bucket1", "bucket2" };
+	final private String[] bucketNames;
 	private int currentBucketIndex = 0;
 
 	final SecureRandom random;
 
 	public LocalFileSer(
-	        @Value( "${file.temp-directory-base}" ) String tempDirBase ,
+	        @Value( "${local_temp_file.directory-base}" ) String tempDirBase ,
+	        @Value( "${local_temp_file.buckets}" ) String[] bucketNames ,
 	        @Autowired SecureRandom random ) {
 
 		this.tempDirBase = tempDirBase;
+		this.bucketNames = bucketNames;
 		this.random = random;
 
 		/*
 		 * 앱 시작 시 버킷 폴더가 없으면 생성
 		 */
-		for( String localBucketName : currentBucketNames ){
+		for( String localBucketName : bucketNames ){
 			File folder = new File( tempDirBase + "/" + localBucketName );
 			if( !folder.exists() )
 			    folder.mkdirs();
@@ -108,7 +110,7 @@ public class LocalFileSer
 		/*
 		 * 현재 버킷 먼저 찾고 없으면 인덱스를 -1씩 하며 차례로 모두 찾는다.
 		 */
-		final int l = currentBucketNames.length;
+		final int l = bucketNames.length;
 		for( int offset = 0 ; offset < l ; offset++ ){
 			int idx = ( currentBucketIndex - offset + l ) % l;
 			Path path = Paths.get( getTempBucketDir( idx ) + "/" + id );
@@ -137,7 +139,7 @@ public class LocalFileSer
 	}
 
 	private String getTempBucketDir ( int index ) {
-		return tempDirBase + "/" + currentBucketNames[index];
+		return tempDirBase + "/" + bucketNames[index];
 	}
 
 	private String getTempBucketDir () {
@@ -164,7 +166,7 @@ public class LocalFileSer
 	 */
 	@Scheduled( cron = "0 */30 * * * *" )
 	public void rotateBucket () {
-		int newIndex = ( currentBucketIndex + 1 ) % currentBucketNames.length;
+		int newIndex = ( currentBucketIndex + 1 ) % bucketNames.length;
 		File folder = new File( getTempBucketDir( newIndex ) );
 		// clearFolderRecursive( folder );// LOCAL TEST
 		currentBucketIndex = newIndex;
