@@ -42,8 +42,23 @@ public abstract class ApiA
 	S3Ser s3Ser;
 
 	/**
+	 * 로그인 회원의 id
+	 * 
+	 * @param 인증된 사용자
+	 * @return id
+	 * @throws LackAuthExcp 사용자가 회원이 아님
+	 */
+	protected Long myIdAsMember ( UserDetails u ) throws LackAuthExcp {
+		if( u instanceof UserNormal un ){
+			un.getMemberId();
+		}
+		throw new LackAuthExcp( "회원이어야 합니다." );
+	}
+
+	/**
 	 * UserDetails --> Member
 	 */
+	@Deprecated
 	protected Member getMemberFrom ( UserDetails u ) {
 		if( u instanceof UserNormal un ){
 			return mkeyBasicRepo.findByOwnerId( un.getMemberId() )

@@ -2,6 +2,7 @@ package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,9 @@ public class MemberSer extends PersistenceSer
 	 * 생성: @link{Member} + @link{MKeyBasic}
 	 */
 	@Transactional
-	public MKeyBasic addMemberWithKeyBasic (
-	        Member member ,
-	        MKeyBasic mkey ) throws UniqueViolated {
+	public MKeyBasic addMemberWithKeyBasic ( Z_MemberAdd memberReq , Z_MKeyBasicAdd keyReq ) throws UniqueViolated {
+		Member member = memberReq.toEntity();
+		MKeyBasic mkey = keyReq.toEntity( member );
 
 		try{
 			repo.save( member );
@@ -50,7 +51,12 @@ public class MemberSer extends PersistenceSer
 	}
 
 	@Transactional
-	public Member edit ( Member org , Member updata ) {
+	public Member edit ( Long orgId , Z_MemberEdit req ) throws NoSuchEntity {
+
+		Member org = mkeyBasicRepo.findByOwnerId( orgId )
+		        .orElseThrow( NoSuchEntity::new ).getOwner();
+
+		Member updata = req.toEntity();
 		org.update( updata );
 		return org;
 	}

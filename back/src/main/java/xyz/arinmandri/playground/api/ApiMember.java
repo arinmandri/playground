@@ -100,14 +100,15 @@ public class ApiMember extends ApiA
 	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
 	        @RequestBody @Validated ReqBody_MemberAddBasic req ) {
 
+		Z_MemberAdd memberReq = req.getMember();
+		Z_MKeyBasicAdd keyReq = req.getKey();
+
+		//// 비밀번호 암호화
+		keyReq.setPassword( pwEncoder.encode( keyReq.getPassword() ) );
+
 		MKeyBasic m;
 		try{
-			Z_MemberAdd memberReq = req.getMember();
-			Z_MKeyBasicAdd keyReq = req.getKey();
-
-			Member member = memberReq.toEntity();
-			MKeyBasic mkey = keyReq.toEntity( member, pwEncoder );
-			m = memberSer.addMemberWithKeyBasic( member, mkey );
+			m = memberSer.addMemberWithKeyBasic( memberReq, keyReq );
 		}
 		catch( UniqueViolated e ){
 			throw ExceptionalTask.UNPROCESSABLE_ENTITY();
@@ -136,17 +137,15 @@ public class ApiMember extends ApiA
 	        @AuthenticationPrincipal User u ,
 	        @RequestBody Z_MemberEdit req ) throws NoSuchEntity {
 
-		Member me = getMemberFrom( u );
+		Long me = myIdAsMember( u );
 
 		// 프사 필드 업로드 처리
 		uploadAndSetFileField( req,
 		        ( r )-> r.getPropic(),
 		        ( r , v )-> r.setPropic( v ) );
 
-		Member m2 = req.toEntity();
-
-		m2 = memberSer.edit( me, m2 );
+		memberSer.edit( me, req );
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( m2 );
+		        .body( null );// TODO
 	}
 }

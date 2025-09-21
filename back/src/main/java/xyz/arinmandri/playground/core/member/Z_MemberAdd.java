@@ -21,7 +21,7 @@ public class Z_MemberAdd
 	@Setter
 	String propic;
 
-	public Member toEntity () {
+	Member toEntity () {
 
 		return Member.builder()
 		        .nick( nick.equals( "" ) ? null : nick )

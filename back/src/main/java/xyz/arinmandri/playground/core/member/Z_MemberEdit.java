@@ -16,7 +16,7 @@ public class Z_MemberEdit
 	@Setter
 	String propic;
 
-	public Member toEntity () {
+	Member toEntity () {
 		return Member.builder()
 		        .nick( nick )
 		        .email( email )
