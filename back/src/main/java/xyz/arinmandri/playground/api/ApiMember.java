@@ -5,12 +5,14 @@ import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.core.member.Z_MKeyBasicAdd;
+import xyz.arinmandri.playground.core.member.Z_MemberAdd;
+import xyz.arinmandri.playground.core.member.Z_MemberEdit;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.With;
 
 
 @RestController
@@ -95,18 +98,12 @@ public class ApiMember extends ApiA
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
-	        @AuthenticationPrincipal User u ,
-	        @RequestBody @Validated apiMemberAddBasicReq req ) {
+	        @RequestBody @Validated ReqBody_MemberAddBasic req ) {
 
 		MKeyBasic m;
 		try{
-			apiMemberAddBasicReq.apiMemberAddBasicReqMember memberReq = req.member;
-			apiMemberAddBasicReq.apiMemberAddBasicReqKey keyReq = req.key;
-
-			// 프사 필드 업로드 처리
-			memberReq = uploadAndCloneWithNewFileField( memberReq,
-			        ( r )-> r.propic(),
-			        ( r , v )-> r.withPropic( v ) );
+			Z_MemberAdd memberReq = req.getMember();
+			Z_MKeyBasicAdd keyReq = req.getKey();
 
 			Member member = memberReq.toEntity();
 			MKeyBasic mkey = keyReq.toEntity( member, pwEncoder );
@@ -119,72 +116,37 @@ public class ApiMember extends ApiA
 		        .body( m );
 	}
 
-	static public record apiMemberAddBasicReq(
-	        @NotNull @Valid apiMemberAddBasicReqMember member ,
-	        @NotNull @Valid apiMemberAddBasicReqKey key )
+	@AllArgsConstructor
+	@Getter
+	static public class ReqBody_MemberAddBasic
 	{
+		@NotNull
+		@Valid
+		Z_MemberAdd member;
 
-		static public record apiMemberAddBasicReqMember(
-		        @NotNull @NotBlank String nick ,
-		        String email ,// TODO email 형식
-		        @With String propic )
-		{
-			public Member toEntity () {
+		@NotNull
+		@Valid
+		Z_MKeyBasicAdd key;
 
-				return Member.builder()
-				        .nick( nick.equals( "" ) ? null : nick )
-				        .email( email == null || email.equals( "" ) ? null : email )
-				        .propic( propic == null || propic.equals( "" ) ? null : propic )
-				        .build();
-			}
-		}
-
-		static public record apiMemberAddBasicReqKey(
-		        // XXX 제한 추가. 길이라든가 정규식 뭐 있겠지.
-		        @NotNull String keyname ,
-		        @NotNull String password )
-		{
-			public MKeyBasic toEntity ( Member owner , PasswordEncoder pwEncoder ) {
-				return MKeyBasic.builder()
-				        .owner( owner )
-				        .keyname( keyname )
-				        .password( pwEncoder.encode( password ) )
-				        .build();
-			}
-		}
 	}
 
 	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/me/edit" )
 	public ResponseEntity<Member> apiMemberEdit (
 	        @AuthenticationPrincipal User u ,
-	        @RequestBody EditMemberReq req ) throws NoSuchEntity {
+	        @RequestBody Z_MemberEdit req ) throws NoSuchEntity {
 
 		Member me = getMemberFrom( u );
 
 		// 프사 필드 업로드 처리
-		req = uploadAndCloneWithNewFileField( req,
-		        ( r )-> r.propic(),
-		        ( r , v )-> r.withPropic( v ) );
+		uploadAndSetFileField( req,
+		        ( r )-> r.getPropic(),
+		        ( r , v )-> r.setPropic( v ) );
 
 		Member m2 = req.toEntity();
 
 		m2 = memberSer.edit( me, m2 );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( m2 );
-	}
-
-	static public record EditMemberReq(
-	        String nick ,
-	        String email ,
-	        @With String propic )
-	{
-		Member toEntity () {
-			return Member.builder()
-			        .nick( nick )
-			        .email( email )
-			        .propic( propic )
-			        .build();
-		}
 	}
 }
