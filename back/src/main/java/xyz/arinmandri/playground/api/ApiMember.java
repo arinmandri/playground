@@ -2,9 +2,9 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
+import xyz.arinmandri.playground.core.member.Y_MemberForMe;
+import xyz.arinmandri.playground.core.member.Y_MemberForPublic;
 import xyz.arinmandri.playground.core.member.Z_MKeyBasicAdd;
 import xyz.arinmandri.playground.core.member.Z_MemberAdd;
 import xyz.arinmandri.playground.core.member.Z_MemberEdit;
@@ -44,16 +44,17 @@ public class ApiMember extends ApiA
 
 	@GetMapping( "/whoami" )
 	public ResponseEntity<apiWhoamiRes> apiWhoami (
-	        @AuthenticationPrincipal User u ) {
+	        @AuthenticationPrincipal User user ) throws NoSuchEntity {
 
-		String type = u.getType().toString();
+		String type = user.getType().toString();
 		String nick;
 		String propic = null;
-		switch( u ){
+		switch( user ){
 		case UserNormal un -> {
-			Member m = getMemberFrom( un );
-			nick = m.getNick();
-			propic = m.getPropic();
+			Long myId = un.getMemberId();
+			Y_MemberForPublic me = memberSer.getInfoForPublic( myId );
+			nick = me.getNick();
+			propic = me.getPropic();
 		}
 		case UserGuest ug -> nick = ug.getCode();
 		default -> throw new RuntimeException();// TODO exception
@@ -72,33 +73,32 @@ public class ApiMember extends ApiA
 	{
 	}
 
-	// TODO 이거 응답도 바꿔야지.
 	@GetMapping( "/me" )
-	public ResponseEntity<Member> apiMemberMe (
-	        @AuthenticationPrincipal User u ) {
+	public ResponseEntity<Y_MemberForMe> apiMemberMe (
+	        @AuthenticationPrincipal User user ) throws NoSuchEntity {
 
-		Member m = getMemberFrom( u );
+		Long myId = myIdAsMember( user );
+
+		Y_MemberForMe m = memberSer.getInfoForMe( myId );
 
 		return ResponseEntity.ok()
 		        .body( m );
 	}
 
-	// TODO 이거 응답도 바꿔야지.
 	@GetMapping( "/{id}" )
-	public ResponseEntity<Member> apiMemberGet (
-	        @PathVariable long id ) throws NoSuchEntity {
+	public ResponseEntity<Y_MemberForPublic> apiMemberGet (
+	        @PathVariable Long id ) throws NoSuchEntity {
 
-		// XXX 남의 정보를 어디까지 보여줄?
+		Y_MemberForPublic m = memberSer.getInfoForPublic( id );
 
-		Member m = memberSer.get( id );
 		return ResponseEntity.ok()
 		        .body( m );
 	}
 
-	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/add/basic" )
-	public ResponseEntity<MKeyBasic> apiMemberAddBasic (
-	        @RequestBody @Validated ReqBody_MemberAddBasic req ) {
+	public ResponseEntity<Y_MemberForMe> apiMemberAddBasic (
+	        @RequestBody
+	        @Validated ReqBody_MemberAddBasic req ) throws NoSuchEntity {
 
 		Z_MemberAdd memberReq = req.getMember();
 		Z_MKeyBasicAdd keyReq = req.getKey();
@@ -106,15 +106,17 @@ public class ApiMember extends ApiA
 		//// 비밀번호 암호화
 		keyReq.setPassword( pwEncoder.encode( keyReq.getPassword() ) );
 
-		MKeyBasic m;
 		try{
-			m = memberSer.addMemberWithKeyBasic( memberReq, keyReq );
+			memberSer.addMemberWithKeyBasic( memberReq, keyReq );
 		}
 		catch( UniqueViolated e ){
 			throw ExceptionalTask.UNPROCESSABLE_ENTITY();
 		}
+
+		Y_MemberForMe memberInfo = memberSer.getInfoForMe( null );
+
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( m );
+		        .body( memberInfo );
 	}
 
 	@AllArgsConstructor
@@ -131,20 +133,19 @@ public class ApiMember extends ApiA
 
 	}
 
-	// TODO 이거 응답도 바꿔야지.
 	@PostMapping( "/me/edit" )
-	public ResponseEntity<Member> apiMemberEdit (
-	        @AuthenticationPrincipal User u ,
+	public ResponseEntity<Y_MemberForMe> apiMemberEdit (
+	        @AuthenticationPrincipal User user ,
 	        @RequestBody Z_MemberEdit req ) throws NoSuchEntity {
 
-		Long me = myIdAsMember( u );
+		Long myId = myIdAsMember( user );
 
 		// 프사 필드 업로드 처리
 		uploadAndSetFileField( req,
 		        ( r )-> r.getPropic(),
 		        ( r , v )-> r.setPropic( v ) );
 
-		memberSer.edit( me, req );
+		memberSer.edit( myId, req );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( null );// TODO
 	}

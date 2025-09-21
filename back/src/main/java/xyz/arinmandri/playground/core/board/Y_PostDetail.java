@@ -1,9 +1,8 @@
 package xyz.arinmandri.playground.core.board;
 
-import xyz.arinmandri.playground.core.member.Member;
-
 import java.time.Instant;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -11,7 +10,7 @@ public interface Y_PostDetail
 {
 	Long getId ();
 
-	Member getAuthor ();
+	PAuthor getAuthor ();
 
 	String getContent ();
 

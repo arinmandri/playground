@@ -1,7 +1,6 @@
 package xyz.arinmandri.playground.core.board;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
-import xyz.arinmandri.playground.core.member.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ class Post extends BaseEntityWithId
 
 	@JoinColumn( name = "author__m" )
 	@ManyToOne
-	private Member author;
+	private PAuthor author;
 
 	@Column( nullable = false )
 	private String content;

@@ -3,7 +3,6 @@ package xyz.arinmandri.playground.core.board;
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
-import xyz.arinmandri.playground.core.member.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ public class PostSer extends PersistenceSer
 
 	final private PostRepo repo;
 	final private PAttachmentRepo attRepo;
+	final private PAuthorRepo athrRepo;
 
 	@Transactional( readOnly = true )
 	public Y_PostDetail get ( long id ) throws NoSuchEntity {
@@ -40,6 +40,13 @@ public class PostSer extends PersistenceSer
 		return new CursorPage<>( rows, pageSize );
 	}
 
+	@Transactional( readOnly = true )
+	public boolean checkAuthor ( Long postId , Long authorId ) {
+		Post p = repo.findById( postId ).orElseThrow( null );// TODO exception
+		PAuthor m = athrRepo.findById( authorId ).orElseThrow( null );// TODO exception
+		return p.getAuthor().equals( m );
+	}
+
 	/**
 	 * 게시글 추가
 	 * 
@@ -49,7 +56,10 @@ public class PostSer extends PersistenceSer
 	 * @return 생성된 게시글의 id
 	 */
 	@Transactional
-	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Member author ) {
+	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Long authorId ) {
+		
+		PAuthor author = athrRepo.findById( authorId )
+		        .orElseThrow( null );// TODO exception
 
 		Post p = addPostReq.toEntity( author );
 		p = repo.save( p );

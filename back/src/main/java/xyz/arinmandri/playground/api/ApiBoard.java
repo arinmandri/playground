@@ -10,15 +10,14 @@ import xyz.arinmandri.playground.core.board.Z_PAttachmentFileAdd;
 import xyz.arinmandri.playground.core.board.Z_PAttachmentImageAdd;
 import xyz.arinmandri.playground.core.board.Z_PostAdd;
 import xyz.arinmandri.playground.core.board.Z_PostEdit;
-import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
+import xyz.arinmandri.playground.security.user.User;
 
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,12 +64,11 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Y_PostDetail> apiPostAdd (
-	        @AuthenticationPrincipal UserDetails userDetails ,
-	        @RequestBody
-	        @Valid Z_PostAdd req
+	        @AuthenticationPrincipal User user ,
+	        @RequestBody @Valid Z_PostAdd req
 	) {
 
-		Member me = getMemberFrom( userDetails );
+		Long myId = myIdAsMember( user );
 
 		//// 파일 업로드 처리
 		if( req.attachments() != null ){
@@ -95,7 +93,7 @@ public class ApiBoard extends ApiA
 			}
 		}
 
-		Long id = postSer.add( req, req.attachments(), me );
+		Long id = postSer.add( req, req.attachments(), myId );
 
 		Y_PostDetail p;
 		try{
@@ -111,20 +109,20 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/{id}/edit" )
 	public ResponseEntity<Y_PostDetail> apiPostEdit (
-	        @AuthenticationPrincipal UserDetails userDetails ,
+	        @AuthenticationPrincipal User user ,
 	        @PathVariable long id ,
 	        @RequestBody Z_PostEdit req
 	) throws LackAuthExcp , NoSuchEntity {
 
-		Member m = getMemberFrom( userDetails );
+		Long myId = myIdAsMember( user );
 
-		Y_PostDetail p = postSer.get( id );
-
-		if( !p.getAuthor().equals( m ) ){
+		if( postSer.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
 		postSer.edit( id, req );
+
+		Y_PostDetail p = postSer.get( id );
 
 		return ResponseEntity.ok()
 		        .body( p );
@@ -132,19 +130,20 @@ public class ApiBoard extends ApiA
 
 	@PostMapping( "/post/{id}/del" )
 	public ResponseEntity<Void> apiPostDel (
-	        @AuthenticationPrincipal UserDetails userDetails ,
+	        @AuthenticationPrincipal User user ,
 	        @PathVariable long id
 	) throws LackAuthExcp , NoSuchEntity {
 
-		Member m = getMemberFrom( userDetails );
+		Long myId = myIdAsMember( user );
 
 		Y_PostDetail p = postSer.get( id );
 
-		if( !p.getAuthor().equals( m ) ){
+		if( postSer.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
 		postSer.del( id );
+
 		return ResponseEntity.ok().build();
 	}
 }

@@ -39,7 +39,8 @@ abstract class BaseEntity
 	public boolean equals ( Object other ) {
 		if( other == null ) return false;
 		if( other instanceof BaseEntity baseEntity ){
-			return getId().equals( baseEntity.getId() );
+			return getId().equals( baseEntity.getId() )
+			        && this.getClass() == other.getClass();
 		}
 		return false;
 	}

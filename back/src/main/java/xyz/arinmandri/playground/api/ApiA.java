@@ -4,7 +4,6 @@ import xyz.arinmandri.playground.core.file.LocalFileSer;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.file.S3Ser;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
-import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 
@@ -50,21 +49,7 @@ public abstract class ApiA
 	 */
 	protected Long myIdAsMember ( UserDetails u ) throws LackAuthExcp {
 		if( u instanceof UserNormal un ){
-			un.getMemberId();
-		}
-		throw new LackAuthExcp( "회원이어야 합니다." );
-	}
-
-	/**
-	 * UserDetails --> Member
-	 */
-	@Deprecated
-	protected Member getMemberFrom ( UserDetails u ) {
-		if( u instanceof UserNormal un ){
-			return mkeyBasicRepo.findByOwnerId( un.getMemberId() )
-			        .orElseThrow( ()-> {
-				        throw new LackAuthExcp( "없는 회원입니다." );
-			        } ).getOwner();
+			return un.getMemberId();
 		}
 		throw new LackAuthExcp( "회원이어야 합니다." );
 	}
