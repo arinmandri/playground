@@ -101,12 +101,12 @@ public class PostServ extends PersistenceServ
 		repo.delete( p );
 	}
 
-	public static List<Y_PAttachment> collectAttachments ( List<? extends Y_PAttachment>... attachmentsSomeTypeLists ) {
+	public static List<Y_PAttachment> collectAttachments ( List<Y_PAttachmentImage> images , List<Y_PAttachmentFile> files ) {
 		List<Y_PAttachment> atts = new ArrayList<>();
-		for( List<? extends Y_PAttachment> list : attachmentsSomeTypeLists ){
-			if( list != null )
-			    atts.addAll( list );
-		}
+		if( images != null )
+		    atts.addAll( images );
+		if( files != null )
+		    atts.addAll( files );
 		atts.sort( ( a , b )-> Integer.compare( a.getOrder(), b.getOrder() ) );
 		return atts;
 	}
