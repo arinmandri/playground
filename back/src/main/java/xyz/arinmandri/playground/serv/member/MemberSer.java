@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.serv.member;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
@@ -6,7 +6,8 @@ import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
 import xyz.arinmandri.playground.core.authedmember.AuthenticatedMemberRepo;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
-import xyz.arinmandri.playground.core.authedmember.Z_MKeyBasicAdd;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MemberRepo;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +37,12 @@ public class MemberSer extends PersistenceSer
 
 	public Y_MemberForMe getInfoForMe ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
-		return repo.findById( id, Y_MemberForMe.class );
+		return repo.findById( Y_MemberForMe.class, id );
 	}
 
 	public Y_MemberForPublic getInfoForPublic ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
-		return repo.findById( id, Y_MemberForPublic.class );
+		return repo.findById( Y_MemberForPublic.class, id );
 	}
 
 	/**

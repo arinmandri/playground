@@ -2,8 +2,8 @@ package xyz.arinmandri.playground.security;
 
 import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
-import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.serv.member.MemberSer;
 import xyz.arinmandri.util.JwtUtil;
 
 import java.security.SecureRandom;

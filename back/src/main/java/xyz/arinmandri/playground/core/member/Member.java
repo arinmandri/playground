@@ -29,7 +29,7 @@ public class Member extends BaseEntityWithId
 	@Column( length = 256 )
 	private String propic;
 
-	void update ( Member data ) {
+	public void update ( Member data ) {
 		if( data.nick != null ){
 			if( data.nick.equals( "" ) )
 			    nick = null;

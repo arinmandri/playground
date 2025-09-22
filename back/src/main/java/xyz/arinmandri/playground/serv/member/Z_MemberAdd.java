@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.serv.member;
+
+import xyz.arinmandri.playground.core.member.Member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

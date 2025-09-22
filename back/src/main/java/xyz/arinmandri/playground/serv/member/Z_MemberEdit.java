@@ -1,5 +1,6 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.serv.member;
 
+import xyz.arinmandri.playground.core.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

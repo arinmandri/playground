@@ -1,4 +1,7 @@
-package xyz.arinmandri.playground.core.authedmember;
+package xyz.arinmandri.playground.serv.member;
+
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
+import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
 
 import jakarta.validation.constraints.NotNull;
 

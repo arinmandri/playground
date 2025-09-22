@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.serv.member;
 
 public interface Y_MemberForPublic
 {
