@@ -1,12 +1,12 @@
 package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.authedmember.AuthenticatedSer;
+import xyz.arinmandri.playground.core.PersistenceServ.UniqueViolated;
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedServ;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
-import xyz.arinmandri.playground.serv.member.MemberSer;
+import xyz.arinmandri.playground.serv.member.MemberServ;
 import xyz.arinmandri.playground.serv.member.Y_MemberForMe;
 import xyz.arinmandri.playground.serv.member.Y_MemberForPublic;
 import xyz.arinmandri.playground.serv.member.Z_MKeyBasicAdd;
@@ -39,8 +39,8 @@ import lombok.RequiredArgsConstructor;
 public class ApiMember extends ApiA
 {
 
-	final MemberSer memberSer;
-	final AuthenticatedSer amSer;
+	final MemberServ mServ;
+	final AuthenticatedServ athSer;
 
 	final private PasswordEncoder pwEncoder;
 
@@ -54,7 +54,7 @@ public class ApiMember extends ApiA
 		switch( user ){
 		case UserNormal un -> {
 			Long myId = un.getMemberId();
-			Y_MemberForPublic me = memberSer.getInfoForPublic( myId );
+			Y_MemberForPublic me = mServ.getInfoForPublic( myId );
 			nick = me.getNick();
 			propic = me.getPropic();
 		}
@@ -81,7 +81,7 @@ public class ApiMember extends ApiA
 
 		Long myId = myIdAsMember( user );
 
-		Y_MemberForMe m = memberSer.getInfoForMe( myId );
+		Y_MemberForMe m = mServ.getInfoForMe( myId );
 
 		return ResponseEntity.ok()
 		        .body( m );
@@ -91,7 +91,7 @@ public class ApiMember extends ApiA
 	public ResponseEntity<Y_MemberForPublic> apiMemberGet (
 	        @PathVariable Long id ) throws NoSuchEntity {
 
-		Y_MemberForPublic m = memberSer.getInfoForPublic( id );
+		Y_MemberForPublic m = mServ.getInfoForPublic( id );
 
 		return ResponseEntity.ok()
 		        .body( m );
@@ -109,13 +109,13 @@ public class ApiMember extends ApiA
 		keyReq.setPassword( pwEncoder.encode( keyReq.getPassword() ) );
 
 		try{
-			memberSer.addMemberWithKeyBasic( memberReq, keyReq );
+			mServ.addMemberWithKeyBasic( memberReq, keyReq );
 		}
 		catch( UniqueViolated e ){
 			throw ExceptionalTask.UNPROCESSABLE_ENTITY();
 		}
 
-		Y_MemberForMe memberInfo = memberSer.getInfoForMe( null );
+		Y_MemberForMe memberInfo = mServ.getInfoForMe( null );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( memberInfo );
@@ -147,7 +147,7 @@ public class ApiMember extends ApiA
 		        ( r )-> r.getPropic(),
 		        ( r , v )-> r.setPropic( v ) );
 
-		memberSer.edit( myId, req );
+		mServ.edit( myId, req );
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( null );// TODO
 	}

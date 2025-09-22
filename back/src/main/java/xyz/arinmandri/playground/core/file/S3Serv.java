@@ -14,15 +14,15 @@ import xyz.arinmandri.util.S3Actions;
 
 
 @Service
-public class S3Ser
+public class S3Serv
 {
-	private static final Logger logger = LoggerFactory.getLogger( S3Ser.class );
+	private static final Logger logger = LoggerFactory.getLogger( S3Serv.class );
 
 	final private String awsBucketName;
 
 	final private S3Actions s3Actions;
 
-	public S3Ser(
+	public S3Serv(
 	        @Value( "${aws.s3.bucket-name}" ) String awsBucketName ,
 	        @Autowired S3Actions s3Actions ) {
 

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalFileServ;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Ser;
+import xyz.arinmandri.playground.core.file.S3Serv;
 
 
 @RestController
@@ -26,8 +26,8 @@ public class ApiFile
 {
 	private static final Logger logger = LoggerFactory.getLogger( ApiFile.class );
 
-	final S3Ser s3Ser;
-	final LocalFileSer localFileSer;
+	final S3Serv s3Serv;
+	final LocalFileServ ltfServ;
 
 	@PostMapping( "/add" )
 	// TODO @ClearFile
@@ -35,7 +35,7 @@ public class ApiFile
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file ) {
 
-		LocalTempFile ltf = localFileSer.createTempFile( file );
+		LocalTempFile ltf = ltfServ.createTempFile( file );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( new apiFileAddResBody( ltf.id() ) );
@@ -47,7 +47,7 @@ public class ApiFile
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        List<MultipartFile> files ){
 
-		List<LocalTempFile> ltfs = localFileSer.createTempFiles( files );
+		List<LocalTempFile> ltfs = ltfServ.createTempFiles( files );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( ltfs.stream()

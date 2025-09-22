@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.serv.member;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer;
+import xyz.arinmandri.playground.core.PersistenceServ;
 import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
 import xyz.arinmandri.playground.core.authedmember.AuthenticatedMemberRepo;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class MemberSer extends PersistenceSer
+public class MemberServ extends PersistenceServ
 {
 
 	final private MemberRepo repo;

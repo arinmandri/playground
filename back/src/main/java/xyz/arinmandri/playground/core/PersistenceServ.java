@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 
-public class PersistenceSer
+public class PersistenceServ
 {
 	protected final int pageSizeDefault = 10;
 
@@ -32,7 +32,7 @@ public class PersistenceSer
 		return false;
 	}
 
-	public class UniqueViolated extends SerExcp
+	public class UniqueViolated extends ServExcp
 	{
 		private static final long serialVersionUID = 1_000_000L;
 

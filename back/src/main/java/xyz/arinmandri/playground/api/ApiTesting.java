@@ -1,8 +1,8 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalFileServ;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Ser;
+import xyz.arinmandri.playground.core.file.S3Serv;
 
 import java.net.URL;
 
@@ -29,8 +29,8 @@ public class ApiTesting extends ApiA
 {
 	private static final Logger logger = LoggerFactory.getLogger( ApiTesting.class );
 
-	final S3Ser s3Ser;
-	final LocalFileSer localFileSer;
+	final S3Serv s3Ser;
+	final LocalFileServ ltfSer;
 
 	@GetMapping( "/get" )
 	public ResponseEntity<?> testGet (
@@ -62,7 +62,7 @@ public class ApiTesting extends ApiA
 	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file ){
 
-		LocalTempFile ltf = localFileSer.createTempFile( file );
+		LocalTempFile ltf = ltfSer.createTempFile( file );
 
 		URL url = s3Ser.s3Upload( ltf.path() );
 		logger.info( "url = {}", url );

@@ -2,7 +2,7 @@ package xyz.arinmandri.playground.serv.board;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceSer;
+import xyz.arinmandri.playground.core.PersistenceServ;
 import xyz.arinmandri.playground.core.board.post.PAttachment;
 import xyz.arinmandri.playground.core.board.post.PAttachmentRepo;
 import xyz.arinmandri.playground.core.board.post.PAuthor;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PostSer extends PersistenceSer
+public class PostServ extends PersistenceServ
 {
 	private final int pageSize = pageSizeDefault;
 

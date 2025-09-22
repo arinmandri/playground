@@ -4,7 +4,7 @@ import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.User;
-import xyz.arinmandri.playground.serv.board.PostSer;
+import xyz.arinmandri.playground.serv.board.PostServ;
 import xyz.arinmandri.playground.serv.board.Y_PostDetail;
 import xyz.arinmandri.playground.serv.board.Y_PostListItem;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAdd;
@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApiBoard extends ApiA
 {
-	final PostSer postSer;
+	final PostServ pServ;
 
 	@GetMapping( "/post/{id}" )
 	public ResponseEntity<Y_PostDetail> apiPostGet (
@@ -40,7 +40,7 @@ public class ApiBoard extends ApiA
 
 		Y_PostDetail p;
 		try{
-			p = postSer.get( id );
+			p = pServ.get( id );
 		}
 		catch( NoSuchEntity e ){
 			throw ExceptionalTask.NOT_FOUND();
@@ -55,8 +55,8 @@ public class ApiBoard extends ApiA
 
 		CursorPage<Y_PostListItem> p;
 		p = cursor == null
-		        ? postSer.list()
-		        : postSer.list( cursor );
+		        ? pServ.list()
+		        : pServ.list( cursor );
 
 		return ResponseEntity.ok()
 		        .body( p );
@@ -84,7 +84,7 @@ public class ApiBoard extends ApiA
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
-						        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+						        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
 						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
 						        return null;
@@ -93,11 +93,11 @@ public class ApiBoard extends ApiA
 			}
 		}
 
-		Long id = postSer.add( req, req.attachments(), myId );
+		Long id = pServ.add( req, req.attachments(), myId );
 
 		Y_PostDetail p;
 		try{
-			p = postSer.get( id );
+			p = pServ.get( id );
 		}
 		catch( NoSuchEntity e ){
 			throw ExceptionalTask.NOT_FOUND();// TODO 이 경우가 나와???
@@ -116,13 +116,13 @@ public class ApiBoard extends ApiA
 
 		Long myId = myIdAsMember( user );
 
-		if( postSer.checkAuthor( id, myId ) ){
+		if( pServ.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		postSer.edit( id, req );
+		pServ.edit( id, req );
 
-		Y_PostDetail p = postSer.get( id );
+		Y_PostDetail p = pServ.get( id );
 
 		return ResponseEntity.ok()
 		        .body( p );
@@ -136,13 +136,13 @@ public class ApiBoard extends ApiA
 
 		Long myId = myIdAsMember( user );
 
-		Y_PostDetail p = postSer.get( id );
+		Y_PostDetail p = pServ.get( id );
 
-		if( postSer.checkAuthor( id, myId ) ){
+		if( pServ.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		postSer.del( id );
+		pServ.del( id );
 
 		return ResponseEntity.ok().build();
 	}

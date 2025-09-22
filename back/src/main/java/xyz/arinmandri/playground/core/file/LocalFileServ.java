@@ -28,9 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
  * 교대할 때; 사용하던 버킷은 비우지 않고 그대로 두고, 새로 사용할 버킷은 비우고 시작한다.
  */
 @Service
-public class LocalFileSer
+public class LocalFileServ
 {
-	private static final Logger logger = LoggerFactory.getLogger( LocalFileSer.class );
+	private static final Logger logger = LoggerFactory.getLogger( LocalFileServ.class );
 
 	private final int tempFileNameLength = 24;
 
@@ -40,7 +40,7 @@ public class LocalFileSer
 
 	final SecureRandom random;
 
-	public LocalFileSer(
+	public LocalFileServ(
 	        @Value( "${local_temp_file.directory-base}" ) String tempDirBase ,
 	        @Value( "${local_temp_file.buckets}" ) String[] bucketNames ,
 	        @Autowired SecureRandom random ) {

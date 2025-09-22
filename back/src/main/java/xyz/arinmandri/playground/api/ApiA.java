@@ -1,8 +1,8 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.file.LocalFileSer;
+import xyz.arinmandri.playground.core.file.LocalFileServ;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Ser;
+import xyz.arinmandri.playground.core.file.S3Serv;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
@@ -35,10 +35,10 @@ public abstract class ApiA
 	MKeyBasicRepo mkeyBasicRepo;
 
 	@Autowired
-	LocalFileSer localFileSer;
+	LocalFileServ localFileServ;
 
 	@Autowired
-	S3Ser s3Ser;
+	S3Serv s3Serv;
 
 	/**
 	 * 로그인 회원의 id
@@ -120,7 +120,7 @@ public abstract class ApiA
 
 		if( fileField != null && fileField.startsWith( "!" ) ){
 			String ltfId = fileField.substring( 1 );
-			LocalTempFile ltf = localFileSer.getTempFile( ltfId );
+			LocalTempFile ltf = localFileServ.getTempFile( ltfId );
 			reqDTO = afterUploadWithLtf.apply( reqDTO, ltf );
 		}
 		return reqDTO;
@@ -139,7 +139,7 @@ public abstract class ApiA
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
 			        afterUploadWithUrl.accept( r, uploadedUrl );
 			        return null;
 		        } );
@@ -159,7 +159,7 @@ public abstract class ApiA
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Ser.s3Upload( ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
 			        return afterUploadWithUrl.apply( r, uploadedUrl );
 		        } );
 	}

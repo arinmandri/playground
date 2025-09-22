@@ -25,6 +25,6 @@ public interface Y_PostDetail
 	List<Y_PAttachmentFile> getAttachmentsFile ();
 
 	default List<Y_PAttachment> getAttachments () {
-		return PostSer.collectAttachments( getAttachmentsImage(), getAttachmentsFile() );
+		return PostServ.collectAttachments( getAttachmentsImage(), getAttachmentsFile() );
 	}
 }
