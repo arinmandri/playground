@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table( name = "member" )
 /**
- * @See xyz.arinmandri.playground.core.member.Member
+ * @See xyz.arinmandri.playground.core.authedmember.Member
  *      read-only
  */
 @NoArgsConstructor

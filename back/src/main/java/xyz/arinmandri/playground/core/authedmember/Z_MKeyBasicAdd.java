@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.core.authedmember;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -19,7 +19,7 @@ public class Z_MKeyBasicAdd
 	@Setter
 	String password;
 
-	MKeyBasic toEntity ( AuthenticatedMember owner ) {
+	public MKeyBasic toEntity ( AuthenticatedMember owner ) {
 		return MKeyBasic.builder()
 		        .owner( owner )
 		        .keyname( keyname )

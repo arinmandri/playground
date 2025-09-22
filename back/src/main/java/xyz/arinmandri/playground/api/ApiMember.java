@@ -2,11 +2,11 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer.UniqueViolated;
-import xyz.arinmandri.playground.core.member.AuthenticatedSer;
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedSer;
+import xyz.arinmandri.playground.core.authedmember.Z_MKeyBasicAdd;
 import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.core.member.Y_MemberForMe;
 import xyz.arinmandri.playground.core.member.Y_MemberForPublic;
-import xyz.arinmandri.playground.core.member.Z_MKeyBasicAdd;
 import xyz.arinmandri.playground.core.member.Z_MemberAdd;
 import xyz.arinmandri.playground.core.member.Z_MemberEdit;
 import xyz.arinmandri.playground.security.user.User;
@@ -109,7 +109,7 @@ public class ApiMember extends ApiA
 		keyReq.setPassword( pwEncoder.encode( keyReq.getPassword() ) );
 
 		try{
-			amSer.addMemberWithKeyBasic( memberReq, keyReq );
+			memberSer.addMemberWithKeyBasic( memberReq, keyReq );
 		}
 		catch( UniqueViolated e ){
 			throw ExceptionalTask.UNPROCESSABLE_ENTITY();

@@ -2,6 +2,11 @@ package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedMemberRepo;
+import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
+import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
+import xyz.arinmandri.playground.core.authedmember.Z_MKeyBasicAdd;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +24,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberSer extends PersistenceSer
 {
+
 	final private MemberRepo repo;
+	final private AuthenticatedMemberRepo athmRepo;
 	final private MKeyBasicRepo mkeyBasicRepo;
 
 	public MKeyBasic getMKeyBasic ( String keyname ) {
@@ -35,6 +42,25 @@ public class MemberSer extends PersistenceSer
 	public Y_MemberForPublic getInfoForPublic ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
 		return repo.findById( id, Y_MemberForPublic.class );
+	}
+
+	/**
+	 * 생성: @link{Member} + @link{MKeyBasic}
+	 */
+	@Transactional
+	public Long addMemberWithKeyBasic ( Z_MemberAdd memberReq , Z_MKeyBasicAdd keyReq ) throws UniqueViolated {
+		Member member = memberReq.toEntity();
+		repo.save( member );
+
+		AuthenticatedMember athm = AuthenticatedMember.builder()
+		        .id( member.getId() )
+		        .build();
+		MKeyBasic mkey = keyReq.toEntity( athm );
+
+		athmRepo.save( athm );
+		MKeyBasic result = mkeyBasicRepo.save( mkey );
+		mkeyBasicRepo.flush();
+		return result.getId();
 	}
 
 	@Transactional

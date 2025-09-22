@@ -1,6 +1,6 @@
 package xyz.arinmandri.playground.security;
 
-import xyz.arinmandri.playground.core.member.AuthenticatedMember;
+import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
 import java.time.Instant;
 
 import jakarta.persistence.Column;

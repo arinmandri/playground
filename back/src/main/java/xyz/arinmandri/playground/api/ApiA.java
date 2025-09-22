@@ -3,7 +3,7 @@ package xyz.arinmandri.playground.api;
 import xyz.arinmandri.playground.core.file.LocalFileSer;
 import xyz.arinmandri.playground.core.file.LocalTempFile;
 import xyz.arinmandri.playground.core.file.S3Ser;
-import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
+import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 

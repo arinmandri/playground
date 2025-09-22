@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.member;
+package xyz.arinmandri.playground.core.authedmember;
 
 import xyz.arinmandri.playground.core.BaseEntityWithoutId;
 
