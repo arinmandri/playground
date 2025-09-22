@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.core.board.post;
 
 import xyz.arinmandri.playground.core.BaseEntityWithoutId;
 
@@ -22,7 +22,7 @@ import lombok.Setter;
 @Inheritance( strategy = InheritanceType.TABLE_PER_CLASS )
 @NoArgsConstructor
 @Getter
-abstract class PAttachment extends BaseEntityWithoutId
+public abstract class PAttachment extends BaseEntityWithoutId
 {
 	@Id
 	@GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "p_attachment_seq" )

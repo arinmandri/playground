@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.core.board.post;
+
+import xyz.arinmandri.playground.serv.board.Y_PostListItem;
 
 import java.util.List;
 

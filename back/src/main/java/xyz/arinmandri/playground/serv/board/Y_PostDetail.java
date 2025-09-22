@@ -1,6 +1,6 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
 
-import xyz.arinmandri.playground.core.VPagable;
+import xyz.arinmandri.playground.core.board.post.PAuthor;
 
 import java.time.Instant;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
-public interface Y_PostListItem extends VPagable<Long>
+public interface Y_PostDetail
 {
 	Long getId ();
 
@@ -25,11 +25,6 @@ public interface Y_PostListItem extends VPagable<Long>
 	List<Y_PAttachmentFile> getAttachmentsFile ();
 
 	default List<Y_PAttachment> getAttachments () {
-		return PostSer.collectAttachments(getAttachmentsImage(), getAttachmentsFile() );
-	}
-
-	@Override
-	default Long cursor () {
-		return getId();
+		return PostSer.collectAttachments( getAttachmentsImage(), getAttachmentsFile() );
 	}
 }

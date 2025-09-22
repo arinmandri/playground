@@ -2,16 +2,16 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.board.PostSer;
-import xyz.arinmandri.playground.core.board.Y_PostDetail;
-import xyz.arinmandri.playground.core.board.Y_PostListItem;
-import xyz.arinmandri.playground.core.board.Z_PAttachmentAdd;
-import xyz.arinmandri.playground.core.board.Z_PAttachmentFileAdd;
-import xyz.arinmandri.playground.core.board.Z_PAttachmentImageAdd;
-import xyz.arinmandri.playground.core.board.Z_PostAdd;
-import xyz.arinmandri.playground.core.board.Z_PostEdit;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.serv.board.PostSer;
+import xyz.arinmandri.playground.serv.board.Y_PostDetail;
+import xyz.arinmandri.playground.serv.board.Y_PostListItem;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentAdd;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentFileAdd;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentImageAdd;
+import xyz.arinmandri.playground.serv.board.Z_PostAdd;
+import xyz.arinmandri.playground.serv.board.Z_PostEdit;
 
 import jakarta.validation.Valid;
 

@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
 
 public interface Y_PAttachmentImage extends Y_PAttachment
 {

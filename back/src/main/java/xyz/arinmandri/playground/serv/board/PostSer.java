@@ -1,8 +1,14 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
 
 import xyz.arinmandri.playground.core.CursorPage;
 import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.core.PersistenceSer;
+import xyz.arinmandri.playground.core.board.post.PAttachment;
+import xyz.arinmandri.playground.core.board.post.PAttachmentRepo;
+import xyz.arinmandri.playground.core.board.post.PAuthor;
+import xyz.arinmandri.playground.core.board.post.PAuthorRepo;
+import xyz.arinmandri.playground.core.board.post.Post;
+import xyz.arinmandri.playground.core.board.post.PostRepo;
 
 import java.util.ArrayList;
 import java.util.List;

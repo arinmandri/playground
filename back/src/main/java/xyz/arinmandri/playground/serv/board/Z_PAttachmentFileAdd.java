@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
+
+import xyz.arinmandri.playground.core.board.post.PAttachmentFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,7 @@ public class Z_PAttachmentFileAdd extends Z_PAttachmentAdd
 	Integer size;
 
 	@Override
-	PAttachmentFile toEntity () {
+	public PAttachmentFile toEntity () {
 		return PAttachmentFile.builder()
 		        .url( url )
 		        .size( size )

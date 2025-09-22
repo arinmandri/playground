@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
+
+import xyz.arinmandri.playground.core.board.post.PAttachment;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -11,5 +13,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 } )
 public abstract class Z_PAttachmentAdd
 {
-	abstract PAttachment toEntity ();
+	public abstract PAttachment toEntity ();
 }

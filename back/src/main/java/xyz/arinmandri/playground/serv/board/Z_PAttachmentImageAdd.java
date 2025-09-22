@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.serv.board;
+
+import xyz.arinmandri.playground.core.board.post.PAttachmentImage;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +16,7 @@ public class Z_PAttachmentImageAdd extends Z_PAttachmentAdd
 	String url;
 
 	@Override
-	PAttachmentImage toEntity () {
+	public PAttachmentImage toEntity () {
 		return PAttachmentImage.builder()
 		        .url( url )
 		        .build();

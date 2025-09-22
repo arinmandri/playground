@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.core.board.post;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
 
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-class Post extends BaseEntityWithId
+public class Post extends BaseEntityWithId
 {
 
 	@JoinColumn( name = "author__m" )
@@ -43,11 +43,11 @@ class Post extends BaseEntityWithId
 	@OneToMany( mappedBy = "belongsTo" )
 	private List<PAttachmentFile> attachmentsFile;
 
-	void update ( Post data ) {
+	public void update ( Post data ) {
 		if( data.content != null ) content = data.content;
 	}
 
-	void setAttachments ( List<PAttachment> list ) {
+	public void setAttachments ( List<PAttachment> list ) {
 		this.attachments = list;
 
 		int order = 1;

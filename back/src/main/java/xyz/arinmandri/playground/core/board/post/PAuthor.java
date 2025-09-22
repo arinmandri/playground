@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.board;
+package xyz.arinmandri.playground.core.board.post;
 
 import xyz.arinmandri.playground.core.BaseEntityWithoutId;
 
