@@ -19,7 +19,7 @@ public class Z_MKeyBasicAdd
 	@Setter
 	String password;
 
-	MKeyBasic toEntity ( Member owner ) {
+	MKeyBasic toEntity ( AuthenticatedMember owner ) {
 		return MKeyBasic.builder()
 		        .owner( owner )
 		        .keyname( keyname )

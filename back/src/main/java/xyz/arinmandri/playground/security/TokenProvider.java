@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.security;
 
+import xyz.arinmandri.playground.core.member.AuthenticatedMember;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberSer;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
@@ -94,7 +94,7 @@ public class TokenProvider
 		if( refreshTokenE0 == null || refreshTokenE0.getExpiresAt().isBefore( Instant.now() ) ){// 이미 만료
 			throw new LackAuthExcp( "refresh token invalid" );
 		}
-		Member member = refreshTokenE0.getOwner();
+		AuthenticatedMember member = refreshTokenE0.getOwner();
 
 		String accessToken = generateToken( User.Type.normal, String.valueOf( member.getId() ), normalAuthority, duration_a );
 		String refreshToken = issueRefreshToken( member );
@@ -123,7 +123,7 @@ public class TokenProvider
 	/*
 	 * 리프레시토큰 생성
 	 */
-	private String issueRefreshToken ( Member member ) {
+	private String issueRefreshToken ( AuthenticatedMember member ) {
 
 		byte[] bytes = new byte[64];
 		random.nextBytes( bytes );

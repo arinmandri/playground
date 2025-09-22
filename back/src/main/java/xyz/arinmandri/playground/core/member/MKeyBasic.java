@@ -24,7 +24,7 @@ public class MKeyBasic extends BaseEntityWithId
 {
 	@JoinColumn( name = "belongs_to__m" , nullable = false )
 	@OneToOne
-	private Member owner;
+	private AuthenticatedMember owner;
 
 	@Column( nullable = false , unique = true )
 	private String keyname;

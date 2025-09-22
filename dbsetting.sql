@@ -12,7 +12,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "playground" TO "{ 
 ALTER DEFAULT PRIVILEGES IN SCHEMA "playground" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "{ 사용자 }";
 ALTER ROLE "{ 사용자 }" SET search_path = "playground", public;
 
-DROP TABLE IF EXISTS "playground"."member";
+DROP TABLE IF EXISTS "playground"."member" CASCADE;
 CREATE TABLE "playground"."member"(-- m
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"nick" VARCHAR(20) NOT NULL
@@ -37,7 +37,7 @@ CREATE INDEX "mkey_basic__keyname" ON "playground"."mkey_basic" (keyname);
 
 
 
-DROP TABLE IF EXISTS "playground"."post";
+DROP TABLE IF EXISTS "playground"."post" CASCADE;
 CREATE TABLE "playground"."post"(-- p
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"author__m" INT NOT NULL

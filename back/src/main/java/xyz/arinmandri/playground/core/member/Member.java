@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table( schema = "playground" )
+@Table( name="member" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

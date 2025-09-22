@@ -1,6 +1,6 @@
 package xyz.arinmandri.playground.security;
 
-import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.AuthenticatedMember;
 import java.time.Instant;
 
 import jakarta.persistence.Column;
@@ -30,7 +30,7 @@ public class RefreshToken
 
 	@JoinColumn( name = "belongs_to__m" , nullable = false , updatable = false )
 	@ManyToOne
-	private Member owner;
+	private AuthenticatedMember owner;
 
 	@Column( nullable = false , updatable = false , unique = true )
 	private String refreshToken;
@@ -38,7 +38,7 @@ public class RefreshToken
 	@Column( nullable = false , updatable = false )
 	private Instant expiresAt;
 
-	public RefreshToken( Member owner , String refreshToken , Instant expiresAt ) {
+	public RefreshToken( AuthenticatedMember owner , String refreshToken , Instant expiresAt ) {
 		super();
 		this.owner = owner;
 		this.refreshToken = refreshToken;
