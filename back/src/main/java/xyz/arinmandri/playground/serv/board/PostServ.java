@@ -1,14 +1,14 @@
 package xyz.arinmandri.playground.serv.board;
 
-import xyz.arinmandri.playground.core.CursorPage;
-import xyz.arinmandri.playground.core.NoSuchEntity;
-import xyz.arinmandri.playground.core.PersistenceServ;
 import xyz.arinmandri.playground.core.board.post.PAttachment;
 import xyz.arinmandri.playground.core.board.post.PAttachmentRepo;
 import xyz.arinmandri.playground.core.board.post.PAuthor;
 import xyz.arinmandri.playground.core.board.post.PAuthorRepo;
 import xyz.arinmandri.playground.core.board.post.Post;
 import xyz.arinmandri.playground.core.board.post.PostRepo;
+import xyz.arinmandri.playground.serv.CursorPage;
+import xyz.arinmandri.playground.serv.NoSuchEntity;
+import xyz.arinmandri.playground.serv.PersistenceServ;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class PostServ extends PersistenceServ
 	 */
 	@Transactional
 	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Long authorId ) {
-		
+
 		PAuthor author = athrRepo.findById( authorId )
 		        .orElseThrow( null );// TODO exception
 

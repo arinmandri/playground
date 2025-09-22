@@ -1,4 +1,5 @@
-package xyz.arinmandri.playground.core;
+package xyz.arinmandri.playground.serv;
+
 
 public class NoSuchEntity extends Exception
 {
@@ -8,7 +9,7 @@ public class NoSuchEntity extends Exception
 		super( "ENTITY NOT FOUND" );
 	}
 
-	public NoSuchEntity( Class<? extends BaseEntity> entClass , long id ) {
+	public NoSuchEntity( Class<?> entClass , long id ) {
 		super( entClass.getSimpleName() + " " + id + " not found" );
 	}
 }

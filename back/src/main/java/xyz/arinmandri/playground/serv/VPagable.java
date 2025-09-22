@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core;
+package xyz.arinmandri.playground.serv;
 
 /**
  * 커서로 페이징 되는 조회 엔터티

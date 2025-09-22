@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core;
+package xyz.arinmandri.playground.serv;
 
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;

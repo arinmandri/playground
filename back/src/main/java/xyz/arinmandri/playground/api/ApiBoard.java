@@ -1,9 +1,9 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.CursorPage;
-import xyz.arinmandri.playground.core.NoSuchEntity;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.User;
+import xyz.arinmandri.playground.serv.CursorPage;
+import xyz.arinmandri.playground.serv.NoSuchEntity;
 import xyz.arinmandri.playground.serv.board.PostServ;
 import xyz.arinmandri.playground.serv.board.Y_PostDetail;
 import xyz.arinmandri.playground.serv.board.Y_PostListItem;
