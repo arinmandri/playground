@@ -1,7 +1,5 @@
 package xyz.arinmandri.playground.core.board.post;
 
-import xyz.arinmandri.playground.serv.board.Y_PostListItem;
-
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -10,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepo extends JpaRepository<Post, Long>
 {
-	< T > T findById ( Long id , Class<T> type );
+	< T > T findById ( Class<T> type , Long id );
 
-	List<Y_PostListItem> findAllByOrderByIdDesc ( Pageable pagable );
+	< T > List<T> findAllByOrderByIdDesc ( Class<T> type , Pageable pagable );
 
-	List<Y_PostListItem> findByIdLessThanOrderByIdDesc ( Long beforeId , Pageable pageable );
+	< T > List<T> findByIdLessThanOrderByIdDesc ( Class<T> type , Long beforeId , Pageable pageable );
 }

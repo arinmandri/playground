@@ -31,18 +31,18 @@ public class PostSer extends PersistenceSer
 
 	@Transactional( readOnly = true )
 	public Y_PostDetail get ( long id ) throws NoSuchEntity {
-		return repo.findById( id, Y_PostDetail.class );// TODO ??? 이거 없으면 어케 되는 거임
+		return repo.findById( Y_PostDetail.class, id );// TODO ??? 이거 없으면 어케 되는 거임
 	}
 
 	@Transactional( readOnly = true )
 	public CursorPage<Y_PostListItem> list () {
-		List<Y_PostListItem> rows = repo.findAllByOrderByIdDesc( defaultPageable );
+		List<Y_PostListItem> rows = repo.findAllByOrderByIdDesc( Y_PostListItem.class, defaultPageable );
 		return new CursorPage<>( rows, pageSize );
 	}
 
 	@Transactional( readOnly = true )
 	public CursorPage<Y_PostListItem> list ( Long cursor ) {
-		List<Y_PostListItem> rows = repo.findByIdLessThanOrderByIdDesc( cursor, defaultPageable );
+		List<Y_PostListItem> rows = repo.findByIdLessThanOrderByIdDesc( Y_PostListItem.class, cursor, defaultPageable );
 		return new CursorPage<>( rows, pageSize );
 	}
 
