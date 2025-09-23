@@ -17,9 +17,9 @@
 <script setup lang="ts">
 
 import api from '@/api/axiosInstance';
-import PAttachmentCom from '@/components/board/PAttachment.vue';
+import PAttachmentCom from '@/views/board/post/comp/PAttachment.vue';
 
-import { PAttachment } from "@/types";
+import { PAttachment } from "@/views/board/post/types";
 
 import { defineExpose } from "vue";
 

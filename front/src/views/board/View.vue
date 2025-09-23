@@ -26,11 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import Y_PAttachmentComp from "@/components/board/Y_PAttachmentComp.vue";
+import Y_PAttachmentComp from "@/views/board/post/comp/Y_PAttachmentComp.vue";
 
-import type { Post, Y_PAttachmentImage, Y_PAttachmentFile } from "@/types/board";
+import type { Post } from "@/views/board/post/types";
 import type { SimpleListPack } from "@/types/index";
-import { fetchPostList } from "@/service/boardService"
+import { fetchPostList } from "@/views/board/post/service"
 
 import { ref, onMounted } from "vue";
 

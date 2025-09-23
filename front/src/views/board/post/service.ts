@@ -1,5 +1,4 @@
-
-import type { Post, PostRaw } from "@/types/board";
+import type { Post, PostRaw } from "@/views/board/post/types";
 import type { SimpleListPack } from "@/types/index";
 import api from "@/api/axiosInstance";
 

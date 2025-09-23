@@ -1,5 +1,5 @@
-import type { Member } from './member';
-import { FileAndPreview } from './common';
+import type { Member } from '../../../types/member';
+import { FileAndPreview } from '../../../types/common';
 
 export interface PostRaw {
   id: number;

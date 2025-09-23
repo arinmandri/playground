@@ -12,10 +12,10 @@
 
 <script lang="ts" setup>
 
-import PAttachmentList from '@/components/board/PAttachmentList.vue';
+import PAttachmentList from '@/views/board/post/comp/PAttachmentList.vue';
 
 import api from "@/api/axiosInstance";
-import { PAttachment } from "@/types";
+import { PAttachment } from "@/views/board/post/types";
 
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 
-import { type Y_PAttachment, type Y_PAttachmentImage, type Y_PAttachmentFile, ATT_TYPE } from "@/types/board";
+import { type Y_PAttachment, type Y_PAttachmentImage, type Y_PAttachmentFile, ATT_TYPE } from "@/views/board/post/types";
 
 const props = defineProps<{
   attachment: Y_PAttachment;
