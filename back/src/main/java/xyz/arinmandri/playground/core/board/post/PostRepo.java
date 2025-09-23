@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface PostRepo extends JpaRepository<Post, Long>
+interface PostRepo extends JpaRepository<Post, Long>
 {
 	< T > T findById ( Class<T> type , Long id );
 

@@ -1,6 +1,7 @@
 package xyz.arinmandri.playground.core.board.post;
 
 import xyz.arinmandri.playground.core.BaseEntityWithoutId;
+import xyz.arinmandri.playground.core.member.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,9 +29,16 @@ public class PAuthor extends BaseEntityWithoutId
 	@Id
 	Long id;
 
-	@Column
+	@Column( updatable = false )
 	private String nick;
 
-	@Column
+	@Column( updatable = false )
 	private String propic;
+
+	static public PAuthor from ( Member m ) {
+		return builder()
+		        .nick( m.getNick() )
+		        .propic( m.getPropic() )
+		        .build();
+	}
 }

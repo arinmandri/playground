@@ -65,4 +65,8 @@ public class Post extends BaseEntityWithId
 		this.attachmentsImage = listImage;
 		this.attachmentsFile = listFile;
 	}
+
+	void setId ( Long id ) {
+		this.id = id;
+	}
 }

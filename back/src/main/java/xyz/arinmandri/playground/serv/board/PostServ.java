@@ -1,11 +1,11 @@
 package xyz.arinmandri.playground.serv.board;
 
 import xyz.arinmandri.playground.core.board.post.PAttachment;
-import xyz.arinmandri.playground.core.board.post.PAttachmentRepo;
 import xyz.arinmandri.playground.core.board.post.PAuthor;
-import xyz.arinmandri.playground.core.board.post.PAuthorRepo;
 import xyz.arinmandri.playground.core.board.post.Post;
-import xyz.arinmandri.playground.core.board.post.PostRepo;
+import xyz.arinmandri.playground.core.board.post.Posts;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.Members;
 import xyz.arinmandri.playground.serv.CursorPage;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
 import xyz.arinmandri.playground.serv.PersistenceServ;
@@ -25,32 +25,30 @@ public class PostServ extends PersistenceServ
 {
 	private final int pageSize = pageSizeDefault;
 
-	final private PostRepo repo;
-	final private PAttachmentRepo attRepo;
-	final private PAuthorRepo athrRepo;
+	final private Members members;
+	final private Posts posts;
 
 	@Transactional( readOnly = true )
 	public Y_PostDetail get ( long id ) throws NoSuchEntity {
-		return repo.findById( Y_PostDetail.class, id );// TODO ??? 이거 없으면 어케 되는 거임
+		return posts.get( Y_PostDetail.class, id );// TODO ??? 이거 없으면 어케 되는 거임
 	}
 
 	@Transactional( readOnly = true )
 	public CursorPage<Y_PostListItem> list () {
-		List<Y_PostListItem> rows = repo.findAllByOrderByIdDesc( Y_PostListItem.class, defaultPageable );
+		List<Y_PostListItem> rows = posts.getList( Y_PostListItem.class, defaultPageable );
 		return new CursorPage<>( rows, pageSize );
 	}
 
 	@Transactional( readOnly = true )
 	public CursorPage<Y_PostListItem> list ( Long cursor ) {
-		List<Y_PostListItem> rows = repo.findByIdLessThanOrderByIdDesc( Y_PostListItem.class, cursor, defaultPageable );
+		List<Y_PostListItem> rows = posts.getList( Y_PostListItem.class, defaultPageable, cursor );
 		return new CursorPage<>( rows, pageSize );
 	}
 
 	@Transactional( readOnly = true )
 	public boolean checkAuthor ( Long postId , Long authorId ) {
-		Post p = repo.findById( postId ).orElseThrow( null );// TODO exception
-		PAuthor m = athrRepo.findById( authorId ).orElseThrow( null );// TODO exception
-		return p.getAuthor().equals( m );
+		Post p = posts.get( postId );// TODO exception
+		return p.getAuthor().getId().equals( authorId );
 	}
 
 	/**
@@ -64,11 +62,10 @@ public class PostServ extends PersistenceServ
 	@Transactional
 	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Long authorId ) {
 
-		PAuthor author = athrRepo.findById( authorId )
-		        .orElseThrow( null );// TODO exception
+		PAuthor author = PAuthor.from(
+		        members.findById( Member.class, authorId ) );
 
 		Post p = addPostReq.toEntity( author );
-		p = repo.save( p );
 
 		if( addAttachmentsReq != null ){
 			List<PAttachment> atts = new ArrayList<>();
@@ -77,28 +74,29 @@ public class PostServ extends PersistenceServ
 				PAttachment att = reqAtt.toEntity();
 				atts.add( att );
 			}
-			
+
 			p.setAttachments( atts );
-			for( PAttachment item : atts ){
-				attRepo.save( item );
-			}
 		}
 
-		return p.getId();
+		return posts.add( p );
 	}
 
 	@Transactional
-	public void edit ( Long originalId , Z_PostEdit newData ) {
-		Post postOriginal = repo.findById( originalId ).get();
-		Post newOne = newData.toEntity();
-		postOriginal.update( newOne );
+	public void edit ( Long originalId , Z_PostEdit req ) {
+		Post org = posts.get( originalId );
+		Post newOne = Z_PostEdit_toEntity( req, org );
+		posts.edit( originalId, newOne );
+	}
+
+	private Post Z_PostEdit_toEntity ( Z_PostEdit req , Post org ) {
+		return Post.builder()
+		        .content( req.content() != null ? req.content().equals( "" ) ? null : req.content() : org.getContent() )
+		        .build();
 	}
 
 	@Transactional
 	public void del ( Long id ) throws NoSuchEntity {
-		Post p = repo.findById( id )
-		        .orElseThrow( ()-> new NoSuchEntity( Post.class, id ) );
-		repo.delete( p );
+		// XXX
 	}
 
 	public static List<Y_PAttachment> collectAttachments ( List<Y_PAttachmentImage> images , List<Y_PAttachmentFile> files ) {

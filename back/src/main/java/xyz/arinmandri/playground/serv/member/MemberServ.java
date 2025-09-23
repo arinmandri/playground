@@ -60,10 +60,10 @@ public class MemberServ extends PersistenceServ
 
 	private Member Z_MemberEdit_toEntity ( Z_MemberEdit req , Member org ) {
 		// XXX 이걸 어떻게 공통으로...
-		Member.MemberBuilder b = Member.builder();
-		b.nick( req.nick != null ? req.nick : org.getNick() );
-		b.email( req.email != null ? req.email.equals( "" ) ? null : req.email : org.getEmail() );
-		b.propic( req.propic != null ? req.propic.equals( "" ) ? null : req.propic : org.getPropic() );
-		return b.build();
+		return Member.builder()
+		        .nick( req.nick != null ? req.nick : org.getNick() )
+		        .email( req.email != null ? req.email.equals( "" ) ? null : req.email : org.getEmail() )
+		        .propic( req.propic != null ? req.propic.equals( "" ) ? null : req.propic : org.getPropic() )
+		        .build();
 	}
 }
