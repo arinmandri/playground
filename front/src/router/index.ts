@@ -16,9 +16,10 @@ const authRequiredRoutes = [
 const vueFiles = import.meta.glob("@/views/**/*View.vue", { eager: true });
 const routes = Object.keys(vueFiles).map((filePath) => {
   const temp = filePath
-    .replace('/src/views/', '')// 상대경로로
-    .replace(/View\.vue$/, '')// "View.vue" 제거
-    .replace(/\/$/, '')// "/" 제거 (파일명이 View.vue 인 경우)
+    .replace('/src/views/', '')      // 상대경로로
+    .replace(/View\.vue$/, '')       // 파일명 끝 "View.vue" 제거
+    .replace(/\(([^)]+)\)/g, "/:$1") // 괄호로 경로 파라미터 지정: '(param)' --> '/:param'
+    .replace(/\/$/, '')              // "/" 제거 (파일명이 View.vue 인 경우)
     .toLowerCase();
 
   const name = temp === '' ? 'home' : temp.replace(/\//g, '-');
@@ -37,7 +38,8 @@ routes.push(// 없는 페이지
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: NotFound, meta: {
+    component: NotFound,
+    meta: {
       requiresAuth: false
     },
   }
