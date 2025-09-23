@@ -95,7 +95,7 @@ export class FileAndPreview {
     this._newFile = null;
     this._preview = '';
     this._name = '';
-    this._fieldValue = null;
+    this._fieldValue = '';
     this._hasChanged = true;
   }
 
