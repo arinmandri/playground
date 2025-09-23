@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.serv.member;
 
-import xyz.arinmandri.playground.core.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +15,4 @@ public class Z_MemberEdit
 
 	@Setter
 	String propic;
-
-	Member toEntity () {
-		return Member.builder()
-		        .nick( nick )
-		        .email( email )
-		        .propic( propic )
-		        .build();
-	}
 }

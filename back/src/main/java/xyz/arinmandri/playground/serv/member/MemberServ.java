@@ -3,7 +3,7 @@ package xyz.arinmandri.playground.serv.member;
 import xyz.arinmandri.playground.core.member.MKeyBasic;
 import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
-import xyz.arinmandri.playground.core.member.MemberRepo;
+import xyz.arinmandri.playground.core.member.Members;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
 import xyz.arinmandri.playground.serv.PersistenceServ;
 
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberServ extends PersistenceServ
 {
 
-	final private MemberRepo repo;
+	final private Members members;
 	final private MKeyBasicRepo mkeyBasicRepo;
 
 	public MKeyBasic getMKeyBasic ( String keyname ) {
@@ -34,12 +34,12 @@ public class MemberServ extends PersistenceServ
 
 	public Y_MemberForMe getInfoForMe ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
-		return repo.findById( Y_MemberForMe.class, id );
+		return members.findById( Y_MemberForMe.class, id );
 	}
 
 	public Y_MemberForPublic getInfoForPublic ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
-		return repo.findById( Y_MemberForPublic.class, id );
+		return members.findById( Y_MemberForPublic.class, id );
 	}
 
 	/**
@@ -48,42 +48,29 @@ public class MemberServ extends PersistenceServ
 	 * @return member.id
 	 */
 	@Transactional
-	public Long addMemberWithKeyBasic ( Z_MemberAdd memberReq , Z_MKeyBasicAdd keyReq ) throws UniqueViolated {
-
-		Member m = addMember( memberReq );
-
-		addMKeyBasic( keyReq, m.getId() );
-
-		return m.getId();
-	}
-
-	private Member addMember ( Z_MemberAdd memberReq ) {
-		// TODO check duple
+	public Long addMemberWithKeyBasic ( Z_MemberAdd memberReq , Z_MKeyBasicAdd keyReq ) {
 
 		Member m = memberReq.toEntity();
-		m = repo.save( m );
-		return m;
-	}
 
-	@Transactional
-	public Long addMKeyBasic ( Z_MKeyBasicAdd keyReq , Long ownerId ) {
-		// TODO check duple
-
-		Member m = repo.findById( Member.class, ownerId );
 		MKeyBasic mkey = keyReq.toEntity( m );
-		mkey = mkeyBasicRepo.save( mkey );
 
-		return mkey.getId();
+		return members.add( m, mkey );
 	}
 
 	@Transactional
-	public Member edit ( Long orgId , Z_MemberEdit req ) throws NoSuchEntity {
+	public void edit ( Long orgId , Z_MemberEdit req ) throws NoSuchEntity {
 
-		Member org = repo.findById( orgId )
-		        .orElseThrow( NoSuchEntity::new );
+		Member org = members.findById( Member.class, orgId );
+		Member updata = Z_MemberEdit_toEntity( req, org );
+		members.edit( orgId, updata );
+	}
 
-		Member updata = req.toEntity();
-		org.update( updata );
-		return org;
+	private Member Z_MemberEdit_toEntity ( Z_MemberEdit req , Member org ) {
+		// XXX 이걸 어떻게 공통으로...
+		Member.MemberBuilder b = Member.builder();
+		b.nick( req.nick != null ? req.nick : org.getNick() );
+		b.email( req.email != null ? req.email.equals( "" ) ? null : req.email : org.getEmail() );
+		b.propic( req.propic != null ? req.propic.equals( "" ) ? null : req.propic : org.getPropic() );
+		return b.build();
 	}
 }

@@ -20,5 +20,5 @@ public abstract class BaseEntityWithId extends BaseEntity
 	@Id
 	@Column( updatable = false )
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	private Long id;
+	protected Long id;
 }

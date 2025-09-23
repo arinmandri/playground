@@ -1,7 +1,5 @@
 package xyz.arinmandri.playground.core.member;
 
-import xyz.arinmandri.playground.core.BaseEntityWithId;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -20,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class MKeyBasic extends BaseEntityWithId
+public class MKeyBasic extends MKey
 {
 	@JoinColumn( name = "belongs_to__m" , nullable = false )
 	@OneToOne

@@ -4,7 +4,6 @@ import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
-import xyz.arinmandri.playground.serv.PersistenceServ.UniqueViolated;
 import xyz.arinmandri.playground.serv.member.MemberServ;
 import xyz.arinmandri.playground.serv.member.Y_MemberForMe;
 import xyz.arinmandri.playground.serv.member.Y_MemberForPublic;
@@ -106,12 +105,7 @@ public class ApiMember extends ApiA
 		//// 비밀번호 암호화
 		keyReq.setPassword( pwEncoder.encode( keyReq.getPassword() ) );
 
-		try{
-			mServ.addMemberWithKeyBasic( memberReq, keyReq );
-		}
-		catch( UniqueViolated e ){
-			throw ExceptionalTask.UNPROCESSABLE_ENTITY();
-		}
+		mServ.addMemberWithKeyBasic( memberReq, keyReq );
 
 		Y_MemberForMe memberInfo = mServ.getInfoForMe( null );
 

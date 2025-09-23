@@ -13,6 +13,7 @@ public class PersistenceServ
 
 	protected Pageable defaultPageable = PageRequest.of( 0, pageSizeDefault, Sort.by( "id" ).descending() );
 
+	@Deprecated
 	public void maybeThrowsUniqueViolated ( DataIntegrityViolationException e , String constName , String msg ) throws UniqueViolated {
 		if( isByConstraintUnique( e, constName ) )
 		    throw new UniqueViolated( e, msg );
@@ -20,6 +21,7 @@ public class PersistenceServ
 	/**
 	 * 예외가 유니크 위반 때문에 났는지 확인
 	 */
+	@Deprecated
 	public boolean isByConstraintUnique ( Throwable e , String constraintName ) {
 		Throwable cause = e;
 		while( cause != null ){
@@ -32,6 +34,7 @@ public class PersistenceServ
 		return false;
 	}
 
+	@Deprecated
 	public class UniqueViolated extends ServExcp
 	{
 		private static final long serialVersionUID = 1_000_000L;

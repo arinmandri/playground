@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface MemberRepo extends JpaRepository<Member, Long>
+interface MemberRepo extends JpaRepository<Member, Long>
 {
 	< T > T findById ( Class<T> type , Long id );
 }

@@ -29,24 +29,7 @@ public class Member extends BaseEntityWithId
 	@Column( length = 256 )
 	private String propic;
 
-	public void update ( Member data ) {
-		if( data.nick != null ){
-			if( data.nick.equals( "" ) )
-			    nick = null;
-			else
-			    nick = data.nick;
-		}
-		if( data.email != null ){
-			if( data.email.equals( "" ) )
-			    email = null;
-			else
-			    email = data.email;
-		}
-		if( data.propic != null ){
-			if( data.propic.equals( "" ) )
-			    propic = null;
-			else
-			    propic = data.propic;
-		}
+	void setId ( Long id ) {
+		this.id = id;
 	}
 }
