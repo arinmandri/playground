@@ -26,7 +26,7 @@ public interface Y_PostListItem extends VPagable<Long>
 	List<Y_PAttachmentFile> getAttachmentsFile ();
 
 	default List<Y_PAttachment> getAttachments () {
-		return PostServ.collectAttachments(getAttachmentsImage(), getAttachmentsFile() );
+		return PostServ.collectAttachments( getAttachmentsImage(), getAttachmentsFile() );
 	}
 
 	@Override

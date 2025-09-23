@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
 import xyz.arinmandri.playground.serv.file.LocalFileServ;
@@ -31,8 +30,6 @@ import lombok.Getter;
  */
 public abstract class ApiA
 {
-	@Autowired
-	MKeyBasicRepo mkeyBasicRepo;
 
 	@Autowired
 	LocalFileServ localFileServ;
