@@ -2,8 +2,8 @@ package xyz.arinmandri.playground.security;
 
 import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
+import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
 import xyz.arinmandri.playground.security.user.User;
-import xyz.arinmandri.playground.serv.member.MemberServ;
 import xyz.arinmandri.util.JwtUtil;
 
 import java.security.SecureRandom;
@@ -40,8 +40,8 @@ public class TokenProvider
 	@Value( "${jwt.duration_r}" )
 	private long duration_r;// 리프레시토큰 기한
 
-	final private MemberServ memSer;
 	final private RefreshTokenRepo refreshTokenRepo;
+	final private MKeyBasicRepo mkeyBasicRepo;
 
 	final private PasswordEncoder pwEncoder;
 	final private JwtUtil jwtUtil;
@@ -71,7 +71,7 @@ public class TokenProvider
 	public TokenResponse issueAccessTokenByBasicKey ( String keyname , String password ) throws LackAuthExcp {
 
 		//// 검증
-		MKeyBasic u = memSer.getMKeyBasic( keyname );
+		MKeyBasic u = mkeyBasicRepo.findByKeyname( keyname ).orElse( null );
 		if( u == null || !pwEncoder.matches( password, u.getPassword() ) ){
 			throw new LackAuthExcp( "Incorrect keyname or password" );
 		}
