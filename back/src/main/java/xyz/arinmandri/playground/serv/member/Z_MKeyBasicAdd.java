@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.serv.member;
 
-import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
-import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
+import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -22,7 +22,7 @@ public class Z_MKeyBasicAdd
 	@Setter
 	String password;
 
-	public MKeyBasic toEntity ( AuthenticatedMember owner ) {
+	public MKeyBasic toEntity ( Member owner ) {
 		return MKeyBasic.builder()
 		        .owner( owner )
 		        .keyname( keyname )

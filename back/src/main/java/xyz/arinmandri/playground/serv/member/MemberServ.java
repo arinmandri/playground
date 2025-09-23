@@ -1,9 +1,7 @@
 package xyz.arinmandri.playground.serv.member;
 
-import xyz.arinmandri.playground.core.authedmember.AuthenticatedMember;
-import xyz.arinmandri.playground.core.authedmember.AuthenticatedMemberRepo;
-import xyz.arinmandri.playground.core.authedmember.MKeyBasic;
-import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
+import xyz.arinmandri.playground.core.member.MKeyBasic;
+import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.MemberRepo;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
@@ -27,7 +25,6 @@ public class MemberServ extends PersistenceServ
 {
 
 	final private MemberRepo repo;
-	final private AuthenticatedMemberRepo athmRepo;
 	final private MKeyBasicRepo mkeyBasicRepo;
 
 	public MKeyBasic getMKeyBasic ( String keyname ) {
@@ -72,11 +69,8 @@ public class MemberServ extends PersistenceServ
 	public Long addMKeyBasic ( Z_MKeyBasicAdd keyReq , Long ownerId ) {
 		// TODO check duple
 
-		AuthenticatedMember athm = AuthenticatedMember.builder()
-		        .id( ownerId )
-		        .build();
-		MKeyBasic mkey = keyReq.toEntity( athm );
-		athmRepo.save( athm );
+		Member m = repo.findById( Member.class, ownerId );
+		MKeyBasic mkey = keyReq.toEntity( m );
 		mkey = mkeyBasicRepo.save( mkey );
 
 		return mkey.getId();

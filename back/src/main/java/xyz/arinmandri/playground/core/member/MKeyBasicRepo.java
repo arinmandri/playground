@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.authedmember;
+package xyz.arinmandri.playground.core.member;
 
 import java.util.Optional;
 

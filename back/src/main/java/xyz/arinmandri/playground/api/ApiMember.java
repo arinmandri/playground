@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.authedmember.AuthenticatedServ;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
@@ -40,7 +39,6 @@ public class ApiMember extends ApiA
 {
 
 	final MemberServ mServ;
-	final AuthenticatedServ athSer;
 
 	final private PasswordEncoder pwEncoder;
 

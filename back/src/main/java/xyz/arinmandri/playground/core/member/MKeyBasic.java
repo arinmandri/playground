@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.authedmember;
+package xyz.arinmandri.playground.core.member;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
 
@@ -24,7 +24,7 @@ public class MKeyBasic extends BaseEntityWithId
 {
 	@JoinColumn( name = "belongs_to__m" , nullable = false )
 	@OneToOne
-	private AuthenticatedMember owner;
+	private Member owner;
 
 	@Column( nullable = false , unique = true )
 	private String keyname;
