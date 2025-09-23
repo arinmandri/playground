@@ -47,21 +47,39 @@ public class MemberServ extends PersistenceServ
 
 	/**
 	 * 생성: @link{Member} + @link{MKeyBasic}
+	 * 
+	 * @return member.id
 	 */
 	@Transactional
 	public Long addMemberWithKeyBasic ( Z_MemberAdd memberReq , Z_MKeyBasicAdd keyReq ) throws UniqueViolated {
-		Member member = memberReq.toEntity();
-		repo.save( member );
+
+		Member m = addMember( memberReq );
+
+		addMKeyBasic( keyReq, m.getId() );
+
+		return m.getId();
+	}
+
+	private Member addMember ( Z_MemberAdd memberReq ) {
+		// TODO check duple
+
+		Member m = memberReq.toEntity();
+		m = repo.save( m );
+		return m;
+	}
+
+	@Transactional
+	public Long addMKeyBasic ( Z_MKeyBasicAdd keyReq , Long ownerId ) {
+		// TODO check duple
 
 		AuthenticatedMember athm = AuthenticatedMember.builder()
-		        .id( member.getId() )
+		        .id( ownerId )
 		        .build();
 		MKeyBasic mkey = keyReq.toEntity( athm );
-
 		athmRepo.save( athm );
-		MKeyBasic result = mkeyBasicRepo.save( mkey );
-		mkeyBasicRepo.flush();
-		return result.getId();
+		mkey = mkeyBasicRepo.save( mkey );
+
+		return mkey.getId();
 	}
 
 	@Transactional
