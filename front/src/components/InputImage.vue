@@ -5,6 +5,7 @@ form 속에 파일 1개 첨부 부분.
 
 사용 예시
 import type { FileAndPreview } from '@/types';
+const fileField1 = ref<FileAndPreview>(FileAndPreview.getNull()) as Ref<FileAndPreview>;
 import { THIS } from '@/components/{ THIS }.vue';
 <{ THIS } :title="'프사'" v-model:fileAndPreview="fileField1" />
 -->
@@ -26,7 +27,7 @@ import { THIS } from '@/components/{ THIS }.vue';
       돌림
     </button>
 
-    <div class="">
+    <div class="hidden">
       <p><b>fieldValue</b>: {{ props.fileAndPreview.fieldValue }}</p>
       <p><b>preview</b>: {{ props.fileAndPreview.preview }}</p>
     </div>

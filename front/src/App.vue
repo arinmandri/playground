@@ -38,6 +38,7 @@ onMounted(async () => {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
 
 :root {
   --point-blue: #4a90e2;
@@ -46,7 +47,7 @@ onMounted(async () => {
 body {
   min-width: 320px;
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f0f0f0;
+  background-color: #e8e8e8;
   color: #333;
   line-height: 1.6;
 }
@@ -73,10 +74,26 @@ textarea {
   border: 1px solid grey;
 }
 
-nav {
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#globalMenu {
   background-color: #fff;
   padding: 10px;
   top: 0;
+  font-family: "Do Hyeon", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 160%;
+}
+
+#globalMenu a {
+  color: unset;
 }
 
 #globalMenu {
@@ -104,7 +121,8 @@ nav {
 #user-propic {
   width: 45px;
   height: 45px;
-  border-top-left-radius: 30%;
-  border-bottom-right-radius: 30%;
+  border-top-left-radius: 40%;
+    border-bottom-right-radius: 50%;
+  box-shadow: 0 0 8px #0004;
 }
 </style>
