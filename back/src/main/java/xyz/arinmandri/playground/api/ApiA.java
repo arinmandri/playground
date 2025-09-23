@@ -1,11 +1,11 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.file.LocalFileServ;
-import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Serv;
 import xyz.arinmandri.playground.core.authedmember.MKeyBasicRepo;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.UserNormal;
+import xyz.arinmandri.playground.serv.file.LocalFileServ;
+import xyz.arinmandri.playground.serv.file.LocalTempFile;
+import xyz.arinmandri.playground.serv.file.S3Serv;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;

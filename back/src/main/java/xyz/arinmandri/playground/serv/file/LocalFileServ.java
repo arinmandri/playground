@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.core.file;
+package xyz.arinmandri.playground.serv.file;
 
 import java.io.File;
 import java.io.IOException;

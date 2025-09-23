@@ -1,8 +1,8 @@
 package xyz.arinmandri.playground.api;
 
-import xyz.arinmandri.playground.core.file.LocalFileServ;
-import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Serv;
+import xyz.arinmandri.playground.serv.file.LocalFileServ;
+import xyz.arinmandri.playground.serv.file.LocalTempFile;
+import xyz.arinmandri.playground.serv.file.S3Serv;
 
 import java.net.URL;
 

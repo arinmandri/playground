@@ -1,4 +1,6 @@
-package xyz.arinmandri.playground.core.file;
+package xyz.arinmandri.playground.serv.file;
+
+import xyz.arinmandri.util.S3Actions;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.services.s3.model.S3Exception;
-import xyz.arinmandri.util.S3Actions;
 
 
 @Service

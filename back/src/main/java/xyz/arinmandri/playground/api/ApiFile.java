@@ -1,5 +1,8 @@
 package xyz.arinmandri.playground.api;
 
+import xyz.arinmandri.playground.serv.file.LocalFileServ;
+import xyz.arinmandri.playground.serv.file.LocalTempFile;
+import xyz.arinmandri.playground.serv.file.S3Serv;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import xyz.arinmandri.playground.core.file.LocalFileServ;
-import xyz.arinmandri.playground.core.file.LocalTempFile;
-import xyz.arinmandri.playground.core.file.S3Serv;
 
 
 @RestController
