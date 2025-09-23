@@ -37,6 +37,7 @@ public class PAuthor extends BaseEntityWithoutId
 
 	static public PAuthor from ( Member m ) {
 		return builder()
+		        .id( m.getId() )
 		        .nick( m.getNick() )
 		        .propic( m.getPropic() )
 		        .build();
