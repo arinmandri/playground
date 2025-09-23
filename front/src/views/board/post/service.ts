@@ -1,4 +1,4 @@
-import type { Post, PostRaw } from "@/views/board/post/types";
+import type { Y_PostListItem, Y_PostListItemRaw } from "@/views/board/post/types";
 import type { SimpleListPack } from "@/types/index";
 import api from "@/api/axiosInstance";
 
@@ -8,14 +8,14 @@ import api from "@/api/axiosInstance";
 */
 
 //// 게시판 데이터 가져오기
-export async function fetchPostList(listPack: SimpleListPack<Post>): Promise<void> {
+export async function fetchPostList(listPack: SimpleListPack<Y_PostListItem>): Promise<void> {
   try {
     const response = await api.get("/post/list", {
       cursor: listPack.cursor,
     });
     const resData = response.data;
-    const newPosts = getPostListFromRawList(resData.list as PostRaw[]);
-    listPack.list = [...listPack.list, ...newPosts];
+    const newPosts = getPostListFromRawList(resData.list as Y_PostListItemRaw[]);
+    listPack.list.push(...newPosts);
     listPack.cursor = resData.nextCursor;
     listPack.isEnd = listPack.cursor == null;
   } catch (error) {
@@ -23,11 +23,14 @@ export async function fetchPostList(listPack: SimpleListPack<Post>): Promise<voi
   }
 }
 
-function getPostListFromRawList(rawList: PostRaw[]): Post[] {
+/**
+ * post 목록 응답 API 형식 --> pretty
+ */
+function getPostListFromRawList(rawList: Y_PostListItemRaw[]): Y_PostListItem[] {
   return rawList.map(rawItem => ({
     ...rawItem,
-    createdAt: new Date(rawItem.createdAt),
-    get createdAtPretty() {
+    createdAt: new Date(rawItem.createdAt) as Date,
+    get createdAtPretty(): string {
       const date = new Date(this.createdAt);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");

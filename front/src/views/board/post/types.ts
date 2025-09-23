@@ -1,19 +1,25 @@
-import type { Member } from '../../../types/member';
-import { FileAndPreview } from '../../../types/common';
+import { FileAndPreview } from '@/types/common';
 
-export interface PostRaw {
+export interface Y_PostListItemRaw {
   id: number;
   content: string;
-  author: Member;
+  author: PAuthor;
+  attachments: Y_PAttachment[];
   createdAt: string;
 }
-export interface Post {
+export interface Y_PostListItem {
   id: number;
   content: string;
-  author: Member;
+  author: PAuthor;
   attachments: Y_PAttachment[];
   createdAt: Date;
   createdAtPretty: string;
+}
+
+export interface PAuthor {
+  id: number;
+  nick: string;
+  propic: string | null;
 }
 
 export interface Y_PAttachment {

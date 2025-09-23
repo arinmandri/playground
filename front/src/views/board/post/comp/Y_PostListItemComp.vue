@@ -21,10 +21,10 @@
 
 import Y_PAttachmentComp from "@/views/board/post/comp/Y_PAttachmentComp.vue";
 
-import { type Post } from "@/views/board/post/types";
+import { type Y_PostListItem } from "@/views/board/post/types";
 
 const props = defineProps<{
-  post: Post;
+  post: Y_PostListItem;
 }>();
 
 </script>
