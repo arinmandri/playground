@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
-public interface RefreshTokenRepo extends JpaRepository<RefreshToken, Long>
+interface RefreshTokenRepo extends JpaRepository<RefreshToken, Long>
 {
 	Optional<RefreshToken> findByRefreshToken ( String refreshToken );
 

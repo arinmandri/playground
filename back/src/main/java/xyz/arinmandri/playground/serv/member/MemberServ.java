@@ -1,7 +1,6 @@
 package xyz.arinmandri.playground.serv.member;
 
 import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.MKeyBasicRepo;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.Members;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
@@ -25,12 +24,6 @@ public class MemberServ extends PersistenceServ
 {
 
 	final private Members members;
-	final private MKeyBasicRepo mkeyBasicRepo;
-
-	public MKeyBasic getMKeyBasic ( String keyname ) {
-		MKeyBasic k = mkeyBasicRepo.findByKeyname( keyname ).orElse( null );
-		return k;
-	}
 
 	public Y_MemberForMe getInfoForMe ( Long id ) throws NoSuchEntity {
 		// TODO NoSuchEntity
