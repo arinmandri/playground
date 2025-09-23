@@ -3,7 +3,8 @@
     <h1>글쓰기</h1>
     <form @submit.prevent="submitPost">
       <textarea v-model="content" type="text">뭐 쓸라고 했더라</textarea>
-      <PAttachmentList ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])" :maxLength="5" />
+      <PAttachmentListComp ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])"
+        :maxLength="5" />
       <button type="submit" :disabled="loading">라고 쓰기</button>
     </form>
     <p v-if="error" class="error">{{ error }}</p>
@@ -12,7 +13,7 @@
 
 <script lang="ts" setup>
 
-import PAttachmentList from '@/views/board/post/comp/PAttachmentList.vue';
+import PAttachmentListComp from '@/views/board/post/comp/PAttachmentListComp.vue';
 
 import api from "@/api/axiosInstance";
 import { PAttachment } from "@/views/board/post/types";
