@@ -1,4 +1,4 @@
-import type { Y_PostListItem, Y_PostListItem_raw, Z_PostAdd } from "@/views/board/services/types";
+import type { Y_PostListItem, Y_PostListItem_raw, Z_PostAdd, Y_PostDetail } from "@/views/board/services/types";
 import type { SimpleListPack } from "@/types/index";
 import api from "@/api/axiosInstance";
 
@@ -6,6 +6,11 @@ import api from "@/api/axiosInstance";
 - 아주 많이 가져온 다음엔; 오래된 항목은 삭제하고; 다음페이지 말고 이전페이지 더보기가 있어야?
 - 페이지당 항목 수는 백이 아니라 프론트에? 백에선 페이지 크기 필수로 받고?
 */
+
+export async function apiPostGet(post_id: number): Promise<Y_PostDetail> {
+  const data = (await api.get(`/post/${post_id}`)).data as Y_PostDetail;
+  return data;
+}
 
 //// 게시판 데이터 가져오기
 export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem>): Promise<void> {

@@ -6,6 +6,13 @@ export interface PAuthor {
   propic: string | null;
 }
 
+export interface Y_PostDetail {
+  author: PAuthor;
+  content: string;
+  createdAt: string;
+  attachments: Y_PAttachment[];
+}
+
 export interface Y_PostListItem_raw {
   id: number;
   content: string;
