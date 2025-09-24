@@ -22,7 +22,7 @@
 
 import PAttachmentComp from "@/views/board/post/comp/PAttachmentComp.vue";
 
-import { type Y_PostListItem } from "@/views/board/services/types";
+import { type Y_PostListItem } from "@/views/board/services/apicall";
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 

@@ -16,9 +16,9 @@
 
 import Y_PostListItemComp from "./post/comp/PostListItemComp.vue";
 
-import type { Y_PostListItem } from "@/views/board/services/types";
+import type { Y_PostListItem } from "@/views/board/services/apicall";
 import type { SimpleListPack } from "@/types/index";
-import { fetchNextPage } from "@/views/board/services/service"
+import { fetchNextPage } from "@/views/board/services/apicall"
 
 import { ref, onMounted } from "vue";
 

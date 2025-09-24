@@ -6,61 +6,6 @@ export interface PAuthor {
   propic: string | null;
 }
 
-export interface Y_PostDetail {
-  author: PAuthor;
-  content: string;
-  createdAt: string;
-  attachments: Y_PAttachment[];
-}
-
-export interface Y_PostListItem_raw {
-  id: number;
-  content: string;
-  author: PAuthor;
-  attachments: Y_PAttachment[];
-  createdAt: string;
-}
-
-export interface Y_PostListItem {
-  id: number;
-  content: string;
-  author: PAuthor;
-  attachments: Y_PAttachment[];
-  createdAt: Date;
-  createdAtPretty: string;
-}
-
-export interface Y_PAttachment {
-  type: ATT_TYPE;
-  id: number;
-  order: number;
-}
-
-export interface Y_PAttachmentImage extends Y_PAttachment {
-  url: string;
-}
-
-export interface Y_PAttachmentFile extends Y_PAttachment {
-  url: string;
-  size: number;
-}
-
-export interface Z_PostAdd {
-  content: string;
-  attachments: Z_PAttachmentAdd;
-}
-
-export interface Z_PAttachmentAdd {
-}
-
-export interface Z_PAttachmentAddImage extends Z_PAttachmentAdd {
-  url: string;
-}
-
-export interface Z_PAttachmentAddFile extends Z_PAttachmentAdd {
-  url: string;
-}
-
 /**
  * 게시글 첨부물
  */
@@ -117,17 +62,6 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
-  toApiSendingForm(): Z_PAttachmentAdd | null {
-    if (this._attType == null)
-      return null;
-
-    const a = {
-      type: this._attType,
-      ...this._attData.toApiSendingForm(this._attType)
-    };
-    return a;
-  }
-
   get attType(): ATT_TYPE | null {
     return this._attType;
   }
@@ -146,7 +80,7 @@ export enum ATT_TYPE {
  * 게시글 첨부물 타입별 데이터
  * 한 가지 필드만 값을 가지고 나머지는 undefined이 되도록 관리하라.
  */
-class PAttachmentData {
+export class PAttachmentData {
   private _typeImage: FileAndPreview | undefined;
   private _typeFile: FileAndPreview | undefined;
 
@@ -184,20 +118,6 @@ class PAttachmentData {
     this.clear();
     this._typeFile = FileAndPreview.newOne();
     this._typeFile.setFile(newFile);
-  }
-
-  toApiSendingForm(attType: ATT_TYPE): any {
-    if (attType == ATT_TYPE.image) {
-      return {
-        url: this._typeImage?.fieldValue
-      }
-    }
-    if (attType == ATT_TYPE.file) {
-      return {
-        url: this._typeFile?.fieldValue
-      }
-    }
-    return null;
   }
 
   get typeImage(): FileAndPreview | undefined {
