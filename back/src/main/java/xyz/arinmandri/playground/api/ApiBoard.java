@@ -8,8 +8,9 @@ import xyz.arinmandri.playground.serv.board.PostServ;
 import xyz.arinmandri.playground.serv.board.Y_PostDetail;
 import xyz.arinmandri.playground.serv.board.Y_PostListItem;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAdd;
-import xyz.arinmandri.playground.serv.board.Z_PAttachmentFileAdd;
-import xyz.arinmandri.playground.serv.board.Z_PAttachmentImageAdd;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddFile;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddImage;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentNew;
 import xyz.arinmandri.playground.serv.board.Z_PostAdd;
 import xyz.arinmandri.playground.serv.board.Z_PostEdit;
 
@@ -36,7 +37,8 @@ public class ApiBoard extends ApiA
 
 	@GetMapping( "/post/{id}" )
 	public ResponseEntity<Y_PostDetail> apiPostGet (
-	        @PathVariable long id ) {
+	        @PathVariable long id
+	) {
 
 		Y_PostDetail p;
 		try{
@@ -51,7 +53,8 @@ public class ApiBoard extends ApiA
 
 	@GetMapping( "/post/list" )
 	public ResponseEntity<CursorPage<Y_PostListItem>> apiPostList (
-	        @RequestParam( required = false ) Long cursor ) {
+	        @RequestParam( required = false ) Long cursor
+	) {
 
 		CursorPage<Y_PostListItem> p;
 		p = cursor == null
@@ -65,7 +68,8 @@ public class ApiBoard extends ApiA
 	@PostMapping( "/post/add" )
 	public ResponseEntity<Y_PostDetail> apiPostAdd (
 	        @AuthenticationPrincipal User user ,
-	        @RequestBody @Valid Z_PostAdd req
+	        @RequestBody
+	        @Valid Z_PostAdd req
 	) {
 
 		Long myId = myIdAsMember( user );
@@ -73,14 +77,14 @@ public class ApiBoard extends ApiA
 		//// 파일 업로드 처리
 		if( req.attachments() != null ){
 			for( Z_PAttachmentAdd reqAtt : req.attachments() ){
-				if( reqAtt instanceof Z_PAttachmentImageAdd attImage ){
+				if( reqAtt instanceof Z_PAttachmentAddImage attImage ){
 					uploadAndSetFileField( attImage,
 					        ( r )-> r.getUrl(),
 					        ( r , url )-> {
 						        r.setUrl( url );
 					        } );
 				}
-				if( reqAtt instanceof Z_PAttachmentFileAdd attFile ){
+				if( reqAtt instanceof Z_PAttachmentAddFile attFile ){
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
