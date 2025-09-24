@@ -119,7 +119,7 @@ public class ApiBoard extends ApiA
 
 		Long myId = myIdAsMember( user );
 
-		if( pServ.checkAuthor( id, myId ) ){
+		if( !pServ.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
@@ -141,7 +141,7 @@ public class ApiBoard extends ApiA
 
 		Y_PostDetail p = pServ.get( id );
 
-		if( pServ.checkAuthor( id, myId ) ){
+		if( !pServ.checkAuthor( id, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
