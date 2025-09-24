@@ -13,5 +13,5 @@ public class Z_PAttachmentOld extends Z_PAttachment
 		return TYPE;
 	}
 
-	int order;
+	int order;// 원래의 order 값. 새 order 값은 배열 내에서의 순서로 정해짐.
 }
