@@ -14,11 +14,11 @@
 
 <script setup lang="ts">
 
-import Y_PostListItemComp from "./post/comp/Y_PostListItemComp.vue";
+import Y_PostListItemComp from "./post/comp/PostListItemComp.vue";
 
-import type { Y_PostListItem } from "@/views/board/post/types";
+import type { Y_PostListItem } from "@/views/board/services/types";
 import type { SimpleListPack } from "@/types/index";
-import { fetchPostList } from "@/views/board/post/service"
+import { fetchNextPage } from "@/views/board/services/service"
 
 import { ref, onMounted } from "vue";
 
@@ -29,11 +29,11 @@ const postListPack = ref<SimpleListPack<Y_PostListItem>>({
 });
 
 onMounted(async () => {
-  await fetchPostList(postListPack.value);
+  await fetchNextPage(postListPack.value);
 });
 
 function clickMoreBtn() {
-  fetchPostList(postListPack.value);
+  fetchNextPage(postListPack.value);
 }
 
 </script>

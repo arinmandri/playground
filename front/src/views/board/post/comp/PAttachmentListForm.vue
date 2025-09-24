@@ -3,10 +3,10 @@
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
       <div v-for="(_, index) in attachments" :key="index">
-        <PAttachmentComp v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
+        <PAttachmentForm v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
       </div>
       <div v-if="attachments.length < props.maxLength">
-        <PAttachmentComp :title="'첨부물 추가'" :attachment="PAttachment.getNull()" @select-new="onSelectNewFile" />
+        <PAttachmentForm :title="'첨부물 추가'" :attachment="PAttachment.getNull()" @select-new="onSelectNewFile" />
       </div>
     </div>
   </div>
@@ -17,9 +17,9 @@
 <script setup lang="ts">
 
 import api from '@/api/axiosInstance';
-import PAttachmentComp from '@/views/board/post/comp/PAttachmentComp.vue';
+import PAttachmentForm from '@/views/board/post/comp/PAttachmentForm.vue';
 
-import { PAttachment } from "@/views/board/post/types";
+import { PAttachment } from "@/views/board/services/types";
 
 import { defineExpose } from "vue";
 
@@ -27,7 +27,7 @@ import { defineExpose } from "vue";
 const props = defineProps<{
   title?: string;
   attachments: PAttachment[];
-  maxLength: number;// 첨부물 최대 개수
+  maxLength: number;// TODO 첨부물 최대 개수 백엔드랑 어케 일원화함
 }>();
 
 const emit = defineEmits<{

@@ -1,4 +1,4 @@
-import type { Y_PostListItem, Y_PostListItemRaw } from "@/views/board/post/types";
+import type { Y_PostListItem, Y_PostListItem_raw } from "@/views/board/services/types";
 import type { SimpleListPack } from "@/types/index";
 import api from "@/api/axiosInstance";
 
@@ -8,13 +8,13 @@ import api from "@/api/axiosInstance";
 */
 
 //// 게시판 데이터 가져오기
-export async function fetchPostList(listPack: SimpleListPack<Y_PostListItem>): Promise<void> {
+export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem>): Promise<void> {
   try {
     const response = await api.get("/post/list", {
       cursor: listPack.cursor,
     });
     const resData = response.data;
-    const newPosts = getPostListFromRawList(resData.list as Y_PostListItemRaw[]);
+    const newPosts = getPostListFromRawList(resData.list as Y_PostListItem_raw[]);
     listPack.list.push(...newPosts);
     listPack.cursor = resData.nextCursor;
     listPack.isEnd = listPack.cursor == null;
@@ -26,7 +26,7 @@ export async function fetchPostList(listPack: SimpleListPack<Y_PostListItem>): P
 /**
  * post 목록 응답 API 형식 --> pretty
  */
-function getPostListFromRawList(rawList: Y_PostListItemRaw[]): Y_PostListItem[] {
+function getPostListFromRawList(rawList: Y_PostListItem_raw[]): Y_PostListItem[] {
   return rawList.map(rawItem => ({
     ...rawItem,
     createdAt: new Date(rawItem.createdAt) as Date,

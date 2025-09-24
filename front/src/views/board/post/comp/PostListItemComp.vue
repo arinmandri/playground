@@ -2,8 +2,8 @@
   <div class="post">
     <div>
       <template v-for="attachment in props.post.attachments">
-        <Y_PAttachmentComp :attachment="attachment">
-        </Y_PAttachmentComp>
+        <PAttachmentComp :attachment="attachment">
+        </PAttachmentComp>
       </template>
     </div>
     <p class="content">{{ props.post.content }}</p>
@@ -20,9 +20,9 @@
 
 <script setup lang="ts">
 
-import Y_PAttachmentComp from "@/views/board/post/comp/Y_PAttachmentComp.vue";
+import PAttachmentComp from "@/views/board/post/comp/PAttachmentComp.vue";
 
-import { type Y_PostListItem } from "@/views/board/post/types";
+import { type Y_PostListItem } from "@/views/board/services/types";
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 

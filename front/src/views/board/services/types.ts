@@ -1,12 +1,13 @@
 import { FileAndPreview } from '@/types/common';
 
-export interface Y_PostListItemRaw {
+export interface Y_PostListItem_raw {
   id: number;
   content: string;
   author: PAuthor;
   attachments: Y_PAttachment[];
   createdAt: string;
 }
+
 export interface Y_PostListItem {
   id: number;
   content: string;
