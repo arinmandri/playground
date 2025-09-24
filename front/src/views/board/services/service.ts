@@ -1,4 +1,4 @@
-import type { Y_PostListItem, Y_PostListItem_raw } from "@/views/board/services/types";
+import type { Y_PostListItem, Y_PostListItem_raw, Z_PostAdd } from "@/views/board/services/types";
 import type { SimpleListPack } from "@/types/index";
 import api from "@/api/axiosInstance";
 
@@ -38,4 +38,9 @@ function getPostListFromRawList(rawList: Y_PostListItem_raw[]): Y_PostListItem[]
       return `${year}.${month}.${day}.`;
     }
   }));
+}
+
+
+export async function apiPostAdd(data: Z_PostAdd) {
+  await api.post('/post/add', data);
 }

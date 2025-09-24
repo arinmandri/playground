@@ -1,5 +1,11 @@
 import { FileAndPreview } from '@/types/common';
 
+export interface PAuthor {
+  id: number;
+  nick: string;
+  propic: string | null;
+}
+
 export interface Y_PostListItem_raw {
   id: number;
   content: string;
@@ -17,12 +23,6 @@ export interface Y_PostListItem {
   createdAtPretty: string;
 }
 
-export interface PAuthor {
-  id: number;
-  nick: string;
-  propic: string | null;
-}
-
 export interface Y_PAttachment {
   type: ATT_TYPE;
   id: number;
@@ -36,6 +36,22 @@ export interface Y_PAttachmentImage extends Y_PAttachment {
 export interface Y_PAttachmentFile extends Y_PAttachment {
   url: string;
   size: number;
+}
+
+export interface Z_PostAdd {
+  content: string;
+  attachments: Z_PAttachmentAdd;
+}
+
+export interface Z_PAttachmentAdd {
+}
+
+export interface Z_PAttachmentAddImage extends Z_PAttachmentAdd {
+  url: string;
+}
+
+export interface Z_PAttachmentAddFile extends Z_PAttachmentAdd {
+  url: string;
 }
 
 /**
@@ -94,7 +110,7 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
-  toApiSendingForm(): PAttachmentForApiSending | null {
+  toApiSendingForm(): Z_PAttachmentAdd | null {
     if (this._attType == null)
       return null;
 
@@ -184,8 +200,4 @@ class PAttachmentData {
   get typeFile(): FileAndPreview | undefined {
     return this._typeFile;
   }
-}
-
-interface PAttachmentForApiSending {
-  type: string;
 }

@@ -1,47 +1,29 @@
 <template>
   <div class="write-post-view">
     <h1>글쓰기</h1>
-    <form @submit.prevent="submitPost">
-      <textarea v-model="content" type="text">뭐 쓸라고 했더라</textarea>
-      <PAttachmentListForm ref="attachmentsComp" :title="'첨부파일'" v-model:attachments="(attachments as PAttachment[])"
-        :maxLength="5" />
-      <button type="submit" :disabled="loading">라고 쓰기</button>
-    </form>
+    <PostWriteForm @submit="submitPost"></PostWriteForm>
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
 
-import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
+import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import api from "@/api/axiosInstance";
-import { PAttachment } from "@/views/board/services/types";
+import { apiPostAdd } from "@/views/board/services/service";
+import { type Z_PostAdd } from "@/views/board/services/types";
 
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
 
-interface PAttachmentList {
-  uploadFiles: () => Promise<void>
-}
-
-const attachments = ref<PAttachment[]>([]);
-const content = ref('')
-const attachmentsComp = ref<PAttachmentList>() as Ref<PAttachmentList>;
 const loading = ref(false)
 const error = ref('')
 
-async function submitPost() {
+async function submitPost(data: Z_PostAdd) {
   error.value = ''
   loading.value = true
   try {
-    await attachmentsComp.value.uploadFiles();
-    const attsToSend = attachments.value.map(attRaw => attRaw.toApiSendingForm());
-    await api.post('/post/add', {
-      content: content.value,
-      attachments: attsToSend,
-    });
-    content.value = ''
+    await apiPostAdd(data);
     router.push('/board');
   } catch (e: any) {
     error.value = e?.message || 'Failed to submit post.'
