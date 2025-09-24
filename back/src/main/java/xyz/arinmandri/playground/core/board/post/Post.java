@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class Post extends BaseEntityWithId
 {
 
-	@JoinColumn( name = "author__m" )
+	@JoinColumn( name = "author__m" , updatable = false )
 	@ManyToOne
 	private PAuthor author;
 

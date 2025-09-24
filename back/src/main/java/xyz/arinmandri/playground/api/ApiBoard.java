@@ -110,42 +110,40 @@ public class ApiBoard extends ApiA
 		        .body( p );
 	}
 
-	@PostMapping( "/post/{id}/edit" )
+	@PostMapping( "/post/{post-id}/edit" )
 	public ResponseEntity<Y_PostDetail> apiPostEdit (
 	        @AuthenticationPrincipal User user ,
-	        @PathVariable long id ,
+	        @PathVariable( name = "post-id" ) long postId ,
 	        @RequestBody Z_PostEdit req
 	) throws LackAuthExcp , NoSuchEntity {
 
 		Long myId = myIdAsMember( user );
 
-		if( !pServ.checkAuthor( id, myId ) ){
+		if( !pServ.checkAuthor( postId, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		pServ.edit( id, req );
+		pServ.edit( postId, req );
 
-		Y_PostDetail p = pServ.get( id );
+		Y_PostDetail p = pServ.get( postId );
 
 		return ResponseEntity.ok()
 		        .body( p );
 	}
 
-	@PostMapping( "/post/{id}/del" )
+	@PostMapping( "/post/{post-id}/del" )
 	public ResponseEntity<Void> apiPostDel (
 	        @AuthenticationPrincipal User user ,
-	        @PathVariable long id
+	        @PathVariable( name = "post-id" ) long postId
 	) throws LackAuthExcp , NoSuchEntity {
 
 		Long myId = myIdAsMember( user );
 
-		Y_PostDetail p = pServ.get( id );
-
-		if( !pServ.checkAuthor( id, myId ) ){
+		if( !pServ.checkAuthor( postId, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
 		}
 
-		pServ.del( id );
+		pServ.del( postId );
 
 		return ResponseEntity.ok().build();
 	}

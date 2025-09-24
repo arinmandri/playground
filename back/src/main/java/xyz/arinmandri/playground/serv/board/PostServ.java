@@ -83,6 +83,7 @@ public class PostServ extends PersistenceServ
 
 	@Transactional
 	public void edit ( Long originalId , Z_PostEdit req ) {
+
 		Post org = posts.get( originalId );
 		Post newOne = Z_PostEdit_toEntity( req, org );
 		posts.edit( originalId, newOne );
@@ -90,6 +91,7 @@ public class PostServ extends PersistenceServ
 
 	private Post Z_PostEdit_toEntity ( Z_PostEdit req , Post org ) {
 		return Post.builder()
+		        .author( org.getAuthor() )
 		        .content( req.content() != null ? req.content().equals( "" ) ? null : req.content() : org.getContent() )
 		        .build();
 	}
