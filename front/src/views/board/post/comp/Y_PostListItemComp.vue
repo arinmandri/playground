@@ -11,8 +11,9 @@
     <div class="author">
       <span>{{ props.post.author.nick }}</span>
     </div>
-    <p class="info">
-      <span>{{ props.post.createdAtPretty }}</span>
+    <p class="additional">
+      <router-link v-if="props.post.author.id == myId" :to="'/board/post/write/' + props.post.id">수정</router-link>
+      <span class="date">{{ props.post.createdAtPretty }}</span>
     </p>
   </div>
 </template>
@@ -23,6 +24,12 @@ import Y_PAttachmentComp from "@/views/board/post/comp/Y_PAttachmentComp.vue";
 
 import { type Y_PostListItem } from "@/views/board/post/types";
 
+import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
+
+import { storeToRefs } from "pinia";
+
+const myId = storeToRefs(authStore).user.value.id;
+
 const props = defineProps<{
   post: Y_PostListItem;
 }>();
@@ -30,7 +37,6 @@ const props = defineProps<{
 </script>
 
 <style scoped>
-
 .post {
   border: 1px solid #e0e0e0;
   background: #fafbfc;
@@ -61,17 +67,21 @@ const props = defineProps<{
   margin-bottom: 4px;
 }
 
-.post .info {
+.post .additional {
+  text-align: right;
+}
+
+.post .additional .date {
   margin-top: 6px;
   font-size: 0.85rem;
   color: #888;
-  text-align: right;
 }
 
 .attachment-image {
   max-width: 200px;
   max-height: 200px;
 }
+
 .listEnd {
   text-align: center;
   margin: 20px 0;
