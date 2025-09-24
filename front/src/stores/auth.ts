@@ -26,6 +26,7 @@ export const useAuthStore = defineStore("auth", {
     isLoggedIn: !!getRefreshToken(),// 로그인 상태 기준: 리프레시토큰 있으면 로그인 상태
     user: {
       type: USER_TYPE_GUEST,
+      id: 0,// XXX id-handle
       nick: '…',
       propic: null as string | null,
     },

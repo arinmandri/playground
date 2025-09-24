@@ -46,27 +46,33 @@ public class ApiMember extends ApiA
 	        @AuthenticationPrincipal User user ) throws NoSuchEntity {
 
 		String type = user.getType().toString();
+		Long id;
 		String nick;
 		String propic = null;
 		switch( user ){
 		case UserNormal un -> {
-			Long myId = un.getMemberId();
-			Y_MemberForPublic me = mServ.getInfoForPublic( myId );
+			id = un.getMemberId();
+			Y_MemberForPublic me = mServ.getInfoForPublic( id );
 			nick = me.getNick();
 			propic = me.getPropic();
 		}
-		case UserGuest ug -> nick = ug.getCode();
+		case UserGuest ug -> {
+			id = 0L;
+			nick = ug.getCode();
+		}
 		default -> throw new RuntimeException();// TODO exception
 		}
 		return ResponseEntity.ok()
 		        .body( new apiWhoamiRes(
 		                type,
+		                id,
 		                nick,
 		                propic ) );
 	}
 
 	static public record apiWhoamiRes(
 	        String type ,
+	        Long id ,// XXX id-handle
 	        String nick ,
 	        String propic )
 	{
