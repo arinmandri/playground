@@ -10,7 +10,6 @@ import xyz.arinmandri.playground.serv.board.Y_PostListItem;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAdd;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddFile;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddImage;
-import xyz.arinmandri.playground.serv.board.Z_PAttachmentNew;
 import xyz.arinmandri.playground.serv.board.Z_PostAdd;
 import xyz.arinmandri.playground.serv.board.Z_PostEdit;
 

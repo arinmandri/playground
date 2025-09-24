@@ -19,6 +19,7 @@ import lombok.Setter;
 @Getter
 public class PAttachmentFile extends PAttachment
 {
+	public static final String TYPE = "file";
 
 	@Override
 	public String getType () {
