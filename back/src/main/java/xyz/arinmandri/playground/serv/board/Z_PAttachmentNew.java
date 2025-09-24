@@ -4,7 +4,7 @@ import lombok.Getter;
 
 
 @Getter
-public abstract class Z_PAttachmentNew extends Z_PAttachment
+public class Z_PAttachmentNew extends Z_PAttachment
 {
 	public static final String TYPE = "new";
 

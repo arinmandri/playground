@@ -90,10 +90,34 @@ public class PostServ extends PersistenceServ
 	}
 
 	private Post Z_PostEdit_toEntity ( Z_PostEdit req , Post org ) {
+
 		return Post.builder()
 		        .author( org.getAuthor() )
-		        .content( req.content() != null ? req.content().equals( "" ) ? null : req.content() : org.getContent() )
+		        .content( req.content() == null
+		                ? org.getContent()
+		                : req.content().equals( "" )
+		                        ? null
+		                        : req.content() )
+		        .attachments( req.attachments() == null
+		                ? org.getAttachments()
+		                : Z_PAttachmentList_toEntity( req.attachments(), org.getAttachments() ) )
 		        .build();
+	}
+
+	private List<PAttachment> Z_PAttachmentList_toEntity ( List<Z_PAttachment> reqList , List<PAttachment> orgList ) {
+
+		return reqList.stream().map( ( req )-> {
+			if( req instanceof Z_PAttachmentNew reqNew ){
+				return reqNew.getContent().toEntity();
+			}
+
+			if( req instanceof Z_PAttachmentOld reqOld ){
+				int originalOrder = reqOld.originalOrder;
+				return orgList.get( originalOrder );
+			}
+
+			return null;// TODO exception
+		} ).toList();
 	}
 
 	@Transactional

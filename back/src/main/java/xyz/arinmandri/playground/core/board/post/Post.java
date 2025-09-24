@@ -2,20 +2,22 @@ package xyz.arinmandri.playground.core.board.post;
 
 import xyz.arinmandri.playground.core.BaseEntityWithId;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
@@ -24,46 +26,32 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
+// XXX 저놈의 상속관계 엔터티 때문에 그냥 어노테이션 띡 붙이는 걸로는 엔터티의 무결함이 유지가 안 되고 그걸 해결하려면 어노테이션 빼고 장황한 코드를 적어야 한다. 돌겠 일단은 Posts.processPAttachments 돌리면 attachments 필드를 기준으로 다시 잡게 함. 그러니까 그냥 Post의 setter만 써서는 와장창 된다는 말이다.
 public class Post extends BaseEntityWithId
 {
 
 	@JoinColumn( name = "author__m" , updatable = false )
 	@ManyToOne
-	private PAuthor author;
+	PAuthor author;
 
 	@Column( nullable = false )
-	private String content;
+	String content;
 
-	@OneToMany( mappedBy = "belongsTo" )
-	private List<PAttachment> attachments;
+	@OneToMany( mappedBy = "belongsTo" , cascade = CascadeType.ALL , orphanRemoval = true )
+	@OrderBy( "order ASC" )
+	@Setter
+	List<PAttachment> attachments;
 
-	@OneToMany( mappedBy = "belongsTo" )
-	private List<PAttachmentImage> attachmentsImage;
+	@OneToMany( mappedBy = "belongsTo" , cascade = CascadeType.ALL , orphanRemoval = true )
+	@OrderBy( "order ASC" )
+	List<PAttachmentImage> attachmentsImage;
 
-	@OneToMany( mappedBy = "belongsTo" )
-	private List<PAttachmentFile> attachmentsFile;
+	@OneToMany( mappedBy = "belongsTo" , cascade = CascadeType.ALL , orphanRemoval = true )
+	@OrderBy( "order ASC" )
+	List<PAttachmentFile> attachmentsFile;
 
 	public void update ( Post data ) {
 		if( data.content != null ) content = data.content;
-	}
-
-	public void setAttachments ( List<PAttachment> list ) {
-		this.attachments = list;
-
-		int order = 1;
-		List<PAttachmentImage> listImage = new ArrayList<>();
-		List<PAttachmentFile> listFile = new ArrayList<>();
-		for( PAttachment item : list ){
-			item.setOrder( order++ );
-			item.setBelongsTo( this );
-
-			if( item instanceof PAttachmentImage itemImage )
-			    listImage.add( itemImage );
-			if( item instanceof PAttachmentFile itemFile )
-			    listFile.add( itemFile );
-		}
-		this.attachmentsImage = listImage;
-		this.attachmentsFile = listFile;
 	}
 
 	void setId ( Long id ) {
