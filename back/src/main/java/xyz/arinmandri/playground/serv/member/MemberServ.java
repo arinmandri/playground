@@ -62,8 +62,16 @@ public class MemberServ extends PersistenceServ
 		// XXX 이걸 어떻게 공통으로...
 		return Member.builder()
 		        .nick( req.nick != null ? req.nick : org.getNick() )
-		        .email( req.email != null ? req.email.equals( "" ) ? null : req.email : org.getEmail() )
-		        .propic( req.propic != null ? req.propic.equals( "" ) ? null : req.propic : org.getPropic() )
+		        .email( req.email == null
+		                ? org.getEmail()
+		                : req.email.equals( "" )
+		                        ? null
+		                        : req.email )
+		        .propic( req.propic == null
+		                ? org.getPropic()
+		                : req.propic.equals( "" )
+		                        ? null
+		                        : req.propic )
 		        .build();
 	}
 }
