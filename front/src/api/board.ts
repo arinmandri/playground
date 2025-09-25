@@ -98,7 +98,24 @@ export interface Y_PAttachmentFile extends Y_PAttachment {
 
 export interface Z_PostAdd {
   content: string;
-  attachments: Z_PAttachmentAdd;
+  attachments: Z_PAttachmentNew[] | null;
+}
+
+export interface Z_PostEdit {
+  content: string;
+  attachments: Z_PAttachment[];
+}
+
+export interface Z_PAttachment {
+  type: string;
+}
+
+export interface Z_PAttachmentNew extends Z_PAttachment {
+  content: Z_PAttachmentAdd;
+}
+
+export interface Z_PAttachmentOld extends Z_PAttachment {
+  originalOrder: number;
 }
 
 export interface Z_PAttachmentAdd {
