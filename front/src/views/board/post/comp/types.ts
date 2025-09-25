@@ -45,10 +45,13 @@ export class PAttachmentOldData extends PAttachmentNooData {
     return NOO_TYPE.old;
   }
 
+  originalOrder: number;
+
   data: any;// TODO
 
-  constructor(data: any) {
+  constructor(originalOrder: number, data: any) {
     super();
+    this.originalOrder = originalOrder;
     this.data = data;
   }
 

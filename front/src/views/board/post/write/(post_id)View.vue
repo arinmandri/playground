@@ -30,9 +30,8 @@ const postWriteForm = ref<PostWriteForm_intf>() as Ref<PostWriteForm_intf>;
 
 onMounted(async () => {
   const dataRaw = await apiPostGet(post_id);
-  postWriteForm.value.setFormData(
-    PostWriteData.fromY(dataRaw)
-  );
+  const postWriteData = PostWriteData.fromY(dataRaw);
+  postWriteForm.value.setFormData(postWriteData);
 });
 
 async function submitPost(data: Z_PostAdd) {

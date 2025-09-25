@@ -1,5 +1,5 @@
 import type { Y_PostDetail } from "@/api/board";
-import { PAttachmentAddData, type PAttachmentNooData } from "@/views/board/post/comp/types";
+import { NOO_TYPE, PAttachmentAddData, PAttachmentNewData, PAttachmentOldData, type PAttachmentNooData } from "@/views/board/post/comp/types";
 
 
 export class PostWriteData {
@@ -16,11 +16,17 @@ export class PostWriteData {
 
   static fromY(dataRaw: Y_PostDetail): PostWriteData {
     const content = dataRaw.content;
-    // const attachments = dataRaw.attachments.map(PAttachmentAddData.fromY);// TODO
+    const attachments = dataRaw.attachments.map((att) => {
+      return {
+        type: NOO_TYPE.old,
+        originalOrder: att.order,
+        data: PAttachmentAddData.fromY(att),
+      } as PAttachmentOldData
+    });
 
     return {
       content,
-      attachments: [],
+      attachments,
     }
   }
 }
