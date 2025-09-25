@@ -1,4 +1,4 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Y_PostDetail, Z_PAttachment, Z_PAttachmentAdd, Z_PAttachmentNew } from '@/api/board';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Y_PostDetail, Z_PAttachmentNoo, Z_PAttachmentAdd, Z_PAttachmentNew } from '@/api/board';
 import { FileAndPreview } from '@/types/common';
 
 export interface PAuthor {

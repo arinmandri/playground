@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type( value = Z_PAttachmentNew.class , name = Z_PAttachmentNew.TYPE ),
         @JsonSubTypes.Type( value = Z_PAttachmentOld.class , name = Z_PAttachmentOld.TYPE )
 } )
-public abstract class Z_PAttachment
+public abstract class Z_PAttachmentNoo
 {
 	public abstract String getType ();
 }

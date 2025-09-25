@@ -104,7 +104,7 @@ public class PostServ extends PersistenceServ
 		        .build();
 	}
 
-	private List<PAttachment> Z_PAttachmentList_toEntity ( List<Z_PAttachment> reqList , List<PAttachment> orgList ) {
+	private List<PAttachment> Z_PAttachmentList_toEntity ( List<Z_PAttachmentNoo> reqList , List<PAttachment> orgList ) {
 
 		return reqList.stream().map( ( req )-> {
 			if( req instanceof Z_PAttachmentNew reqNew ){

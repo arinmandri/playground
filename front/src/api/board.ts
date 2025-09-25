@@ -103,18 +103,18 @@ export interface Z_PostAdd {
 
 export interface Z_PostEdit {
   content: string;
-  attachments: Z_PAttachment[];
+  attachments: Z_PAttachmentNoo[];
 }
 
-export interface Z_PAttachment {
+export interface Z_PAttachmentNoo {
   type: string;
 }
 
-export interface Z_PAttachmentNew extends Z_PAttachment {
+export interface Z_PAttachmentNew extends Z_PAttachmentNoo {
   content: Z_PAttachmentAdd;
 }
 
-export interface Z_PAttachmentOld extends Z_PAttachment {
+export interface Z_PAttachmentOld extends Z_PAttachmentNoo {
   originalOrder: number;
 }
 
