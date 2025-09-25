@@ -12,4 +12,6 @@
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
 }
