@@ -1,4 +1,4 @@
-import type { Z_PAttachmentAdd } from '@/api/board';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Y_PostDetail, Z_PAttachmentAdd } from '@/api/board';
 import { FileAndPreview } from '@/types/common';
 
 export interface PAuthor {
@@ -12,9 +12,27 @@ export enum ATT_TYPE {
   file = 'file',
 }
 
-export interface PostWrite {
+export class PostWrite {
   content: string;
   attachments: PAttachment[];
+
+  private constructor(
+    content: string,
+    attachments: PAttachment[]
+  ) {
+    this.content = content;
+    this.attachments = attachments;
+  }
+
+  static fromY(dataRaw: Y_PostDetail): PostWrite {
+    const content = dataRaw.content;
+    const attachments = dataRaw.attachments.map(PAttachment.fromY);
+
+    return {
+      content,
+      attachments,
+    }
+  }
 }
 
 /**
@@ -46,6 +64,19 @@ export class PAttachment {
     }
 
     throw new Error(`type: ${type} / but the data is null.`);
+  }
+
+  static fromY(dataRaw: Y_PAttachment): PAttachment {
+    const type = dataRaw.type;
+    if (type == ATT_TYPE.image) {
+      const dataImageRaw = dataRaw as Y_PAttachmentImage;
+      return PAttachment.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
+    }
+    if (type == ATT_TYPE.file) {
+      const dataFileRaw = dataRaw as Y_PAttachmentFile;
+      return PAttachment.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
+    }
+    throw new Error('convert_Y_PAttachment_to_PAttachment: unknown type');
   }
 
   copy() {
