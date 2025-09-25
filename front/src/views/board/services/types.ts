@@ -35,6 +35,18 @@ export class PAttachment {
     return new PAttachment();
   }
 
+  static ofExisting(type: ATT_TYPE, data: any): PAttachment {
+    // XXX type 불안 -_-
+    if (type == ATT_TYPE.image) {
+      return new PAttachment(type, PAttachmentData.ofExistingImage(data));
+    }
+    if (type == ATT_TYPE.file) {
+      return new PAttachment(type, PAttachmentData.ofExistingFile(data));
+    }
+
+    throw new Error(`type: ${type} / but the data is null.`);
+  }
+
   copy() {
     return new PAttachment(
       this._attType,
@@ -101,6 +113,20 @@ export class PAttachmentData {
     return new PAttachmentData();
   }
 
+  static ofExistingImage(data: FileAndPreview) {
+    return new PAttachmentData(
+      data,
+      undefined,
+    );
+  }
+
+  static ofExistingFile(data: FileAndPreview) {
+    return new PAttachmentData(
+      undefined,
+      data,
+    );
+  }
+
   copy() {
     return new PAttachmentData(
       this._typeImage?.copy(),
@@ -123,6 +149,16 @@ export class PAttachmentData {
     this.clear();
     this._typeFile = FileAndPreview.newOne();
     this._typeFile.setFile(newFile);
+  }
+
+  getData(type: ATT_TYPE): any {
+
+    if (type == ATT_TYPE.image)
+      return this._typeImage;
+    if (type == ATT_TYPE.file)
+      return this._typeFile;
+
+    return null;
   }
 
   get typeImage(): FileAndPreview | undefined {
