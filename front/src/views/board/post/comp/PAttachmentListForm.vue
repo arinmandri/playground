@@ -6,7 +6,7 @@
         <PAttachmentForm v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
       </div>
       <div v-if="attachments.length < props.maxLength">
-        <PAttachmentForm :title="'첨부물 추가'" :attachment="PAttachment.newOne()" @select-new="onSelectNewFile" />
+        <PAttachmentForm :title="'첨부물 추가'" :attachment="PAttachmentAdd.newOne()" @select-new="onSelectNewFile" />
       </div>
     </div>
   </div>
@@ -19,19 +19,19 @@
 import api from '@/api/api';
 import PAttachmentForm from '@/views/board/post/comp/PAttachmentForm.vue';
 
-import { PAttachment } from "@/views/board/services/types";
+import { PAttachmentAdd } from "@/views/board/services/types";
 
 import { defineExpose } from "vue";
 
 
 const props = defineProps<{
   title?: string;
-  attachments: PAttachment[];
+  attachments: PAttachmentAdd[];
   maxLength: number;// TODO 첨부물 최대 개수 백엔드랑 어케 일원화함
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:attachments', exportProps: PAttachment[]): void;
+  (e: 'update:attachments', exportProps: PAttachmentAdd[]): void;
 }>();
 
 defineExpose({
@@ -39,7 +39,7 @@ defineExpose({
 });
 
 
-function onSelectNewFile(newAttachment: PAttachment) {
+function onSelectNewFile(newAttachment: PAttachmentAdd) {
   const attachments = props.attachments;
   attachments.push(newAttachment.copy());
   emit('update:attachments', attachments);
@@ -49,7 +49,7 @@ function uploadFiles(): Promise<void> {
   const attachments = props.attachments;
 
   const fs = [] as File[];
-  const atts = [] as PAttachment[];
+  const atts = [] as PAttachmentAdd[];
   attachments.forEach((att) => {
     const f = att.getFileIfExists();
     if (f != null) {

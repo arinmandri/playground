@@ -2,7 +2,7 @@
   <form @submit.prevent="submitPost">
     <textarea v-model="formData.content" type="text">뭐 쓸라고 했더라</textarea>
     <PAttachmentListForm ref="pAttachmentListForm" :title="'첨부파일'"
-      v-model:attachments="(formData.attachments as PAttachment[])" :maxLength="5" />
+      v-model:attachments="(formData.attachments as PAttachmentAdd[])" :maxLength="5" />
     <button type="submit">라고 쓰기</button>
   </form>
 </template>
@@ -11,7 +11,7 @@
 
 import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
 
-import { type PostWrite, PAttachment } from "@/views/board/services/types";
+import { type PostWrite, PAttachmentAdd } from "@/views/board/services/types";
 import { type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'

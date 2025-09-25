@@ -14,11 +14,11 @@ export enum ATT_TYPE {
 
 export class PostWrite {
   content: string;
-  attachments: PAttachment[];
+  attachments: PAttachmentAdd[];
 
   private constructor(
     content: string,
-    attachments: PAttachment[]
+    attachments: PAttachmentAdd[]
   ) {
     this.content = content;
     this.attachments = attachments;
@@ -26,7 +26,7 @@ export class PostWrite {
 
   static fromY(dataRaw: Y_PostDetail): PostWrite {
     const content = dataRaw.content;
-    const attachments = dataRaw.attachments.map(PAttachment.fromY);
+    const attachments = dataRaw.attachments.map(PAttachmentAdd.fromY);
 
     return {
       content,
@@ -38,7 +38,7 @@ export class PostWrite {
 /**
  * 게시글 첨부물
  */
-export class PAttachment {
+export class PAttachmentAdd {
   private _attType: ATT_TYPE | null;// null: 첨부물 없음
   private _attData: PAttachmentData;
 
@@ -50,37 +50,37 @@ export class PAttachment {
     this._attData = attData;
   }
 
-  static newOne(): PAttachment {
-    return new PAttachment();
+  static newOne(): PAttachmentAdd {
+    return new PAttachmentAdd();
   }
 
-  static ofExisting(type: ATT_TYPE, data: any): PAttachment {
+  static ofExisting(type: ATT_TYPE, data: any): PAttachmentAdd {
     // XXX type 불안 -_-
     if (type == ATT_TYPE.image) {
-      return new PAttachment(type, PAttachmentData.ofExistingImage(data));
+      return new PAttachmentAdd(type, PAttachmentData.ofExistingImage(data));
     }
     if (type == ATT_TYPE.file) {
-      return new PAttachment(type, PAttachmentData.ofExistingFile(data));
+      return new PAttachmentAdd(type, PAttachmentData.ofExistingFile(data));
     }
 
     throw new Error(`type: ${type} / but the data is null.`);
   }
 
-  static fromY(dataRaw: Y_PAttachment): PAttachment {
+  static fromY(dataRaw: Y_PAttachment): PAttachmentAdd {
     const type = dataRaw.type;
     if (type == ATT_TYPE.image) {
       const dataImageRaw = dataRaw as Y_PAttachmentImage;
-      return PAttachment.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
+      return PAttachmentAdd.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
     }
     if (type == ATT_TYPE.file) {
       const dataFileRaw = dataRaw as Y_PAttachmentFile;
-      return PAttachment.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
+      return PAttachmentAdd.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
     }
     throw new Error('convert_Y_PAttachment_to_PAttachment: unknown type');
   }
 
   copy() {
-    return new PAttachment(
+    return new PAttachmentAdd(
       this._attType,
       this._attData.copy()
     );

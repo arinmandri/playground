@@ -41,16 +41,16 @@
 
 <script setup lang="ts">
 
-import { PAttachment, ATT_TYPE } from "@/views/board/services/types";
+import { PAttachmentAdd, ATT_TYPE } from "@/views/board/services/types";
 
 const props = defineProps<{
   title?: string;
-  attachment: PAttachment;
+  attachment: PAttachmentAdd;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:attachment', exportProps: PAttachment): void;
-  (e: 'select-new', exportProps: PAttachment): void;
+  (e: 'update:attachment', exportProps: PAttachmentAdd): void;
+  (e: 'select-new', exportProps: PAttachmentAdd): void;
   (e: 'clear'): void;
 }>();
 
