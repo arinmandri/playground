@@ -83,8 +83,8 @@ export class FileAndPreview {
     return new FileAndPreview();
   }
 
-  static ofExisting(currentUrl: string): FileAndPreview {
-    return new FileAndPreview(null, currentUrl, currentUrl);
+  static ofExisting(currentUrl: string, filename?: string): FileAndPreview {
+    return new FileAndPreview(null, currentUrl, filename, currentUrl);
   }
 
   clear() {
