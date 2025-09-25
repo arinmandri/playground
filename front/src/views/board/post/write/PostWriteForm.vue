@@ -20,6 +20,12 @@ const emit = defineEmits<{
 	(e: 'submit', exportProps: Z_PostAdd): void;
 }>();
 
+defineExpose({
+	setFormData
+});
+
+// ----------
+
 const formData = ref<PostWrite>({
 	content: '',
 	attachments: [],
@@ -30,6 +36,11 @@ interface PAttachmentListForm_intf {
 }
 const pAttachmentListForm = ref<PAttachmentListForm_intf>() as Ref<PAttachmentListForm_intf>;
 
+// ----------
+
+function setFormData(data: PostWrite) {
+	formData.value = data;
+}
 
 async function submitPost() {
 	await pAttachmentListForm.value.uploadFiles();
