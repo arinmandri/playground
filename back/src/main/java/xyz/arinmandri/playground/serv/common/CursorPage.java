@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.serv;
+package xyz.arinmandri.playground.serv.common;
 
 import java.util.List;
 

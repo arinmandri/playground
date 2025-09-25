@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.serv.board;
 
 import xyz.arinmandri.playground.core.board.post.PAuthor;
-import xyz.arinmandri.playground.serv.VPagable;
+import xyz.arinmandri.playground.serv.common.VPagable;
 
 import java.time.Instant;
 import java.util.List;

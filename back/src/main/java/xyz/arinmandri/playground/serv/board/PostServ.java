@@ -6,9 +6,9 @@ import xyz.arinmandri.playground.core.board.post.Post;
 import xyz.arinmandri.playground.core.board.post.Posts;
 import xyz.arinmandri.playground.core.member.Member;
 import xyz.arinmandri.playground.core.member.Members;
-import xyz.arinmandri.playground.serv.CursorPage;
 import xyz.arinmandri.playground.serv.NoSuchEntity;
 import xyz.arinmandri.playground.serv.PersistenceServ;
+import xyz.arinmandri.playground.serv.common.CursorPage;
 
 import java.util.ArrayList;
 import java.util.List;
