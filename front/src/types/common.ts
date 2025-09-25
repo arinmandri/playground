@@ -70,10 +70,6 @@ export class FileAndPreview {
     this._hasChanged = false;
   }
 
-  static getNull(): FileAndPreview {
-    return new FileAndPreview();
-  }
-
   copy(): FileAndPreview {
     return new FileAndPreview(
       this._newFile,

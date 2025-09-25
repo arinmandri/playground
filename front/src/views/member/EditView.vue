@@ -28,7 +28,7 @@ const form = ref({
   email: '',
 })
 
-const propic = ref<FileAndPreview>(FileAndPreview.getNull()) as Ref<FileAndPreview>;
+const propic = ref<FileAndPreview>(FileAndPreview.newOne()) as Ref<FileAndPreview>;
 
 const loading = ref(false)// TODO 이거 로딩화면 만듦?
 const error = ref('')

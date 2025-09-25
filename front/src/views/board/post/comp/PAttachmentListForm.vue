@@ -6,7 +6,7 @@
         <PAttachmentForm v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
       </div>
       <div v-if="attachments.length < props.maxLength">
-        <PAttachmentForm :title="'첨부물 추가'" :attachment="PAttachment.getNull()" @select-new="onSelectNewFile" />
+        <PAttachmentForm :title="'첨부물 추가'" :attachment="PAttachment.newOne()" @select-new="onSelectNewFile" />
       </div>
     </div>
   </div>

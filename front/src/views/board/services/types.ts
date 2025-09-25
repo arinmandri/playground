@@ -7,13 +7,13 @@ export interface PAuthor {
 }
 
 export enum ATT_TYPE {
-	image = 'image',
-	file = 'file',
+  image = 'image',
+  file = 'file',
 }
 
 export interface PostWrite {
-	content: string;
-	attachments: PAttachment[];
+  content: string;
+  attachments: PAttachment[];
 }
 
 /**
@@ -25,13 +25,13 @@ export class PAttachment {
 
   private constructor(
     attType: ATT_TYPE | null = null,
-    attData: PAttachmentData = PAttachmentData.getNull()
+    attData: PAttachmentData = PAttachmentData.newOne()
   ) {
     this._attType = attType;
     this._attData = attData;
   }
 
-  static getNull(): PAttachment {
+  static newOne(): PAttachment {
     return new PAttachment();
   }
 
@@ -97,7 +97,7 @@ export class PAttachmentData {
     this._typeFile = typeFile;
   }
 
-  static getNull(): PAttachmentData {
+  static newOne(): PAttachmentData {
     return new PAttachmentData();
   }
 
