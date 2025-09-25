@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 
-import api from '@/api/axiosInstance';
+import api from '@/api/api';
 
 
 function gogo() {

@@ -1,7 +1,7 @@
 import type { SimpleListPack } from "@/types/index";
 import { type PAuthor, type PAttachment, PAttachmentData, ATT_TYPE } from "@/views/board/services/types";
 
-import api from "@/api/axiosInstance";
+import api from "@/api/api";
 
 const API_POST_ADD = '/post/add';
 const API_POST_EDIT = '/post/edit';

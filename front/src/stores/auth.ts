@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 const USER_TYPE_GUEST = 'guest';
 const USER_TYPE_NORMAL = 'normal';
 
-//// 인증 관련 API만 axiosInstance를 통하지 않고 별개로
+//// 인증 관련 API만 api 모듈을 통하지 않고 별개로
 const ax = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {

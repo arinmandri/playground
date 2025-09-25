@@ -19,7 +19,7 @@ import InputImage from '@/components/InputImage.vue';
 
 import { FileAndPreview } from '@/types';
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
-import api from '@/api/axiosInstance';
+import api from '@/api/api';
 
 import { ref, type Ref, onMounted } from 'vue';
 

@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 
-import api from '@/api/axiosInstance';
+import api from '@/api/api';
 import PAttachmentForm from '@/views/board/post/comp/PAttachmentForm.vue';
 
 import { PAttachment } from "@/views/board/services/types";
