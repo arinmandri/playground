@@ -1,14 +1,14 @@
 import type { Y_PostDetail } from "@/api/board";
-import { PAttachmentAddData } from "@/views/board/post/comp/types";
+import { PAttachmentAddData, type PAttachmentNooData } from "@/views/board/post/comp/types";
 
 
 export class PostWriteData {
   content: string;
-  attachments: PAttachmentAddData[];
+  attachments: PAttachmentNooData[];
 
   private constructor(
     content: string,
-    attachments: PAttachmentAddData[]
+    attachments: PAttachmentNooData[]
   ) {
     this.content = content;
     this.attachments = attachments;
@@ -16,11 +16,11 @@ export class PostWriteData {
 
   static fromY(dataRaw: Y_PostDetail): PostWriteData {
     const content = dataRaw.content;
-    const attachments = dataRaw.attachments.map(PAttachmentAddData.fromY);
+    // const attachments = dataRaw.attachments.map(PAttachmentAddData.fromY);// TODO
 
     return {
       content,
-      attachments,
+      attachments: [],
     }
   }
 }

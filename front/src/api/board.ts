@@ -98,7 +98,7 @@ export interface Y_PAttachmentFile extends Y_PAttachment {
 
 export interface Z_PostAdd {
   content: string;
-  attachments: Z_PAttachmentNew[] | null;
+  attachments: Z_PAttachmentNoo[] | null;
 }
 
 export interface Z_PostEdit {

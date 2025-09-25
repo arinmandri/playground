@@ -2,6 +2,61 @@ import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmen
 import { FileAndPreview } from '@/types/common';
 import { ATT_TYPE } from '@/views/board/services/types';
 
+
+export enum NOO_TYPE {
+  new = 'new',
+  old = 'old',
+};
+
+export abstract class PAttachmentNooData {
+  abstract get type(): NOO_TYPE;
+  abstract toZForm(): Z_PAttachmentNew;// TODO type
+}
+
+export class PAttachmentNewData extends PAttachmentNooData {
+
+  get type(): NOO_TYPE {
+    return NOO_TYPE.new;
+  }
+
+  content: PAttachmentAddData;
+
+  private constructor(content: PAttachmentAddData) {
+    super();
+    this.content = content;
+  }
+
+  static ofNew(content: PAttachmentAddData): PAttachmentNewData {
+    return new PAttachmentNewData(content);
+  }
+
+  toZForm(): Z_PAttachmentNew {
+    const a = {
+      type: 'new',
+      content: this.content.toZForm(),
+    };
+    return a;
+  }
+}
+
+export class PAttachmentOldData extends PAttachmentNooData {
+
+  get type(): NOO_TYPE {
+    return NOO_TYPE.old;
+  }
+
+  data: any;// TODO
+
+  constructor(data: any) {
+    super();
+    this.data = data;
+  }
+
+  toZForm(): Z_PAttachmentNew {
+    throw new Error('Method not implemented.');
+  }
+}
+
 export class PAttachmentAddData {
   private _attType: ATT_TYPE | null;// null: 첨부물 없음
   private _attData: PAttachmentData;
@@ -80,18 +135,13 @@ export class PAttachmentAddData {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
-  toZForm(): Z_PAttachmentNew | null {
+  toZForm(): Z_PAttachmentAdd {
     if (this.attType == null)
-      return null;
+      throw new Error('');// TODO exception
 
     const content = this.attData.toZForm(this.attType);// as Z_PAttachmentAdd
-    if (content == null) throw new Error('');// TODO exception
 
-    const result = {
-      type: 'new',
-      content,
-    };
-    return result;
+    return content;
   }
 
   get attType(): ATT_TYPE | null {
@@ -171,7 +221,7 @@ class PAttachmentData {
     return null;
   }
 
-  toZForm(attType: ATT_TYPE): Z_PAttachmentAdd | null {
+  toZForm(attType: ATT_TYPE): Z_PAttachmentAdd {
     if (attType == ATT_TYPE.image) {
       const url = this.typeImage?.fieldValue;
       if (url == null) throw new Error();// TODO exception
@@ -188,7 +238,7 @@ class PAttachmentData {
         url,
       }
     }
-    return null;
+    throw new Error('')// TODO exception
   }
 
   get typeImage(): FileAndPreview | undefined {

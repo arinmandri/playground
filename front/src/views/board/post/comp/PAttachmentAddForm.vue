@@ -1,5 +1,3 @@
-<!--
--->
 <template>
   <div class="inputBox input-attachment-file">
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>

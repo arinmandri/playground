@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="submitPost">
     <textarea v-model="formData.content" type="text">뭐 쓸라고 했더라</textarea>
-    <PAttachmentListForm ref="pAttachmentListForm" :title="'첨부파일'"
-      v-model:attachments="(formData.attachments as PAttachmentAddData[])" :maxLength="5" />
+    <PAttachmentNooListForm ref="pAttachmentNooListForm" :title="'첨부파일'"
+      v-model:attachments="(formData.attachments as PAttachmentNooData[])" :maxLength="5" />
     <button type="submit">라고 쓰기</button>
   </form>
 </template>
@@ -11,10 +11,10 @@
 
 import type { PostWriteData } from './types';
 
-import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
+import PAttachmentNooListForm from '@/views/board/post/comp/PAttachmentNooListForm.vue';
 
-import { PAttachmentAddData } from "@/views/board/post/comp/types";
-import { type Z_PostAdd } from "@/api/board";
+import { PAttachmentNooData } from "@/views/board/post/comp/types";
+import { type Z_PAttachmentNew, type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'
 
@@ -33,10 +33,10 @@ const formData = ref<PostWriteData>({
   attachments: [],
 }) as Ref<PostWriteData>;
 
-interface PAttachmentListForm_intf {
+interface PAttachmentNooListForm_intf {
   uploadFiles: () => Promise<void>
 }
-const pAttachmentListForm = ref<PAttachmentListForm_intf>() as Ref<PAttachmentListForm_intf>;
+const pAttachmentNooListForm = ref<PAttachmentNooListForm_intf>() as Ref<PAttachmentNooListForm_intf>;
 
 // ----------
 
@@ -45,8 +45,14 @@ function setFormData(data: PostWriteData) {
 }
 
 async function submitPost() {
-  await pAttachmentListForm.value.uploadFiles();
-  const attsToSend = formData.value.attachments.map(attRaw => attRaw.toZForm()).filter(att => att != null);
+  await pAttachmentNooListForm.value.uploadFiles();
+
+  const attsToSend = [] as Z_PAttachmentNew[];
+  for (let attRaw of formData.value.attachments) {
+    const temp = attRaw.toZForm();// Z_PAttachmentNew
+    if (temp != null) attsToSend.push(temp);
+  }
+
   emit('submit', {
     content: formData.value.content,
     attachments: attsToSend,
