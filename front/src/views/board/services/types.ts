@@ -6,6 +6,16 @@ export interface PAuthor {
   propic: string | null;
 }
 
+export enum ATT_TYPE {
+	image = 'image',
+	file = 'file',
+}
+
+export interface PostWrite {
+	content: string;
+	attachments: PAttachment[];
+}
+
 /**
  * 게시글 첨부물
  */
@@ -69,11 +79,6 @@ export class PAttachment {
   get attData(): PAttachmentData {
     return this._attData;
   }
-}
-
-export enum ATT_TYPE {
-  image = 'image',
-  file = 'file',
 }
 
 /**
