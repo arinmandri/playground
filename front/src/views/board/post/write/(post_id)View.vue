@@ -7,10 +7,11 @@
 
 <script setup lang="ts">
 
+import { PostWrite } from './types';
+
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
 import type { Z_PostAdd } from "@/api/board";
-import { PostWrite } from "@/views/board/services/types";
 
 import { ref, type Ref, onMounted } from "vue";
 import { useRoute } from 'vue-router'; const route = useRoute();

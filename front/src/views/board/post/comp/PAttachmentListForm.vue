@@ -19,7 +19,7 @@
 import api from '@/api/api';
 import PAttachmentForm from '@/views/board/post/comp/PAttachmentForm.vue';
 
-import { PAttachmentAdd } from "@/views/board/services/types";
+import { PAttachmentAdd } from "@/views/board/post/comp/types";
 
 import { defineExpose } from "vue";
 

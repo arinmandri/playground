@@ -41,7 +41,8 @@
 
 <script setup lang="ts">
 
-import { PAttachmentAdd, ATT_TYPE } from "@/views/board/services/types";
+import { PAttachmentAdd } from "@/views/board/post/comp/types";
+import { ATT_TYPE } from "@/views/board/services/types";
 
 const props = defineProps<{
   title?: string;

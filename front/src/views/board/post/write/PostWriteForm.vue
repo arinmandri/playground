@@ -9,9 +9,11 @@
 
 <script lang="ts" setup>
 
+import type { PostWrite } from './types';
+
 import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
 
-import { type PostWrite, PAttachmentAdd } from "@/views/board/services/types";
+import { PAttachmentAdd } from "@/views/board/post/comp/types";
 import { type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'
