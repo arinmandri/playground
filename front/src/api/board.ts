@@ -1,12 +1,12 @@
-import type { SimpleListPack } from "@/types/index";
-import { type PAuthor, type PAttachment, PAttachmentData, ATT_TYPE } from "@/views/board/services/types";
-
-import api from "@/api/api";
-
 const API_POST_ADD = '/post/add';
 const API_POST_EDIT = '/post/edit';
 const API_POST_GET = '/post/';
 const API_POST_LIST = '/post/list';
+
+import type { SimpleListPack } from "@/types/index";
+import { type PAuthor, type PAttachment, PAttachmentData, ATT_TYPE } from "@/views/board/services/types";
+
+import api from "@/api/api";
 
 /* XXX
 - 아주 많이 가져온 다음엔; 오래된 항목은 삭제하고; 다음페이지 말고 이전페이지 더보기가 있어야?

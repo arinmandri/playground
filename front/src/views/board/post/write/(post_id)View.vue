@@ -9,11 +9,11 @@
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import { type Z_PostAdd } from "@/views/board/services/apicall";
+import { type Z_PostAdd } from "@/api/board";
 
 import { onMounted } from "vue";
 import { useRoute } from 'vue-router';
-import { apiPostGet } from "@/views/board/services/apicall";
+import { apiPostGet } from "@/api/board";
 
 const route = useRoute();
 const post_id = Number(route.params.post_id);

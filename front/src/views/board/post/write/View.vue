@@ -10,7 +10,7 @@
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import { apiPostAdd, type Z_PostAdd } from "@/views/board/services/apicall";
+import { apiPostAdd, type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();

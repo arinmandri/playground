@@ -12,8 +12,8 @@
 import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
 
 import { PAttachment } from "@/views/board/services/types";
-import { type Z_PostAdd } from "@/views/board/services/apicall";
-import { toApiSendingFormOfAtt } from '../../services/apicall';
+import { type Z_PostAdd } from "@/api/board";
+import { toApiSendingFormOfAtt } from '@/api/board';
 
 import { ref, type Ref } from 'vue'
 
