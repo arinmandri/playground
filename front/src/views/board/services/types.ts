@@ -1,4 +1,4 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Y_PostDetail, Z_PAttachmentAdd } from '@/api/board';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Y_PostDetail, Z_PAttachment, Z_PAttachmentAdd, Z_PAttachmentNew } from '@/api/board';
 import { FileAndPreview } from '@/types/common';
 
 export interface PAuthor {
@@ -116,15 +116,18 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
-  toZForm(): Z_PAttachmentAdd | null {
+  toZForm(): Z_PAttachmentNew | null {
     if (this.attType == null)
       return null;
 
-    const a = {
-      type: this.attType,
-      ...this.attData.toZForm(this.attType)
+    const content = this.attData.toZForm(this.attType);// as Z_PAttachmentAdd
+    if (content == null) throw new Error('');// TODO exception
+
+    const result = {
+      type: 'new',
+      content,
     };
-    return a;
+    return result;
   }
 
   get attType(): ATT_TYPE | null {
@@ -204,15 +207,21 @@ class PAttachmentData {
     return null;
   }
 
-  toZForm(attType: ATT_TYPE): any {
+  toZForm(attType: ATT_TYPE): Z_PAttachmentAdd | null {
     if (attType == ATT_TYPE.image) {
+      const url = this.typeImage?.fieldValue;
+      if (url == null) throw new Error();// TODO exception
       return {
-        url: this.typeImage?.fieldValue
+        type: ATT_TYPE.image.toString(),
+        url,
       }
     }
     if (attType == ATT_TYPE.file) {
+      const url = this.typeFile?.fieldValue;
+      if (url == null) throw new Error();// TODO exception
       return {
-        url: this.typeFile?.fieldValue
+        type: ATT_TYPE.file.toString(),
+        url,
       }
     }
     return null;

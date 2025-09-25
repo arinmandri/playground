@@ -13,6 +13,7 @@ import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddImage;
 import xyz.arinmandri.playground.serv.board.Z_PostAdd;
 import xyz.arinmandri.playground.serv.board.Z_PostEdit;
 
+import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -73,9 +74,12 @@ public class ApiBoard extends ApiA
 
 		Long myId = myIdAsMember( user );
 
+		List<Z_PAttachmentAdd> addAttachmentsReq = null;
+
 		//// 파일 업로드 처리
 		if( req.attachments() != null ){
-			for( Z_PAttachmentAdd reqAtt : req.attachments() ){
+			addAttachmentsReq = req.attachments().stream().map( reqNewAtt-> reqNewAtt.getContent() ).toList();
+			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
 				if( reqAtt instanceof Z_PAttachmentAddImage attImage ){
 					uploadAndSetFileField( attImage,
 					        ( r )-> r.getUrl(),
@@ -96,7 +100,7 @@ public class ApiBoard extends ApiA
 			}
 		}
 
-		Long id = pServ.add( req, req.attachments(), myId );
+		Long id = pServ.add( req, addAttachmentsReq, myId );
 
 		Y_PostDetail p;
 		try{

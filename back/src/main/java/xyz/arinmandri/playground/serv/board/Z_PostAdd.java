@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record Z_PostAdd (
         String content ,
-        List<@NotNull Z_PAttachmentAdd> attachments )
+        List<@NotNull Z_PAttachmentNew> attachments )
 {
 
 	Post toEntity ( PAuthor author ) {

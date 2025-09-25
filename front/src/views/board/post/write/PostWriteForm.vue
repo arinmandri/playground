@@ -44,7 +44,7 @@ function setFormData(data: PostWrite) {
 
 async function submitPost() {
   await pAttachmentListForm.value.uploadFiles();
-  const attsToSend = formData.value.attachments.map(attRaw => attRaw.toZForm());
+  const attsToSend = formData.value.attachments.map(attRaw => attRaw.toZForm()).filter(att => att != null);
   emit('submit', {
     content: formData.value.content,
     attachments: attsToSend,
