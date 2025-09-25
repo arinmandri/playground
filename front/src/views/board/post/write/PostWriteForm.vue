@@ -2,18 +2,18 @@
   <form @submit.prevent="submitPost">
     <textarea v-model="formData.content" type="text">뭐 쓸라고 했더라</textarea>
     <PAttachmentListForm ref="pAttachmentListForm" :title="'첨부파일'"
-      v-model:attachments="(formData.attachments as PAttachmentAdd[])" :maxLength="5" />
+      v-model:attachments="(formData.attachments as PAttachmentAddData[])" :maxLength="5" />
     <button type="submit">라고 쓰기</button>
   </form>
 </template>
 
 <script lang="ts" setup>
 
-import type { PostWrite } from './types';
+import type { PostWriteData } from './types';
 
 import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
 
-import { PAttachmentAdd } from "@/views/board/post/comp/types";
+import { PAttachmentAddData } from "@/views/board/post/comp/types";
 import { type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'
@@ -28,10 +28,10 @@ defineExpose({
 
 // ----------
 
-const formData = ref<PostWrite>({
+const formData = ref<PostWriteData>({
   content: '',
   attachments: [],
-}) as Ref<PostWrite>;
+}) as Ref<PostWriteData>;
 
 interface PAttachmentListForm_intf {
   uploadFiles: () => Promise<void>
@@ -40,7 +40,7 @@ const pAttachmentListForm = ref<PAttachmentListForm_intf>() as Ref<PAttachmentLi
 
 // ----------
 
-function setFormData(data: PostWrite) {
+function setFormData(data: PostWriteData) {
   formData.value = data;
 }
 

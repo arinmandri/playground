@@ -41,17 +41,17 @@
 
 <script setup lang="ts">
 
-import { PAttachmentAdd } from "@/views/board/post/comp/types";
+import { PAttachmentAddData } from "@/views/board/post/comp/types";
 import { ATT_TYPE } from "@/views/board/services/types";
 
 const props = defineProps<{
   title?: string;
-  attachment: PAttachmentAdd;
+  attachment: PAttachmentAddData;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:attachment', exportProps: PAttachmentAdd): void;
-  (e: 'select-new', exportProps: PAttachmentAdd): void;
+  (e: 'update:attachment', exportProps: PAttachmentAddData): void;
+  (e: 'select-new', exportProps: PAttachmentAddData): void;
   (e: 'clear'): void;
 }>();
 

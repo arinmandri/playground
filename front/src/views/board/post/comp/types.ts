@@ -2,10 +2,7 @@ import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmen
 import { FileAndPreview } from '@/types/common';
 import { ATT_TYPE } from '@/views/board/services/types';
 
-/**
- * 게시글 첨부물
- */
-export class PAttachmentAdd {
+export class PAttachmentAddData {
   private _attType: ATT_TYPE | null;// null: 첨부물 없음
   private _attData: PAttachmentData;
 
@@ -17,37 +14,37 @@ export class PAttachmentAdd {
     this._attData = attData;
   }
 
-  static newOne(): PAttachmentAdd {
-    return new PAttachmentAdd();
+  static newOne(): PAttachmentAddData {
+    return new PAttachmentAddData();
   }
 
-  static ofExisting(type: ATT_TYPE, data: any): PAttachmentAdd {
+  static ofExisting(type: ATT_TYPE, data: any): PAttachmentAddData {
     // XXX type 불안 -_-
     if (type == ATT_TYPE.image) {
-      return new PAttachmentAdd(type, PAttachmentData.ofExistingImage(data));
+      return new PAttachmentAddData(type, PAttachmentData.ofExistingImage(data));
     }
     if (type == ATT_TYPE.file) {
-      return new PAttachmentAdd(type, PAttachmentData.ofExistingFile(data));
+      return new PAttachmentAddData(type, PAttachmentData.ofExistingFile(data));
     }
 
     throw new Error(`type: ${type} / but the data is null.`);
   }
 
-  static fromY(dataRaw: Y_PAttachment): PAttachmentAdd {
+  static fromY(dataRaw: Y_PAttachment): PAttachmentAddData {
     const type = dataRaw.type;
     if (type == ATT_TYPE.image) {
       const dataImageRaw = dataRaw as Y_PAttachmentImage;
-      return PAttachmentAdd.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
+      return PAttachmentAddData.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
     }
     if (type == ATT_TYPE.file) {
       const dataFileRaw = dataRaw as Y_PAttachmentFile;
-      return PAttachmentAdd.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
+      return PAttachmentAddData.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
     }
     throw new Error('convert_Y_PAttachment_to_PAttachment: unknown type');
   }
 
   copy() {
-    return new PAttachmentAdd(
+    return new PAttachmentAddData(
       this._attType,
       this._attData.copy()
     );

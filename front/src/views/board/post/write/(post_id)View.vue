@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 
-import { PostWrite } from './types';
+import { PostWriteData } from './types';
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
@@ -22,7 +22,7 @@ const post_id = Number(route.params.post_id);
 // ----------
 
 interface PostWriteForm_intf {
-  setFormData: (data: PostWrite) => Promise<void>
+  setFormData: (data: PostWriteData) => Promise<void>
 }
 const postWriteForm = ref<PostWriteForm_intf>() as Ref<PostWriteForm_intf>;
 
@@ -31,7 +31,7 @@ const postWriteForm = ref<PostWriteForm_intf>() as Ref<PostWriteForm_intf>;
 onMounted(async () => {
   const dataRaw = await apiPostGet(post_id);
   postWriteForm.value.setFormData(
-    PostWrite.fromY(dataRaw)
+    PostWriteData.fromY(dataRaw)
   );
 });
 
