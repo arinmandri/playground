@@ -4,7 +4,7 @@ const API_POST_GET = '/post/';
 const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
-import { type PAuthor, type PAttachment, PAttachmentData, ATT_TYPE } from "@/views/board/services/types";
+import { type PAuthor, ATT_TYPE } from "@/views/board/services/types";
 
 import api from "@/api/api";
 
@@ -51,31 +51,6 @@ function getPostListFromRawList(rawList: Y_PostListItem_raw[]): Y_PostListItem[]
   }));
 }
 
-
-export function toApiSendingFormOfAtt(att: PAttachment): Z_PAttachmentAdd | null {
-  if (att.attType == null)
-    return null;
-
-  const a = {
-    type: att.attType,
-    ...toApiSendingFormOfAttData(att.attData, att.attType)
-  };
-  return a;
-}
-
-function toApiSendingFormOfAttData(attData: PAttachmentData, attType: ATT_TYPE): any {
-  if (attType == ATT_TYPE.image) {
-    return {
-      url: attData.typeImage?.fieldValue
-    }
-  }
-  if (attType == ATT_TYPE.file) {
-    return {
-      url: attData.typeFile?.fieldValue
-    }
-  }
-  return null;
-}
 
 export async function apiPostAdd(data: Z_PostAdd) {
   await api.post(API_POST_ADD, data);

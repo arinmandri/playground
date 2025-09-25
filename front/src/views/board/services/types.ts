@@ -1,3 +1,4 @@
+import type { Z_PAttachmentAdd } from '@/api/board';
 import { FileAndPreview } from '@/types/common';
 
 export interface PAuthor {
@@ -84,6 +85,17 @@ export class PAttachment {
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
+  toZForm(): Z_PAttachmentAdd | null {
+    if (this.attType == null)
+      return null;
+
+    const a = {
+      type: this.attType,
+      ...this.attData.toZForm(this.attType)
+    };
+    return a;
+  }
+
   get attType(): ATT_TYPE | null {
     return this._attType;
   }
@@ -97,7 +109,7 @@ export class PAttachment {
  * 게시글 첨부물 타입별 데이터
  * 한 가지 필드만 값을 가지고 나머지는 undefined이 되도록 관리하라.
  */
-export class PAttachmentData {
+class PAttachmentData {
   private _typeImage: FileAndPreview | undefined;
   private _typeFile: FileAndPreview | undefined;
 
@@ -158,6 +170,20 @@ export class PAttachmentData {
     if (type == ATT_TYPE.file)
       return this._typeFile;
 
+    return null;
+  }
+
+  toZForm(attType: ATT_TYPE): any {
+    if (attType == ATT_TYPE.image) {
+      return {
+        url: this.typeImage?.fieldValue
+      }
+    }
+    if (attType == ATT_TYPE.file) {
+      return {
+        url: this.typeFile?.fieldValue
+      }
+    }
     return null;
   }
 

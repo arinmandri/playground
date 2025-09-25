@@ -12,7 +12,7 @@
 import PAttachmentListForm from '@/views/board/post/comp/PAttachmentListForm.vue';
 
 import { type PostWrite, PAttachment } from "@/views/board/services/types";
-import { type Z_PostAdd, toApiSendingFormOfAtt } from "@/api/board";
+import { type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'
 
@@ -44,7 +44,7 @@ function setFormData(data: PostWrite) {
 
 async function submitPost() {
   await pAttachmentListForm.value.uploadFiles();
-  const attsToSend = formData.value.attachments.map(attRaw => toApiSendingFormOfAtt(attRaw));
+  const attsToSend = formData.value.attachments.map(attRaw => attRaw.toZForm());
   emit('submit', {
     content: formData.value.content,
     attachments: attsToSend,
