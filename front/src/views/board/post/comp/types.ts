@@ -1,4 +1,4 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentNew } from '@/api/board';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentNew, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/board';
 import { FileAndPreview } from '@/types/common';
 import { ATT_TYPE } from '@/views/board/services/types';
 
@@ -10,7 +10,7 @@ export enum NOO_TYPE {
 
 export abstract class PAttachmentNooData {
   abstract get type(): NOO_TYPE;
-  abstract toZForm(): Z_PAttachmentNew;// TODO type
+  abstract toZForm(): Z_PAttachmentNoo;
 }
 
 export class PAttachmentNewData extends PAttachmentNooData {
@@ -30,7 +30,7 @@ export class PAttachmentNewData extends PAttachmentNooData {
     return new PAttachmentNewData(content);
   }
 
-  toZForm(): Z_PAttachmentNew {
+  toZForm(): Z_PAttachmentNoo {
     const a = {
       type: 'new',
       content: this.content.toZForm(),
@@ -62,8 +62,11 @@ export class PAttachmentOldData extends PAttachmentNooData {
     );
   }
 
-  toZForm(): Z_PAttachmentNew {
-    throw new Error('Method not implemented.');
+  toZForm(): Z_PAttachmentOld {
+    return {
+      type: this.type,
+      originalOrder: this.originalOrder,
+    }
   }
 }
 

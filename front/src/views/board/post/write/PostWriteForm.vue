@@ -14,7 +14,7 @@ import type { PostWriteData } from './types';
 import PAttachmentNooListForm from '@/views/board/post/comp/PAttachmentNooListForm.vue';
 
 import { PAttachmentNooData } from "@/views/board/post/comp/types";
-import { type Z_PAttachmentNew, type Z_PostAdd } from "@/api/board";
+import { type Z_PAttachmentNoo, type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, defineExpose } from 'vue'
 
@@ -47,9 +47,9 @@ function setFormData(data: PostWriteData) {
 async function submitPost() {
   await pAttachmentNooListForm.value.uploadFiles();
 
-  const attsToSend = [] as Z_PAttachmentNew[];
+  const attsToSend = [] as Z_PAttachmentNoo[];
   for (let attRaw of formData.value.attachments) {
-    const temp = attRaw.toZForm();// Z_PAttachmentNew
+    const temp = attRaw.toZForm();
     if (temp != null) attsToSend.push(temp);
   }
 
