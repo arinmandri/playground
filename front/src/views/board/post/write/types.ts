@@ -17,11 +17,7 @@ export class PostWriteData {
   static fromY(dataRaw: Y_PostDetail): PostWriteData {
     const content = dataRaw.content;
     const attachments = dataRaw.attachments.map((att) => {
-      return {
-        type: NOO_TYPE.old,
-        originalOrder: att.order,
-        data: PAttachmentAddData.fromY(att),
-      } as PAttachmentOldData
+      return PAttachmentOldData.fromY(att);
     });
 
     return {
