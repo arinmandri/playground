@@ -55,6 +55,13 @@ export class PAttachmentOldData extends PAttachmentNooData {
     this.data = data;
   }
 
+  static fromY(dataRaw: Y_PAttachment): PAttachmentOldData {
+    return new PAttachmentOldData(
+      dataRaw.order,
+      dataRaw,// TODO 여기 뭐 넣지
+    );
+  }
+
   toZForm(): Z_PAttachmentNew {
     throw new Error('Method not implemented.');
   }
