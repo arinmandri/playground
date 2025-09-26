@@ -78,7 +78,7 @@ function uploadFiles(): Promise<void> {
           att.setFileIfSettable(ltf.id);
           // TODO 오류시 처리 뭐 해야 됨 진짜
         }
-        emit('update:attachments', attachmentsNew);
+        emit('update:attachments', props.attachments);
         resolve();
       });
     });

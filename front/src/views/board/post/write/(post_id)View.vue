@@ -11,10 +11,10 @@ import { PostWriteData } from './types';
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import type { Z_PostAdd } from "@/api/board";
+import { apiPostEdit, type Z_PostAdd } from "@/api/board";
 
 import { ref, type Ref, onMounted } from "vue";
-import { useRoute } from 'vue-router'; const route = useRoute();
+import { useRouter, useRoute } from 'vue-router'; const router = useRouter(); const route = useRoute();
 import { apiPostGet } from "@/api/board";
 
 const post_id = Number(route.params.post_id);
@@ -35,7 +35,15 @@ onMounted(async () => {
 });
 
 async function submitPost(data: Z_PostAdd) {
-  console.log("TODO")// TODO
+  try {
+    await apiPostEdit(post_id, data);
+    router.push('/board');
+  } catch (e: any) {
+    // TODO exception
+    // error.value = e?.message || 'Failed to submit post.'
+  } finally {
+    // loading.value = false
+  }
 }
 
 </script>

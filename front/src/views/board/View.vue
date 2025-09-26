@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/board/post/write"><button>글쓰기</button></router-link>
+  <router-link to="/board/post/write">글쓰기</router-link>
   <div v-if="postListPack.list.length > 0">
     <div class="posts">
       <Y_PostListItemComp v-for="post in postListPack.list" :key="post.id" :post="post">

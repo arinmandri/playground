@@ -1,6 +1,6 @@
 const API_POST_ADD = '/post/add';
-const API_POST_EDIT = '/post/edit';
-const API_POST_GET = '/post/';
+const getAPI_POST_EDIT = (post_id: number) => `/post/${post_id}/edit`;
+const getAPI_POST_GET = (post_id: number) => `/post/${post_id}`;
 const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
@@ -14,7 +14,7 @@ import api from "@/api/api";
 */
 
 export async function apiPostGet(post_id: number): Promise<Y_PostDetail> {
-  const data = (await api.get(`/post/${post_id}`)).data as Y_PostDetail;
+  const data = (await api.get(getAPI_POST_GET(post_id))).data as Y_PostDetail;
   return data;
 }
 
@@ -54,6 +54,10 @@ function getPostListFromRawList(rawList: Y_PostListItem_raw[]): Y_PostListItem[]
 
 export async function apiPostAdd(data: Z_PostAdd) {
   await api.post(API_POST_ADD, data);
+}
+
+export async function apiPostEdit(post_id: number, data: Z_PostEdit) {
+  await api.post(getAPI_POST_EDIT(post_id), data);
 }
 
 
@@ -103,7 +107,7 @@ export interface Z_PostAdd {
 
 export interface Z_PostEdit {
   content: string;
-  attachments: Z_PAttachmentNoo[];
+  attachments: Z_PAttachmentNoo[] | null;
 }
 
 export interface Z_PAttachmentNoo {

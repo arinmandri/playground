@@ -9,11 +9,14 @@ import xyz.arinmandri.playground.serv.board.Y_PostListItem;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAdd;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddFile;
 import xyz.arinmandri.playground.serv.board.Z_PAttachmentAddImage;
+import xyz.arinmandri.playground.serv.board.Z_PAttachmentNew;
 import xyz.arinmandri.playground.serv.board.Z_PostAdd;
 import xyz.arinmandri.playground.serv.board.Z_PostEdit;
 import xyz.arinmandri.playground.serv.common.CursorPage;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -125,6 +128,36 @@ public class ApiBoard extends ApiA
 
 		if( !pServ.checkAuthor( postId, myId ) ){
 			throw new ExceptionalTask( HttpStatus.FORBIDDEN, "내 것이 아니면 못 건듧니다." );
+		}
+
+		//// 파일 업로드 처리 XXX addPost랑 중복
+		if( req.attachments() != null ){
+			final List<Z_PAttachmentAdd> addAttachmentsReq = new ArrayList<>();
+
+			req.attachments().stream().forEach( nooReq-> {
+				if( nooReq instanceof Z_PAttachmentNew newReq )
+				    addAttachmentsReq.add( newReq.getContent() );
+			} );
+
+			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
+				if( reqAtt instanceof Z_PAttachmentAddImage attImage ){
+					uploadAndSetFileField( attImage,
+					        ( r )-> r.getUrl(),
+					        ( r , url )-> {
+						        r.setUrl( url );
+					        } );
+				}
+				if( reqAtt instanceof Z_PAttachmentAddFile attFile ){
+					uploadFileField( attFile,
+					        ( r )-> r.getUrl(),
+					        ( r , ltf )-> {
+						        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
+						        r.setUrl( uploadedUrl );
+						        attFile.setSize( ltf.size() );
+						        return null;
+					        } );
+				}
+			}
 		}
 
 		pServ.edit( postId, req );
