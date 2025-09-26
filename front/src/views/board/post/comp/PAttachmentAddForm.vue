@@ -1,6 +1,5 @@
 <template>
   <div class="inputBox input-attachment-file">
-    <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <p class="hidden">att type: {{ props.attachment.attType }}</p>
 
     <div v-if="props.attachment.attType == null">
@@ -43,7 +42,6 @@ import { PAttachmentAddData } from "@/views/board/post/comp/types";
 import { ATT_TYPE } from "@/views/board/services/types";
 
 const props = defineProps<{
-  title?: string;
   attachment: PAttachmentAddData;
 }>();
 
@@ -86,10 +84,6 @@ function clearFile() {
 </script>
 
 <style scoped>
-.inputTitle {
-  font-weight: bold;
-}
-
 label {
   border: 1px dotted grey;
 }

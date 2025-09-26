@@ -1,6 +1,5 @@
 <template>
-  <img class="props.attachment-image" v-if="props.attachment.type == ATT_TYPE.image"
-    :src="(props.attachment as Y_PAttachmentImage).url" />
+  <img v-if="props.attachment.type == ATT_TYPE.image" :src="(props.attachment as Y_PAttachmentImage).url" />
   <p v-if="props.attachment.type == ATT_TYPE.file">
     <a :href="(props.attachment as Y_PAttachmentFile).url" download>
       파일 {{ (props.attachment as Y_PAttachmentFile).size }}KB

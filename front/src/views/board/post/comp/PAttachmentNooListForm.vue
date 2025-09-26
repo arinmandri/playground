@@ -2,9 +2,11 @@
   <div class="inputBox input-attachment-file-list">
     <p v-if="props.title" class="inputTitle">{{ props.title }}</p>
     <div>
-      <div v-for="(_, index) in attachments" :key="index">
-        <PAttachmentNooForm v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
-      </div>
+      <ul>
+        <li v-for="(_, index) in attachments" :key="index" class="attachments-li">
+          <PAttachmentNooForm v-model:attachment="attachments[index]" @clear="attachments.splice(index, 1)" />
+        </li>
+      </ul>
       <div v-if="attachments.length < props.maxLength">
         <PAttachmentAddForm :title="'첨부물 추가'" :attachment="PAttachmentAddData.newOne()" @select-new="onSelectNewFile" />
       </div>
@@ -89,5 +91,9 @@ function uploadFiles(): Promise<void> {
 <style scoped>
 .inputTitle {
   font-weight: bold;
+}
+
+.attachments-li {
+  border: 2px dashed #8888
 }
 </style>

@@ -1,5 +1,5 @@
 import type { Y_PostDetail } from "@/api/board";
-import { NOO_TYPE, PAttachmentAddData, PAttachmentNewData, PAttachmentOldData, type PAttachmentNooData } from "@/views/board/post/comp/types";
+import { PAttachmentOldData, type PAttachmentNooData } from "@/views/board/post/comp/types";
 
 
 export class PostWriteData {

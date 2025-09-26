@@ -4,7 +4,8 @@
   <PAttachmentAddForm v-if="attachment.type == NOO_TYPE.new"
     v-model:attachment="(attachment as PAttachmentNewData).content" @select-new="(a) => { emit('select-new', a) }"
     @update:attachment="(a) => { emit('update:attachment', a) }" @clear="emit('clear')" />
-  <PAttachmentOldForm v-if="attachment.type == NOO_TYPE.old" />
+  <PAttachmentOldForm v-if="attachment.type == NOO_TYPE.old" :attachment="(attachment as PAttachmentOldData)"
+    @clear="emit('clear')" />
 </template>
 
 <script setup lang="ts">
@@ -12,7 +13,7 @@
 import PAttachmentAddForm from '@/views/board/post/comp/PAttachmentAddForm.vue';
 import PAttachmentOldForm from '@/views/board/post/comp/PAttachmentOldForm.vue'
 
-import { PAttachmentAddData, type PAttachmentNooData, PAttachmentNewData, NOO_TYPE } from "@/views/board/post/comp/types";
+import { PAttachmentAddData, type PAttachmentNooData, PAttachmentNewData, NOO_TYPE, PAttachmentOldData } from "@/views/board/post/comp/types";
 
 const props = defineProps<{
   title?: string;
