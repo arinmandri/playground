@@ -16,7 +16,7 @@
     <div v-if="props.attachment.attType != null">
       <img class="image-preview" v-if="props.attachment.attType == ATT_TYPE.image"
         :src="props.attachment.attData.typeImage?.preview" alt="이미지 미리보기" />
-      <p>선택된 파일: {{ props.attachment.attData.typeFile?.name }}</p>
+      <p class="hidden">선택된 파일: {{ props.attachment.attData.typeFile?.name }}</p>
     </div>
 
     <button type="button" v-if="props.attachment.attType != null" @click="clearFile">
