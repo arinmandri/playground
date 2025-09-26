@@ -47,9 +47,9 @@ export class PAttachmentOldData extends PAttachmentNooData {
 
   originalOrder: number;
 
-  data: any;// TODO
+  data: Y_PAttachment;// TODO
 
-  constructor(originalOrder: number, data: any) {
+  constructor(originalOrder: number, data: Y_PAttachment) {
     super();
     this.originalOrder = originalOrder;
     this.data = data;
@@ -58,7 +58,7 @@ export class PAttachmentOldData extends PAttachmentNooData {
   static fromY(dataRaw: Y_PAttachment): PAttachmentOldData {
     return new PAttachmentOldData(
       dataRaw.order,
-      dataRaw,// TODO 여기 뭐 넣지
+      dataRaw,
     );
   }
 

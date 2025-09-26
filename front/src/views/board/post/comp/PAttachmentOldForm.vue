@@ -1,6 +1,6 @@
 <template>
-  <div>기존 첨부파일!!!
-    {{ attachment.data }}
+  <div>
+    <PAttachmentComp :attachment="attachment.data" />
     <button type="button" @click="emit('clear');">
       파일 삭제
     </button>
@@ -8,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+
+import PAttachmentComp from './PAttachmentComp.vue';
 
 import type { PAttachmentOldData } from './types';
 
