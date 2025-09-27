@@ -13,9 +13,11 @@ import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
 import { apiPostEdit, type Z_PostAdd } from "@/api/board";
 
+import { apiPostGet } from "@/api/board";
+import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
+
 import { ref, type Ref, onMounted } from "vue";
 import { useRouter, useRoute } from 'vue-router'; const router = useRouter(); const route = useRoute();
-import { apiPostGet } from "@/api/board";
 
 const post_id = Number(route.params.post_id);
 
@@ -37,12 +39,10 @@ onMounted(async () => {
 async function submitPost(data: Z_PostAdd) {
   try {
     await apiPostEdit(post_id, data);
+    msgStore.addMsg(MsgClass.INFO, '게시글 수정됨.');
     router.push('/board');
   } catch (e: any) {
-    // TODO exception
-    // error.value = e?.message || 'Failed to submit post.'
-  } finally {
-    // loading.value = false
+    msgStore.addMsg(MsgClass.ERROR, '왠지 실패함.');
   }
 }
 

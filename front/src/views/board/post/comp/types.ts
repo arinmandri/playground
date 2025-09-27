@@ -47,7 +47,7 @@ export class PAttachmentOldData extends PAttachmentNooData {
 
   originalOrder: number;
 
-  data: Y_PAttachment;// TODO
+  data: Y_PAttachment;
 
   constructor(originalOrder: number, data: Y_PAttachment) {
     super();

@@ -2,7 +2,7 @@
   <div id="user">
     <div v-if="isLoggedIn">
       <router-link to="/member/myplace">
-        <span>{{ user.nick }} 님 입장</span>
+        <span>{{ user.nick }} 님 납시오!</span>
         <img class="propic" v-if="user.propic" :src="user.propic">
       </router-link>
     </div>

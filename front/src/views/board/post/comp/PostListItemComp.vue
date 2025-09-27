@@ -44,7 +44,7 @@ const emit = defineEmits<{
 // ----------
 
 async function delPost(post_id: number) {
-  if (confirm('정말 지우겠습니까? 복구불가.')) {
+  if (confirm('정말 지우시겠습니까? 복구불가.')) {
     await apiPostDel(post_id);
     emit('delPost');
   }

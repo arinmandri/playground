@@ -2,7 +2,7 @@
   <ul id="globalMsgBox" v-if="msgStore.msgs.length > 0">
     <li v-for="msg in msgStore.msgs" :key="msg.id" :class="`globalmsg globalmsg-${msg.msgClass}`">
       {{ msg.content }}
-      <button class="msg-close-btn" @click="msgStore.removeMsg(msg.id)">✕</button>
+      <button class="closeBtn" @click="msgStore.removeMsg(msg.id)">✕</button>
     </li>
   </ul>
 </template>
@@ -25,7 +25,7 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
   list-style: none;
 }
 
-#globalMsgBox .msg-close-btn {
+#globalMsgBox .closeBtn {
   position: absolute;
   top: 0px;
   right: 0px;

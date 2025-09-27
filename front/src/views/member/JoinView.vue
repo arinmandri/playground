@@ -23,9 +23,8 @@
         <label for="nickname">별명<span class="mandatoryMark">*</span></label>
         <input id="nickname" v-model="form.nickname" type="text" />
       </div>
-      <button type="submit" :disabled="loading">Sign Up</button>
+      <button type="submit">Sign Up</button>
       <div v-if="error" class="error">{{ error }}</div>
-      <div v-if="success" class="success">Sign up successful!</div>
     </form>
   </div>
   <router-link to="/member/login">로그인</router-link>
@@ -34,6 +33,7 @@
 <script setup lang="ts">
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
+import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import api from "@/api/api";
 
@@ -56,49 +56,41 @@ const form = ref<FormData>({
   nickname: ''
 })
 
-const loading = ref(false)
 const error = ref('')
-const success = ref(false)
 const keynameError = ref('')
 
 async function onSubmit() {
-  error.value = ''
-  success.value = false
-  keynameError.value = ''
-  loading.value = true
+  error.value = '';
+  keynameError.value = '';
 
   //// 필수입력항목 확인
   const formValidationMsg = isFormValid();
   if (formValidationMsg != null) {
     error.value = formValidationMsg;
-    loading.value = false
     return
   }
 
   //// 비밀번호 확인
   if (!confirmPassword()) {
-    error.value = 'Passwords do not match.'
-    loading.value = false
+    error.value = '비밀번호가 맞지 않습니다.'
     return
   }
 
   //// 키네임 중복 확인
   const isDuplicateKeyname = await checkKeynameDuplicate(form.value.keyname)
   if (isDuplicateKeyname) {
-    keynameError.value = 'Keyname already exists.'
-    loading.value = false
+    keynameError.value = '그 로그인용 ID는 이미 존재합니다.'
     return
   }
 
   try {
     await requestJoin();
-    success.value = true
     authStore.loginWithBasicKey(form.value.keyname, form.value.password);// 회원가입 완료시 그 회원으로 바로 로그인
-    router.push('/')
+    msgStore.addMsg(MsgClass.INFO, '함께해주셔서 고맙습니다.');
+    router.push('/');
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Sign up failed.'
-  } finally {
-    loading.value = false
+    msgStore.addMsg(MsgClass.ERROR, '가입 실패.');
+    error.value = e.response?.data?.message || '가입 실패.'
   }
 }
 
@@ -153,11 +145,6 @@ function confirmPassword(): boolean {
 
 .error {
   color: red;
-  margin-top: 0.5rem;
-}
-
-.success {
-  color: green;
   margin-top: 0.5rem;
 }
 

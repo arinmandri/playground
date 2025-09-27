@@ -11,6 +11,7 @@
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
 import { apiPostAdd, type Z_PostAdd } from "@/api/board";
+import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'; const router = useRouter();
@@ -23,9 +24,10 @@ async function submitPost(data: Z_PostAdd) {
   loading.value = true
   try {
     await apiPostAdd(data);
+    msgStore.addMsg(MsgClass.INFO, '게시했습니다.');
     router.push('/board');
   } catch (e: any) {
-    error.value = e?.message || 'Failed to submit post.'
+    msgStore.addMsg(MsgClass.ERROR, '왠지 실패함.');
   } finally {
     loading.value = false
   }

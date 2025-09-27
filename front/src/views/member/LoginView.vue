@@ -9,17 +9,16 @@
         <label for="password">비밀번호</label>
         <input id="password" v-model="form.password" type="password" required autocomplete="current-password" />
       </div>
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Logging in...' : 'Login' }}
-      </button>
-      <div v-if="error" class="error">{{ error }}</div>
+      <button type="submit">로그인</button>
     </form>
     <router-link to="/member/join">가입</router-link>
   </div>
 </template>
 
 <script lang="ts" setup>
+
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
+import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'; const router = useRouter(); const route = useRoute();
@@ -35,20 +34,12 @@ const form = ref<LoginForm>({
   password: ''
 })
 
-const loading = ref(false)
-const error = ref('')
-
 const onSubmit = async () => {
-  error.value = ''
-  loading.value = true
   try {
     await authStore.loginWithBasicKey(form.value.keyname, form.value.password);
     router.push(route.query.redirect?.toString() || "/");
-    // router.push('/');// TODO
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Login failed'
-  } finally {
-    loading.value = false
+    msgStore.addMsg(MsgClass.ERROR, '왠지 로그인에 실패함.');
   }
 }
 </script>
@@ -83,11 +74,5 @@ button {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-}
-
-.error {
-  color: #d32f2f;
-  margin-top: 12px;
-  text-align: center;
 }
 </style>
