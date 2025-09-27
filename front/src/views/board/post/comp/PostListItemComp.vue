@@ -12,7 +12,10 @@
       <span>{{ props.post.author.nick }}</span>
     </div>
     <p class="additional">
-      <router-link v-if="props.post.author.id == myId" :to="'/board/post/write/' + props.post.id">수정</router-link>
+      <span v-if="props.post.author.id == myId">
+        <router-link :to="'/board/post/write/' + props.post.id">고치기</router-link>
+        <button @click="delPost(props.post.id)">지우기</button>
+      </span>
       <span class="date">{{ props.post.createdAtPretty }}</span>
     </p>
   </div>
@@ -22,7 +25,7 @@
 
 import PAttachmentComp from "@/views/board/post/comp/PAttachmentComp.vue";
 
-import { type Y_PostListItem } from "@/api/board";
+import { apiPostDel, type Y_PostListItem } from "@/api/board";
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
@@ -33,6 +36,19 @@ const myId = storeToRefs(authStore).user.value.id;
 const props = defineProps<{
   post: Y_PostListItem;
 }>();
+
+const emit = defineEmits<{
+  (e: 'delPost'): void;// 이벤트 정의
+}>();
+
+// ----------
+
+async function delPost(post_id: number) {
+  if (confirm('정말 지우겠습니까? 복구불가.')) {
+    await apiPostDel(post_id);
+    emit('delPost');
+  }
+}
 
 </script>
 

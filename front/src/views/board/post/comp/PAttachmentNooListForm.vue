@@ -52,7 +52,6 @@ function onSelectNewFile(newAttachment: PAttachmentAddData) {
 }
 
 function uploadFiles(): Promise<void> {
-  const letsSee = props.attachments;// TODO
   const attachmentsNew = props.attachments
     .filter(att => att.type == NOO_TYPE.new) as PAttachmentNewData[];
 

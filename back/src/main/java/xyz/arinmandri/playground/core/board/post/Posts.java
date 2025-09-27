@@ -52,9 +52,16 @@ public class Posts
 		pRepo.save( data );
 	}
 
+	@Transactional
+	public Post del ( Long id ) {
+		Post p = pRepo.findById( Post.class, id );
+		pRepo.delete( p );
+		return p;
+	}
+
 	/**
 	 * attachments 필드를 기준으로 파생 값 설정
-	 * - 항목 순서대로 order=1,2,3,... XXX OrderColumn?
+	 * - 항목 순서대로 order=1,2,3,...
 	 * - 항목의 belongs_to = p
 	 * - 첨부이미지 목록, 첨부파일 목록 등 종류별 목록 set
 	 * 

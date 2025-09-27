@@ -87,6 +87,7 @@ public class PostServ extends PersistenceServ
 		Post org = posts.get( originalId );
 		Post newOne = Z_PostEdit_toEntity( req, org );
 		posts.edit( originalId, newOne );
+		// TODO 없어진 첨부파일 파일서버에서 삭제
 	}
 
 	private Post Z_PostEdit_toEntity ( Z_PostEdit req , Post org ) {
@@ -122,7 +123,9 @@ public class PostServ extends PersistenceServ
 
 	@Transactional
 	public void del ( Long id ) throws NoSuchEntity {
-		// XXX
+
+		Post p = posts.del( id );
+		// TODO 첨부파일 파일서버에서 삭제
 	}
 
 	public static List<Y_PAttachment> collectAttachments ( List<Y_PAttachmentImage> images , List<Y_PAttachmentFile> files ) {

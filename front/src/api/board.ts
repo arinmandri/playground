@@ -60,6 +60,10 @@ export async function apiPostEdit(post_id: number, data: Z_PostEdit) {
   await api.post(getAPI_POST_EDIT(post_id), data);
 }
 
+export async function apiPostDel(post_id: number) {
+  await api.post(`/post/${post_id}/del`);
+}
+
 
 export interface Y_PostDetail {
   author: PAuthor;
