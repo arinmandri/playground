@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="PostListItemComp">
     <div>
       <template v-for="attachment in props.post.attachments">
         <PAttachmentComp :attachment="attachment">
@@ -52,8 +52,8 @@ async function delPost(post_id: number) {
 
 </script>
 
-<style scoped>
-.post {
+<style>
+.PostListItemComp {
   border: 1px solid #e0e0e0;
   background: #fafbfc;
   padding: 16px 16px 2px 16px;
@@ -62,43 +62,44 @@ async function delPost(post_id: number) {
   transition: box-shadow 0.3s;
 }
 
-.post:hover {
+.PostListItemComp:hover {
   box-shadow: 0 1px 20px #0002;
 }
 
-.post .content {
+.PostListItemComp .content {
   font-size: 1.1rem;
   margin-bottom: 8px;
   color: #333;
+  white-space: pre-wrap;
 }
 
-.post hr {
+.PostListItemComp hr {
   border-top: 2px solid #8882;
   margin: 18px 4px;
 }
 
-.post .author {
+.PostListItemComp .author {
   font-size: 0.95rem;
   color: var(--point-blue);
   margin-bottom: 4px;
 }
 
-.post .additional {
+.PostListItemComp .additional {
   text-align: right;
 }
 
-.post .additional .date {
+.PostListItemComp .additional .date {
   margin-top: 6px;
   font-size: 0.85rem;
   color: #888;
 }
 
-.attachment-image {
+.PostListItemComp .attachment-image {
   max-width: 200px;
   max-height: 200px;
 }
 
-.listEnd {
+.PostListItemComp .listEnd {
   text-align: center;
   margin: 20px 0;
 }
