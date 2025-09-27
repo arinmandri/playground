@@ -34,6 +34,7 @@ body {
   background-color: #e8e8e8;
   color: #333;
   line-height: 1.6;
+  word-break: break-word;
 }
 
 #app {
