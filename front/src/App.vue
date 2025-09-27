@@ -1,39 +1,23 @@
 <template>
-  <nav>
-    <ul id="globalMenu">
-      <li><router-link to="/">홈</router-link></li>
-      <li><router-link to="/board">게시판</router-link></li>
-    </ul>
-  </nav>
+  <GlobalNaviComp />
 
-  <div id="user">
-    <div v-if="isLoggedIn">
-      <router-link to="/member/myplace">
-        <span>{{ user.nick }} 님 입장</span>
-        <img id="user-propic" v-if="user.propic" :src="user.propic">
-      </router-link>
-    </div>
-    <div v-else>
-      <span><router-link to="/member/login">손님 입장하세요</router-link></span>
-    </div>
-  </div>
+  <div>
+    <GlobalMsgBoxComp />
 
-  <div id="routerViewDiv">
-    <router-view />
+    <GlobalUserinfoComp />
+
+    <div id="routerViewDiv">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
+import GlobalNaviComp from './views/global/GlobalNaviComp.vue';
+import GlobalMsgBoxComp from '@/views/global/GlobalMsgBoxComp.vue';
+import GlobalUserinfoComp from '@/views/global/GlobalUserinfoComp.vue';
 
-const { isLoggedIn, user } = storeToRefs(authStore);
-
-onMounted(async () => {
-  authStore.loadAuthInfoFromLocal();
-});
 </script>
 
 <style>
@@ -82,26 +66,6 @@ a:hover {
   text-decoration: underline;
 }
 
-#globalMenu {
-  background-color: #fff;
-  padding: 10px;
-  top: 0;
-  font-family: "Do Hyeon", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 160%;
-}
-
-#globalMenu a {
-  color: unset;
-}
-
-#globalMenu {
-  list-style: none;
-  display: flex;
-  gap: 10px;
-}
-
 #routerViewDiv {
   margin: 8px auto 20px auto;
   padding: 20px 0;
@@ -111,18 +75,5 @@ a:hover {
 
 #routerViewDiv>* {
   margin: 0 20px;
-}
-
-#user {
-  padding: 10px;
-  text-align: right;
-}
-
-#user-propic {
-  width: 45px;
-  height: 45px;
-  border-top-left-radius: 40%;
-    border-bottom-right-radius: 50%;
-  box-shadow: 0 0 8px #0004;
 }
 </style>
