@@ -2,15 +2,13 @@ package xyz.arinmandri.playground.api;
 
 import xyz.arinmandri.playground.serv.file.LocalFileServ;
 import xyz.arinmandri.playground.serv.file.LocalTempFile;
-import xyz.arinmandri.playground.serv.file.S3Serv;
+
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 
 
+/**
+ * 파일 업로드 관련 구현 정리
+ * https://peekabook.tistory.com/entry/webapp-api-separate-file-upload-operation
+ */
 @RestController
 @RequestMapping( "/file" )
 @RequiredArgsConstructor
@@ -26,14 +28,13 @@ public class ApiFile
 {
 	private static final Logger logger = LoggerFactory.getLogger( ApiFile.class );
 
-	final S3Serv s3Serv;
 	final LocalFileServ ltfServ;
 
 	@PostMapping( "/add" )
-	// TODO @ClearFile
 	public ResponseEntity<apiFileAddResBody> apiFileAdd (
-	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file ) {
+
+		// TODO exception: file==null
 
 		LocalTempFile ltf = ltfServ.createTempFile( file );
 
@@ -42,10 +43,10 @@ public class ApiFile
 	}
 
 	@PostMapping( "/sadd" )
-	// TODO @ClearFile
 	public ResponseEntity<List<apiFileAddResBody>> apiFileSadd (
-	        @AuthenticationPrincipal UserDetails userDetails ,
 	        List<MultipartFile> files ){
+
+		// TODO exception: file==null
 
 		List<LocalTempFile> ltfs = ltfServ.createTempFiles( files );
 

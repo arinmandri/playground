@@ -1,3 +1,6 @@
+/**
+ * https://peekabook.tistory.com/entry/vue-router-matches-every-view-component
+ */
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useAuthStore } from "@/stores/auth";

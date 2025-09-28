@@ -146,7 +146,10 @@ public class ApiMember extends ApiA
 		        ( r , v )-> r.setPropic( v ) );
 
 		mServ.edit( myId, req );
+
+		Y_MemberForMe me = mServ.getInfoForMe( myId );
+
 		return ResponseEntity.status( HttpStatus.CREATED )
-		        .body( null );// TODO
+		        .body( me );
 	}
 }

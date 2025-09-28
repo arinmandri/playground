@@ -9,6 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 
 
+/**
+ * https://peekabook.tistory.com/entry/spring-security-passwordencoder-with-sha3-and-salt-example
+ */
 @RequiredArgsConstructor
 public class MyPasswordEncoder implements PasswordEncoder
 {
