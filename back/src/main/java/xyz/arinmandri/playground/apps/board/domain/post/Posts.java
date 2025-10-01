@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class Posts
 {
 	private final PostRepo pRepo;
-	final private PAuthorRepo athrRepo;
-	private final PAttachmentRepo attRepo;
 
 	public Post get ( long id ) {
 		return pRepo.findById( Post.class, id );
@@ -39,7 +37,6 @@ public class Posts
 		processPAttachments( newPost );
 
 		Post p = pRepo.save( newPost );
-		athrRepo.save( p.getAuthor() );
 
 		return p.getId();
 	}

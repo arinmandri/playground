@@ -5,7 +5,7 @@
       <InputText :title="'별명'" v-model:textValue="form.nick" :isRequired="true" />
       <InputText :title="'이메일 주소'" v-model:textValue="form.email" :isRequired="false" />
       <InputImage :title="'프사'" v-model:fileAndPreview="propic" />
-      <button type="submit" :disabled="loading">저장</button>
+      <button type="submit">저장</button>
     </form>
   </div>
 </template>
@@ -29,14 +29,11 @@ const form = ref({
 
 const propic = ref<FileAndPreview>(FileAndPreview.newOne()) as Ref<FileAndPreview>;
 
-const loading = ref(false)// TODO 이거 로딩화면 만듦?
-
 onMounted(() => {
   fetchMemberInfo();
 });
 
 async function fetchMemberInfo() {
-  loading.value = true
   try {
     const { data } = await api.get('/member/me');
     form.value.nick = data.nick || '';
@@ -50,7 +47,6 @@ async function fetchMemberInfo() {
 }
 
 async function submitForm() {
-  loading.value = true;
 
   //// 프사 파일 업로드
   if (propic.value.hasNewFile) {
