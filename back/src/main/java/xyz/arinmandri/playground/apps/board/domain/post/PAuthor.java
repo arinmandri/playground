@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * @see xyz.arinmandri.playground.apps.member.domain.Member
  *      read-only
- * 
- * member 테이블에 직접 의존한다. 작은 프로젝트니까 그냥 이리 함.
  */
 @NoArgsConstructor
 @AllArgsConstructor
