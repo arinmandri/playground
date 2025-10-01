@@ -16,8 +16,8 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
 <style>
 #globalMsgBox {
   position: sticky;
-  top: 10px;
-  padding: 10px;
+  top: 0px;
+    padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 10px;
