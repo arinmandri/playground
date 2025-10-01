@@ -1,0 +1,15 @@
+package xyz.arinmandri.playground.apps.board.serv;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+
+@JsonTypeInfo( use = JsonTypeInfo.Id.NAME , include = JsonTypeInfo.As.PROPERTY , property = "type" )
+@JsonSubTypes( {
+        @JsonSubTypes.Type( value = Z_PAttachmentNew.class , name = Z_PAttachmentNew.TYPE ),
+        @JsonSubTypes.Type( value = Z_PAttachmentOld.class , name = Z_PAttachmentOld.TYPE )
+} )
+public abstract class Z_PAttachmentNoo
+{
+	public abstract String getType ();
+}

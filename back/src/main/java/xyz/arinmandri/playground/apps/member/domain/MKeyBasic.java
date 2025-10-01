@@ -1,0 +1,33 @@
+package xyz.arinmandri.playground.apps.member.domain;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+
+@Entity
+@Table( name = "mkey_basic" )
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+public class MKeyBasic extends MKey
+{
+	@JoinColumn( name = "belongs_to__m" , nullable = false )
+	@OneToOne
+	private Member owner;
+
+	@Column( nullable = false , unique = true )
+	private String keyname;
+
+	@Column( nullable = false )
+	private String password;
+
+}

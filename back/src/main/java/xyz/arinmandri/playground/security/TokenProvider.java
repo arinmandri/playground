@@ -1,8 +1,8 @@
 package xyz.arinmandri.playground.security;
 
-import xyz.arinmandri.playground.core.member.MKeyBasic;
-import xyz.arinmandri.playground.core.member.MKeys;
-import xyz.arinmandri.playground.core.member.Member;
+import xyz.arinmandri.playground.apps.member.domain.MKeyBasic;
+import xyz.arinmandri.playground.apps.member.domain.MKeys;
+import xyz.arinmandri.playground.apps.member.domain.Member;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.util.JwtUtil;
 
