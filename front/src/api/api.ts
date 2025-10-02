@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * API 호출용 모듈.
+ * https://peekabook.tistory.com/entry/axios-api-retry-module
  * 
  * 모든 API 요청은 이 모듈을을 이용해서 한다.
  * 
@@ -143,7 +144,9 @@ function attemptRequestOf(
               reject(refreshError);
             }
           }
-        } else {// 401, 403 외 에러: 단순 재시도
+        } else if (responseStatus === 400) {// 400: 재시도 안 함
+          reject(error);
+        } else {// 그밖에: 단순 재시도
           attemptRequest(retryCount + 1);
         }
       });
