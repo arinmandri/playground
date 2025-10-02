@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,7 +103,8 @@ public class ApiMember extends ApiA
 	@PostMapping( "/add/basic" )
 	public ResponseEntity<Y_MemberForMe> apiMemberAddBasic (
 	        @RequestBody
-	        @Validated ReqBody_MemberAddBasic req ) throws NoSuchEntity {
+	        @Valid ReqBody_MemberAddBasic req
+	) throws NoSuchEntity {
 
 		Z_MemberAdd memberReq = req.getMember();
 		Z_MKeyBasicAdd keyReq = req.getKey();
@@ -137,7 +137,9 @@ public class ApiMember extends ApiA
 	@PostMapping( "/me/edit" )
 	public ResponseEntity<Y_MemberForMe> apiMemberEdit (
 	        @AuthenticationPrincipal User user ,
-	        @RequestBody Z_MemberEdit req ) throws NoSuchEntity {
+	        @RequestBody
+	        @Valid Z_MemberEdit req
+	) throws NoSuchEntity {
 
 		Long myId = myIdAsMember( user );
 
