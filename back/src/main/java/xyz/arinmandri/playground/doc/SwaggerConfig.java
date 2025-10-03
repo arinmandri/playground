@@ -3,6 +3,7 @@ package xyz.arinmandri.playground.doc;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,23 @@ public class SwaggerConfig
 	}
 
 	@Bean
-	public GroupedOpenApi api () {
+	public GroupedOpenApi all () {
 		String[] paths = { "/**" };
 		String[] packagesToScan = { "xyz.arinmandri.playground.apps" };
-		return GroupedOpenApi.builder().group( "all-apps" )
+		return GroupedOpenApi.builder().group( "all" )
+		        .pathsToMatch( paths )
+		        .packagesToScan( packagesToScan )
+		        .build();
+	}
+
+	@Bean
+	public GroupedOpenApi forClient () {
+		String[] paths = {
+		        "/member/**",
+		        "/post/**"
+		};
+		String[] packagesToScan = { "xyz.arinmandri.playground.apps" };
+		return GroupedOpenApi.builder().group( "for-client" )
 		        .pathsToMatch( paths )
 		        .packagesToScan( packagesToScan )
 		        .build();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -38,6 +39,9 @@ public class ConfigWebSecurity
 	final private JwtFilter jwtFilter;
 	final private SecureRandom random;
 
+	@Value( value = "${doc-url-permitted}" )
+	String[] docUrlPermitted;
+
 	@Bean
 	public SecurityFilterChain filterChain ( HttpSecurity http ) throws Exception {
 		return http
@@ -47,8 +51,9 @@ public class ConfigWebSecurity
 		        .authorizeHttpRequests( auth-> auth
 		                .requestMatchers( "/auth/**" ).permitAll()
 		                .requestMatchers( "/error" ).permitAll()
-		                .requestMatchers( "/swagger-*/**", "/v3/api-docs/**" ).permitAll()
-		                .requestMatchers( "/favicon.ico" ).permitAll()
+		                //// docs
+		                .requestMatchers( docUrlPermitted ).permitAll()
+		                .requestMatchers( "/swagger-*/**", "/v3/api-docs/**" ).denyAll()
 		                .anyRequest().authenticated() )
 		        .exceptionHandling(ex -> ex
 		                .authenticationEntryPoint(

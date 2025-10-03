@@ -20,3 +20,5 @@ key도 수정 기능 해야지.
 미승인 회원의 권한은 익명손님과 같음.
 
 도커도 해봐야지....
+
+jakarta.servlet.ServletException: Circular view path [error]: would dispatch back to the current handler URL [/error] again. Check your ViewResolver setup! (Hint: This may be the result of an unspecified view, due to default view name generation.)
