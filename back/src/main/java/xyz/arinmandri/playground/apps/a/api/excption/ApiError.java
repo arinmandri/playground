@@ -1,5 +1,6 @@
-package xyz.arinmandri.playground.apps.a.api;
+package xyz.arinmandri.playground.apps.a.api.excption;
 
+import xyz.arinmandri.playground.apps.a.api.ApiA;
 import xyz.arinmandri.playground.apps.a.api.ApiA.ExceptionalTask;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 

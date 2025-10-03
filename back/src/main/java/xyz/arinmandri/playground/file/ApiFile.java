@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.file;
 
+import xyz.arinmandri.playground.apps.a.api.excption.BlameClient;
 import xyz.arinmandri.playground.file.serv.LocalFileServ;
 import xyz.arinmandri.playground.file.serv.LocalTempFile;
 
@@ -34,7 +35,9 @@ public class ApiFile
 	public ResponseEntity<apiFileAddResBody> apiFileAdd (
 	        MultipartFile file ) {
 
-		// TODO exception: file==null
+		if(file == null || file.isEmpty()) {
+			throw new BlameClient( "파일이 없습니다." );
+		}
 
 		LocalTempFile ltf = ltfServ.createTempFile( file );
 
@@ -46,7 +49,17 @@ public class ApiFile
 	public ResponseEntity<List<apiFileAddResBody>> apiFileSadd (
 	        List<MultipartFile> files ){
 
-		// TODO exception: file==null
+		if( files == null || files.isEmpty() ){
+			throw new BlameClient( "파일이 없습니다." );
+		}
+
+		int i = 0;
+		for( MultipartFile file : files ){
+			if( file == null || file.isEmpty() ){
+				throw new BlameClient( i + "번째 파일이 없습니다." );
+			}
+			i += 1;
+		}
 
 		List<LocalTempFile> ltfs = ltfServ.createTempFiles( files );
 

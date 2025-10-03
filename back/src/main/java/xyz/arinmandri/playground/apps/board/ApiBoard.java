@@ -11,7 +11,7 @@ import xyz.arinmandri.playground.apps.board.serv.Z_PostAdd;
 import xyz.arinmandri.playground.apps.board.serv.Z_PostEdit;
 import xyz.arinmandri.playground.apps.a.api.ApiA;
 import xyz.arinmandri.playground.apps.a.serv.CursorPage;
-import xyz.arinmandri.playground.apps.a.serv.NoSuchEntity;
+import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.User;
 
@@ -46,7 +46,7 @@ public class ApiBoard extends ApiA
 
 		Y_PostDetail p;
 		try{
-			p = pServ.get( id );
+			p = pServ.getPostDetail( id );
 		}
 		catch( NoSuchEntity e ){
 			throw ExceptionalTask.NOT_FOUND();
@@ -108,7 +108,7 @@ public class ApiBoard extends ApiA
 
 		Y_PostDetail p;
 		try{
-			p = pServ.get( id );
+			p = pServ.getPostDetail( id );
 		}
 		catch( NoSuchEntity e ){
 			throw ExceptionalTask.NOT_FOUND();// TODO 이 경우가 나와???
@@ -163,7 +163,7 @@ public class ApiBoard extends ApiA
 
 		pServ.edit( postId, req );
 
-		Y_PostDetail p = pServ.get( postId );
+		Y_PostDetail p = pServ.getPostDetail( postId );
 
 		return ResponseEntity.ok()
 		        .body( p );

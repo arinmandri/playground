@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.security.user;
 
+import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -27,8 +28,7 @@ public abstract class User
 			type = User.Type.valueOf( parts[0] );
 		}
 		catch( IllegalArgumentException e ){
-			// TODO exception 없는 타입
-			throw e;
+			throw new ImaDumb( e );
 		}
 		switch( type ){
 		case guest:
@@ -36,7 +36,7 @@ public abstract class User
 		case normal:
 			return new UserNormal( authorities, Long.valueOf( parts[1] ) );
 		}
-		throw new RuntimeException();// TODO exception
+		throw new ImaDumb();
 	}
 
 	// -------------- instance

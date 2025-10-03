@@ -1,14 +1,15 @@
 package xyz.arinmandri.playground.apps.board.serv;
 
+import xyz.arinmandri.playground.apps.a.serv.CursorPage;
+import xyz.arinmandri.playground.apps.a.serv.PersistenceServ;
+import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
+import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.apps.board.domain.post.PAttachment;
 import xyz.arinmandri.playground.apps.board.domain.post.PAuthor;
 import xyz.arinmandri.playground.apps.board.domain.post.Post;
 import xyz.arinmandri.playground.apps.board.domain.post.Posts;
 import xyz.arinmandri.playground.apps.member.domain.Member;
 import xyz.arinmandri.playground.apps.member.domain.Members;
-import xyz.arinmandri.playground.apps.a.serv.CursorPage;
-import xyz.arinmandri.playground.apps.a.serv.NoSuchEntity;
-import xyz.arinmandri.playground.apps.a.serv.PersistenceServ;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,10 @@ public class PostServ extends PersistenceServ
 	final private Posts posts;
 
 	@Transactional( readOnly = true )
-	public Y_PostDetail get ( long id ) throws NoSuchEntity {
-		return posts.get( Y_PostDetail.class, id );// TODO ??? 이거 없으면 어케 되는 거임
+	public Y_PostDetail getPostDetail ( long id ) throws NoSuchEntity {
+		Y_PostDetail p = posts.get( Y_PostDetail.class, id );
+		if( p == null ) throw new NoSuchEntity();
+		return p;
 	}
 
 	@Transactional( readOnly = true )
@@ -46,8 +49,9 @@ public class PostServ extends PersistenceServ
 	}
 
 	@Transactional( readOnly = true )
-	public boolean checkAuthor ( Long postId , Long authorId ) {
-		Post p = posts.get( postId );// TODO exception
+	public boolean checkAuthor ( Long postId , Long authorId ) throws NoSuchEntity {
+		Post p = posts.get( postId );
+		if( p == null ) throw new NoSuchEntity();
 		return p.getAuthor().getId().equals( authorId );
 	}
 
@@ -117,7 +121,7 @@ public class PostServ extends PersistenceServ
 				return orgList.get( originalOrder );
 			}
 
-			return null;// TODO exception
+			throw new ImaDumb();
 		} ).toList();
 	}
 

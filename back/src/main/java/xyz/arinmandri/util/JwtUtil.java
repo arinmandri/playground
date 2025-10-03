@@ -9,7 +9,6 @@ import javax.crypto.SecretKey;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -70,15 +69,10 @@ public class JwtUtil
 	}
 
 	public Claims getClaims ( String token ) {
-		try{
-			Jws<Claims> what = Jwts.parser()
-			        .verifyWith( key )
-			        .build()
-			        .parseSignedClaims( token );
-			return what.getPayload();
-		}
-		catch( JwtException e ){
-			throw e;// TODO exception
-		}
+		Jws<Claims> what = Jwts.parser()
+		        .verifyWith( key )
+		        .build()
+		        .parseSignedClaims( token );
+		return what.getPayload();
 	}
 }

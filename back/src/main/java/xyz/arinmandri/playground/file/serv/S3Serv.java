@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.file.serv;
 
+import xyz.arinmandri.playground.apps.a.serv.exception.Wth;
 import xyz.arinmandri.util.S3Actions;
 
 import java.net.URL;
@@ -45,12 +46,8 @@ public class S3Serv
 			s3Actions.uploadLocalFile( awsBucketName, key, path );
 		}
 		catch( S3Exception e ){
-			// TODO exception
 			logger.info( "S3 error occurred: Error message: {}, Error code {}", e.getMessage(), e.awsErrorDetails().errorCode() );
-		}
-		catch( RuntimeException e ){
-			// TODO exception
-			logger.info( "An unexpected error occurred: " + e.getMessage() );
+			throw new Wth( e );
 		}
 		return getUrl( key );
 	}

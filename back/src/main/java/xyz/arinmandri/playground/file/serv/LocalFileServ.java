@@ -1,5 +1,8 @@
 package xyz.arinmandri.playground.file.serv;
 
+import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
+import xyz.arinmandri.playground.apps.a.serv.exception.Wth;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,11 +65,12 @@ public class LocalFileServ
 	/**
 	 * MultipartFile을 임시파일로 저장
 	 * 
+	 * @param multipartFile null 넣지 말라.
 	 * @return 생성된 임시파일
 	 */
 	public LocalTempFile createTempFile ( MultipartFile multipartFile ) {
 		if( multipartFile == null || multipartFile.isEmpty() )
-		    return null;// TODO exception
+		    throw new ImaDumb();
 
 		String id = generateRandomFileName() + "." + getExtension( multipartFile.getOriginalFilename() );
 		final Path path = Paths.get( getTempBucketDir() + "/" + id );
@@ -74,9 +78,8 @@ public class LocalFileServ
 		try{
 			multipartFile.transferTo( path );
 		}
-		catch( IOException | IllegalStateException ex ){
-			// TODO exception
-			return null;
+		catch( IOException | IllegalStateException e ){
+			throw new Wth( e );
 		}
 
 		return new LocalTempFile( id, path, (int) ( multipartFile.getSize() >> 10 ) );

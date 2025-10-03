@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,10 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 
@@ -62,7 +63,6 @@ public class JwtFilter extends OncePerRequestFilter
 	 * 토큰 --> 인증 정보
 	 */
 	private Authentication getAuthentication ( String token ) {
-		if( token == null ) return null; // TODO exception
 
 		Claims claims = jwtUtil.getClaims( token );
 		Set<SimpleGrantedAuthority> authorities = Collections.singleton(

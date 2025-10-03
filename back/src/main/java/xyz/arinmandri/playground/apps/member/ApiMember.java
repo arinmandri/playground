@@ -1,7 +1,8 @@
 package xyz.arinmandri.playground.apps.member;
 
 import xyz.arinmandri.playground.apps.a.api.ApiA;
-import xyz.arinmandri.playground.apps.a.serv.NoSuchEntity;
+import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
+import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.apps.member.serv.MemberServ;
 import xyz.arinmandri.playground.apps.member.serv.Y_MemberForMe;
 import xyz.arinmandri.playground.apps.member.serv.Y_MemberForPublic;
@@ -60,7 +61,7 @@ public class ApiMember extends ApiA
 			id = 0L;
 			nick = ug.getCode();
 		}
-		default -> throw new RuntimeException();// TODO exception
+		default -> throw new ImaDumb();
 		}
 		return ResponseEntity.ok()
 		        .body( new apiWhoamiRes(

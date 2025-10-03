@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.apps.member.serv;
 
-import xyz.arinmandri.playground.apps.a.serv.NoSuchEntity;
 import xyz.arinmandri.playground.apps.a.serv.PersistenceServ;
+import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.apps.member.domain.MKeyBasic;
 import xyz.arinmandri.playground.apps.member.domain.Member;
 import xyz.arinmandri.playground.apps.member.domain.Members;
