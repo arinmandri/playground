@@ -99,7 +99,7 @@ async function requestJoin() {
   const response = await api.post("/member/add/basic", {
     member: {
       nick: form.value.nickname,
-      email: form.value.email
+      email: form.value.email === '' ? null : form.value.email,
     },
     key: {
       keyname: form.value.keyname,
