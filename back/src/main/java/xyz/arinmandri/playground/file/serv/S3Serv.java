@@ -21,14 +21,17 @@ public class S3Serv
 	private static final Logger logger = LoggerFactory.getLogger( S3Serv.class );
 
 	final private String awsBucketName;
+	final private String keyBase;
 
 	final private S3Actions s3Actions;
 
 	public S3Serv(
 	        @Value( "${aws.s3.bucket-name}" ) String awsBucketName ,
+	        @Value( "${aws.s3.key-base}" ) String keyBase ,
 	        @Autowired S3Actions s3Actions ) {
 
 		this.awsBucketName = awsBucketName;
+		this.keyBase = keyBase;
 		this.s3Actions = s3Actions;
 	}
 
@@ -38,25 +41,25 @@ public class S3Serv
 	 * @param path
 	 * @return
 	 */
-	public URL s3Upload ( Path path ){
+	public URL s3Upload ( FileType type , Path path ) {
 
 		String key = path.getFileName().toString();
 
 		try{
-			s3Actions.uploadLocalFile( awsBucketName, key, path );
+			s3Actions.uploadLocalFile( awsBucketName, keyBase + type.uploadPath + '/' + key, path );
 		}
 		catch( S3Exception e ){
 			logger.info( "S3 error occurred: Error message: {}, Error code {}", e.getMessage(), e.awsErrorDetails().errorCode() );
 			throw new Wth( e );
 		}
-		return getUrl( key );
+		return getUrl( type, key );
 	}
 
-	public URL getUrl ( String key ) {
+	public URL getUrl ( FileType type , String key ) {
 
 		URL url = s3Actions.utils.getUrl( b-> b
 		        .bucket( awsBucketName )
-		        .key( key ) );
+		        .key( keyBase + type.uploadPath + '/' + key ) );
 
 		return url;
 	}

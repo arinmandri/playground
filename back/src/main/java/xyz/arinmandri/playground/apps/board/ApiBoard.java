@@ -1,5 +1,8 @@
 package xyz.arinmandri.playground.apps.board;
 
+import xyz.arinmandri.playground.apps.a.api.ApiA;
+import xyz.arinmandri.playground.apps.a.serv.CursorPage;
+import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.apps.board.serv.PostServ;
 import xyz.arinmandri.playground.apps.board.serv.Y_PostDetail;
 import xyz.arinmandri.playground.apps.board.serv.Y_PostListItem;
@@ -9,9 +12,7 @@ import xyz.arinmandri.playground.apps.board.serv.Z_PAttachmentAddImage;
 import xyz.arinmandri.playground.apps.board.serv.Z_PAttachmentNew;
 import xyz.arinmandri.playground.apps.board.serv.Z_PostAdd;
 import xyz.arinmandri.playground.apps.board.serv.Z_PostEdit;
-import xyz.arinmandri.playground.apps.a.api.ApiA;
-import xyz.arinmandri.playground.apps.a.serv.CursorPage;
-import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
+import xyz.arinmandri.playground.file.serv.FileType;
 import xyz.arinmandri.playground.security.LackAuthExcp;
 import xyz.arinmandri.playground.security.user.User;
 
@@ -86,6 +87,7 @@ public class ApiBoard extends ApiA
 			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
 				if( reqAtt instanceof Z_PAttachmentAddImage attImage ){
 					uploadAndSetFileField( attImage,
+					        FileType.PAttachment,
 					        ( r )-> r.getUrl(),
 					        ( r , url )-> {
 						        r.setUrl( url );
@@ -95,7 +97,7 @@ public class ApiBoard extends ApiA
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
-						        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
+						        String uploadedUrl = s3Serv.s3Upload( FileType.PAttachment, ltf.path() ).toString();
 						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
 						        return null;
@@ -143,6 +145,7 @@ public class ApiBoard extends ApiA
 			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
 				if( reqAtt instanceof Z_PAttachmentAddImage attImage ){
 					uploadAndSetFileField( attImage,
+					        FileType.PAttachment,
 					        ( r )-> r.getUrl(),
 					        ( r , url )-> {
 						        r.setUrl( url );
@@ -152,7 +155,7 @@ public class ApiBoard extends ApiA
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
-						        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
+						        String uploadedUrl = s3Serv.s3Upload( FileType.PAttachment, ltf.path() ).toString();
 						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
 						        return null;

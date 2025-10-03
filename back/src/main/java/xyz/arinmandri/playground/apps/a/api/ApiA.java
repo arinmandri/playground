@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.apps.a.api;
 
+import xyz.arinmandri.playground.file.serv.FileType;
 import xyz.arinmandri.playground.file.serv.LocalFileServ;
 import xyz.arinmandri.playground.file.serv.LocalTempFile;
 import xyz.arinmandri.playground.file.serv.S3Serv;
@@ -131,12 +132,12 @@ public abstract class ApiA
 	 * @param fileFieldGetter    입력용 DTO에서 파일 필드를 가져오는 함수.
 	 * @param afterUploadWithUrl URL을 가지고 입력용 DTO에 어쩌고 하기
 	 */
-	protected < T > void uploadAndSetFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiConsumer<T, String> afterUploadWithUrl ) {
+	protected < T > void uploadAndSetFileField ( T reqDTO , FileType fileType , Function<T, String> fileFieldGetter , BiConsumer<T, String> afterUploadWithUrl ) {
 		uploadFileField(
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.s3Upload( fileType, ltf.path() ).toString();
 			        afterUploadWithUrl.accept( r, uploadedUrl );
 			        return null;
 		        } );
@@ -151,12 +152,12 @@ public abstract class ApiA
 	 * @param afterUploadWithUrl URL을 가지고 입력용 DTO에 어쩌고 하고 새 DTO를 반환.
 	 * @return afterUploadWithUrl 적용 결과.
 	 */
-	protected < T > T uploadAndCloneWithNewFileField ( T reqDTO , Function<T, String> fileFieldGetter , BiFunction<T, String, T> afterUploadWithUrl ) {
+	protected < T > T uploadAndCloneWithNewFileField ( T reqDTO , FileType fileType , Function<T, String> fileFieldGetter , BiFunction<T, String, T> afterUploadWithUrl ) {
 		return uploadFileField(
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Serv.s3Upload( ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.s3Upload( fileType, ltf.path() ).toString();
 			        return afterUploadWithUrl.apply( r, uploadedUrl );
 		        } );
 	}

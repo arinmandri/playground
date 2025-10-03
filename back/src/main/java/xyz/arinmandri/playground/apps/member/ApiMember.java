@@ -9,6 +9,7 @@ import xyz.arinmandri.playground.apps.member.serv.Y_MemberForPublic;
 import xyz.arinmandri.playground.apps.member.serv.Z_MKeyBasicAdd;
 import xyz.arinmandri.playground.apps.member.serv.Z_MemberAdd;
 import xyz.arinmandri.playground.apps.member.serv.Z_MemberEdit;
+import xyz.arinmandri.playground.file.serv.FileType;
 import xyz.arinmandri.playground.security.user.User;
 import xyz.arinmandri.playground.security.user.UserGuest;
 import xyz.arinmandri.playground.security.user.UserNormal;
@@ -146,6 +147,7 @@ public class ApiMember extends ApiA
 
 		// 프사 필드 업로드 처리
 		uploadAndSetFileField( req,
+		        FileType.MemberPropic,
 		        ( r )-> r.getPropic(),
 		        ( r , v )-> r.setPropic( v ) );
 

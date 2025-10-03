@@ -1,5 +1,6 @@
 package xyz.arinmandri.playground.apps.a.api;
 
+import xyz.arinmandri.playground.file.serv.FileType;
 import xyz.arinmandri.playground.file.serv.LocalFileServ;
 import xyz.arinmandri.playground.file.serv.LocalTempFile;
 import xyz.arinmandri.playground.file.serv.S3Serv;
@@ -101,13 +102,12 @@ public class ApiTesting extends ApiA
 
 	@PostMapping( "/fileup" )
 	public ResponseEntity<String> apiFileSimpleAdd (
-	        @AuthenticationPrincipal UserDetails userDetails ,
 	        MultipartFile file
 	) {
 
 		LocalTempFile ltf = ltfSer.createTempFile( file );
 
-		URL url = s3Ser.s3Upload( ltf.path() );
+		URL url = s3Ser.s3Upload( FileType.Temp, ltf.path() );
 		logger.info( "url = {}", url );
 
 		return ResponseEntity.status( HttpStatus.CREATED )
