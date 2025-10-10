@@ -2,7 +2,6 @@ package xyz.arinmandri.playground.apps.board.model.post;
 
 import xyz.arinmandri.playground.apps.a.model.BaseEntityWithId;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -37,59 +36,29 @@ public class Post extends BaseEntityWithId
 	@OrderBy( "order ASC" )
 	List<PAttachment> attachments;
 
-	@OneToMany( mappedBy = "belongsTo" , cascade = CascadeType.ALL , orphanRemoval = true )
-	@OrderBy( "order ASC" )
-	List<PAttachmentImage> attachmentsImage;
-
-	@OneToMany( mappedBy = "belongsTo" , cascade = CascadeType.ALL , orphanRemoval = true )
-	@OrderBy( "order ASC" )
-	List<PAttachmentFile> attachmentsFile;
-
-	Post(
-	        PAuthor author ,
-	        String content ,
-	        List<PAttachment> attachments
-	) {
+	public Post( PAuthor author , String content , List<PAttachment> attachments ) {
 		this.author = author;
-		this.content = content;
+		this.content = content == null ? "" : content;
+		this.attachments = attachments == null ? List.of() : attachments;
 
-		if( attachments == null ) attachments = new ArrayList<>();
-		this.attachments = attachments;
+		int order = 0;
+		for( PAttachment att : attachments ){
+			att.setOrder( order++ );
+			att.setBelongsTo( this );
+		}
+	}
 
-		this.attachmentsImage = attachments.stream()
+	@Column
+	public List<PAttachmentImage> getAttachmentsImage () {
+		return attachments.stream()
 		        .filter( p-> p.getType().equals( PAttachmentImage.TYPE ) )
 		        .map( p-> (PAttachmentImage) p )
 		        .toList();
-		this.attachmentsFile = attachments.stream()
-		        .filter( p-> p.getType().equals( PAttachmentFile.TYPE ) )
-		        .map( p-> (PAttachmentFile) p )
-		        .toList();
 	}
 
-	/*
-	 * 자동생성 Builder 때문에 어쩔 수 없이 있는 겨.
-	 * 하위타입을 빌더에 넣지 마시오.
-	 * 라고 어딘가에 말하고싶다.
-	 */
-	Post(
-	        PAuthor author ,
-	        String content ,
-	        List<PAttachment> attachments ,
-	        List<PAttachmentImage> attachmentsImage ,
-	        List<PAttachmentFile> attachmentsFile
-	) {
-		this( author, content, attachments );
-	}
-
-	public void setAttachments ( List<PAttachment> attachments ) {
-
-		this.attachments = attachments;
-
-		this.attachmentsImage = attachments.stream()
-		        .filter( p-> p.getType().equals( PAttachmentImage.TYPE ) )
-		        .map( p-> (PAttachmentImage) p )
-		        .toList();
-		this.attachmentsFile = attachments.stream()
+	@Column
+	public List<PAttachmentFile> getAttachmentsFile () {
+		return attachments.stream()
 		        .filter( p-> p.getType().equals( PAttachmentFile.TYPE ) )
 		        .map( p-> (PAttachmentFile) p )
 		        .toList();
