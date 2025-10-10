@@ -10,15 +10,9 @@ import { defineStore } from "pinia";
 export const useMsgStore = defineStore("msg", {
   state: () => ({
     msgs: [] as GlobalMsg[],
-    isDev: import.meta.env.DEV as boolean,
   }),
   actions: {
-    addMsg(msgClass: MsgClass, content: string){
-
-      //// 개발중일 때만 Debug 메시지 표시
-      if (msgClass === MsgClass.DEBUG && !this.isDev) {
-        return;
-      }
+    addMsg(msgClass: MsgClass, content: string): number {
 
       const msg = GlobalMsg.create(msgClass, content);
       this.msgs.push(msg);
@@ -28,6 +22,8 @@ export const useMsgStore = defineStore("msg", {
         this.removeMsg(msg.id);
       }, 7000);
       msg.timeoutId = timeoutId;
+
+      return msg.id;
     },
 
     //// 메시지 제거
@@ -47,7 +43,7 @@ export const useMsgStore = defineStore("msg", {
 });
 
 class GlobalMsg {
-  static id = 0;
+  static id = 1;
   private _id: number;
   private _msgClass: MsgClass;
   private _content: string;

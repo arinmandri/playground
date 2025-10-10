@@ -1,5 +1,5 @@
 <template>
-  <ul id="globalMsgBox" v-if="msgStore.msgs.length > 0">
+  <ul id="globalMsgBox" v-if="msgStore.msgs.length > 0" :class="isDev ? 'dev' : 'notDev'">
     <li v-for="msg in msgStore.msgs" :key="msg.id"
       :class="[`globalmsg globalmsg-${msg.msgClass}`, { fixed: fixedSet.has(msg.id) }]" @click="handleClick(msg.id)">
       {{ msg.content }}
@@ -15,6 +15,7 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
 import { ref, type Ref } from 'vue';
 
 const fixedSet = ref<Set<number>>(new Set()) as Ref<Set<number>>;// 고정된 메시지들
+const isDev = import.meta.env.DEV as boolean;
 
 function handleClick(msg_id: number) {
   msgStore.disableAutoRemove(msg_id);
@@ -93,6 +94,11 @@ function handleClick(msg_id: number) {
   background: #fff;
   font-family: monospace;
   white-space: pre-wrap;
+}
+
+/* 개발중일 때만 Debug 메시지 표시 */
+#globalMsgBox.notDev .globalmsg-debug {
+  display: none;
 }
 
 @keyframes borderFade {
