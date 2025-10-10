@@ -1,34 +1,65 @@
 <template>
-  <ul id="globalMsgBox" v-if="msgStore.msgs.length > 0" :class="isDev ? 'dev' : 'notDev'">
-    <li v-for="msg in msgStore.msgs" :key="msg.id"
-      :class="[`globalmsg globalmsg-${msg.msgClass}`, { fixed: fixedSet.has(msg.id) }]" @click="handleClick(msg.id)">
-      {{ msg.content }}
-      <button class="closeBtn" @click="msgStore.removeMsg(msg.id)">✕</button>
-    </li>
-  </ul>
+  <div id="globalMsgArea">
+    <div id="globalMsgSettings" :class="isDev ? 'dev' : ''">
+      Msg level:
+      <label><input type="radio" value="error" v-model="level" /> Error</label>
+      <label><input type="radio" value="warn" v-model="level" /> Warn</label>
+      <label><input type="radio" value="info" v-model="level" /> Info</label>
+      <label><input type="radio" value="debug" v-model="level" /> Debug</label>
+    </div>
+    <ul id="globalMsgBox" v-if="filteredMsgs.length > 0">
+      <li v-for="msg in filteredMsgs" :key="msg.id"
+        :class="[`globalmsg globalmsg-${msg.msgClass}`, { fixed: fixedSet.has(msg.id) }]" @click="handleClick(msg.id)">
+        {{ msg.content }}
+        <button class="closeBtn" @click="msgStore.removeMsg(msg.id)">✕</button>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { useMsgStore } from '@/stores/globalMsg';
+const msgStore = useMsgStore();
 
-import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
+import { ref, computed, type Ref } from 'vue';
 
-import { ref, type Ref } from 'vue';
-
+const isDev = import.meta.env.DEV;
+const level = ref<'error' | 'warn' | 'info' | 'debug'>(isDev ? 'debug' : 'warn');
 const fixedSet = ref<Set<number>>(new Set()) as Ref<Set<number>>;// 고정된 메시지들
-const isDev = import.meta.env.DEV as boolean;
+const levelOrder = ['error', 'warn', 'info', 'debug'];
+const filteredMsgs = computed(() => {
+  const idx = levelOrder.indexOf(level.value);
+  return msgStore.msgs.filter(msg => {
+    const msgIdx = levelOrder.indexOf(msg.msgClass);
+    return msgIdx <= idx;
+  });
+});
 
 function handleClick(msg_id: number) {
   msgStore.disableAutoRemove(msg_id);
   fixedSet.value.add(msg_id);
 }
-
 </script>
 
 <style>
-#globalMsgBox {
+#globalMsgArea {
   position: sticky;
   top: 0px;
   padding: 8px;
+}
+
+#globalMsgSettings {
+  display: none;
+}
+
+#globalMsgSettings.dev {
+  display: flex;
+  align-items: right;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#globalMsgBox {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -94,11 +125,6 @@ function handleClick(msg_id: number) {
   background: #fff;
   font-family: monospace;
   white-space: pre-wrap;
-}
-
-/* 개발중일 때만 Debug 메시지 표시 */
-#globalMsgBox.notDev .globalmsg-debug {
-  display: none;
 }
 
 @keyframes borderFade {
