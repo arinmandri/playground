@@ -22,12 +22,26 @@ export const useMsgStore = defineStore("msg", {
 
       const msg = GlobalMsg.create(msgClass, content);
       this.msgs.push(msg);
-      setTimeout(()=>{
+
+      //// 타이머: 시간 지나면 자동삭제
+      const timeoutId = setTimeout(() => {
         this.removeMsg(msg.id);
       }, 7000);
+      msg.timeoutId = timeoutId;
     },
+
+    //// 메시지 제거
     removeMsg(msg_id: number) {
       this.msgs = this.msgs.filter(m => m.id !== msg_id);
+    },
+
+    //// 자동삭제 타이머 제거
+    disableAutoRemove(msg_id: number) {
+      const msg = this.msgs.find(m => m.id === msg_id);
+      if (msg?.timeoutId) {
+        clearTimeout(msg.timeoutId);
+        msg.timeoutId = null;
+      }
     },
   }
 });
@@ -37,6 +51,7 @@ class GlobalMsg {
   private _id: number;
   private _msgClass: MsgClass;
   private _content: string;
+  private _timeoutId: number | null = null;
 
   private constructor(
     msgClass: MsgClass,
@@ -63,6 +78,14 @@ class GlobalMsg {
 
   get content(): string {
     return this._content;
+  }
+
+  get timeoutId(): number | null {
+    return this._timeoutId;
+  }
+
+  set timeoutId(tid: number | null) {
+    this._timeoutId = tid;
   }
 }
 

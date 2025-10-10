@@ -1,6 +1,7 @@
 <template>
   <ul id="globalMsgBox" v-if="msgStore.msgs.length > 0">
-    <li v-for="msg in msgStore.msgs" :key="msg.id" :class="`globalmsg globalmsg-${msg.msgClass}`">
+    <li v-for="msg in msgStore.msgs" :key="msg.id"
+      :class="[`globalmsg globalmsg-${msg.msgClass}`, { fixed: fixedSet.has(msg.id) }]" @click="handleClick(msg.id)">
       {{ msg.content }}
       <button class="closeBtn" @click="msgStore.removeMsg(msg.id)">✕</button>
     </li>
@@ -10,6 +11,15 @@
 <script setup lang="ts">
 
 import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
+
+import { ref, type Ref } from 'vue';
+
+const fixedSet = ref<Set<number>>(new Set()) as Ref<Set<number>>;// 고정된 메시지들
+
+function handleClick(msg_id: number) {
+  msgStore.disableAutoRemove(msg_id);
+  fixedSet.value.add(msg_id);
+}
 
 </script>
 
@@ -46,6 +56,14 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
   border-radius: 3px;
   background: #fff;
   box-shadow: 0 2px 6px #0003;
+}
+
+#globalMsgBox .globalmsg.fixed {
+  animation:
+    borderFade 0s linear 0s forwards;
+}
+
+#globalMsgBox .globalmsg:not(.fixed) {
   animation:
     borderFade 2.8s linear 4s forwards,
     fadeOut 0.2s ease 6.8s forwards;
