@@ -10,9 +10,16 @@ import { defineStore } from "pinia";
 export const useMsgStore = defineStore("msg", {
   state: () => ({
     msgs: [] as GlobalMsg[],
+    isDev: import.meta.env.DEV as boolean,
   }),
   actions: {
     addMsg(msgClass: MsgClass, content: string){
+
+      //// 개발중일 때만 Debug 메시지 표시
+      if (msgClass === MsgClass.DEBUG && !this.isDev) {
+        return;
+      }
+
       const msg = GlobalMsg.create(msgClass, content);
       this.msgs.push(msg);
       setTimeout(()=>{

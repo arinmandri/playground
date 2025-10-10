@@ -24,6 +24,7 @@
  */
 
 import { useAuthStore, getEnsuredAccessToken } from '@/stores/auth';
+import { MsgClass, useMsgStore } from '@/stores/globalMsg';
 
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
@@ -107,7 +108,13 @@ function attemptRequestOf(
   options?: any
 ) {
   const attemptRequest = (retryCount = 0) => {
-    if (retryCount > 0) console.log(url, '재시도: ' + retryCount);
+    const msgStore = useMsgStore();
+    msgStore.addMsg(MsgClass.DEBUG, `API: ${url}\n` + JSON.stringify(data, null, 2));
+    if (retryCount > 0) {
+      console.log(url, '재시도: ' + retryCount);
+      msgStore.addMsg(MsgClass.DEBUG, `API: ${url} (retry ${retryCount})\n` + JSON.stringify(data, null, 2));
+    }
+
     axAction(url, data, options)
       .then(resolve)
       .catch(async (error: any) => {
@@ -117,7 +124,7 @@ function attemptRequestOf(
           return;
         }
         const responseStatus = error.response?.status;
-        if (responseStatus === 401 || responseStatus == 403) {
+        if (responseStatus === 401 || responseStatus === 403) {
           if (isRefreshing) {// 이미 토큰 재발급 중: 큐에 대기
             retryQueue.push(() => {
               attemptRequest(retryCount + 1);

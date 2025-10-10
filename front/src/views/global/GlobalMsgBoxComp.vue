@@ -17,7 +17,7 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
 #globalMsgBox {
   position: sticky;
   top: 0px;
-    padding: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -52,27 +52,29 @@ import { useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore()
 }
 
 #globalMsgBox .globalmsg-error {
-  border-color: #d20;
-  color: #d20;
+  border-color: #d05;
+  color: #d05;
   background: #ffe5e5;
 }
 
 #globalMsgBox .globalmsg-warn {
-  border-color: #c80;
-  color: #c80;
+  border-color: #b80;
+  color: #b80;
   background: #fff4e0;
 }
 
 #globalMsgBox .globalmsg-info {
-  border-color: #06e;
-  color: #06e;
+  border-color: #09d;
+  color: #09d;
   background: #e6f2ff;
 }
 
 #globalMsgBox .globalmsg-debug {
-  border-color: #084;
-  color: #084;
-  background: #e5ffe5;
+  border-color: #666;
+  color: #666;
+  background: #fff;
+  font-family: monospace;
+  white-space: pre-wrap;
 }
 
 @keyframes borderFade {
