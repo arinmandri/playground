@@ -1,6 +1,7 @@
 #!/bin/bash
 
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
 PROJECT_DIR=~/playground
 FRONTEND_BUILD_DIR=/var/www/playground
 BACKEND_DIR="$PROJECT_DIR/back"
