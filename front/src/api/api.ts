@@ -111,7 +111,7 @@ function attemptRequestOf(
     const msgStore = useMsgStore();
     msgStore.addMsg(
       MsgClass.DEBUG,
-      `API: ${url}${retryCount === 0 ? '' : ` (retry ${retryCount})`}\n` + JSON.stringify(data, null, 2));
+      `API: ${url}${retryCount === 0 ? '' : ` (retry ${retryCount})`}${data == null ? '' : '\n' + JSON.stringify(data, null, 2)}`);
     if (retryCount > 0) {
       console.log('○ API ' + url, '재시도(' + retryCount + ')');
     }
