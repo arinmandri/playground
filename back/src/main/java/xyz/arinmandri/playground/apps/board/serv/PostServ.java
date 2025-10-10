@@ -5,11 +5,14 @@ import xyz.arinmandri.playground.apps.a.serv.PersistenceServ;
 import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
 import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
 import xyz.arinmandri.playground.apps.board.model.post.PAttachment;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentFile;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentImage;
 import xyz.arinmandri.playground.apps.board.model.post.PAuthor;
 import xyz.arinmandri.playground.apps.board.model.post.Post;
 import xyz.arinmandri.playground.apps.board.model.post.Posts;
 import xyz.arinmandri.playground.apps.member.model.Member;
 import xyz.arinmandri.playground.apps.member.model.Members;
+import xyz.arinmandri.playground.file.serv.S3Serv;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ public class PostServ extends PersistenceServ
 {
 	private final int pageSize = pageSizeDefault;
 
+	final private S3Serv s3Serv;
 	final private Members members;
 	final private Posts posts;
 
@@ -121,7 +125,12 @@ public class PostServ extends PersistenceServ
 		if( p == null )
 		    throw new NoSuchEntity();
 
-		// TODO 첨부파일 파일서버에서 삭제
+		for( PAttachmentImage att : p.getAttachmentsImage() ){
+			s3Serv.delete( att.getUrl() );
+		}
+		for( PAttachmentFile att : p.getAttachmentsFile() ){
+			s3Serv.delete( att.getUrl() );
+		}
 	}
 
 	public static List<Y_PAttachment> collectAttachments ( List<Y_PAttachmentImage> images , List<Y_PAttachmentFile> files ) {

@@ -137,4 +137,15 @@ public class S3Actions
 
 		return response.thenApply( r-> null );
 	}
+
+	public DeleteObjectResponse deleteObjectFromBucket ( String bucketName , String key ) {
+
+		DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+		        .bucket( bucketName )
+		        .key( key )
+		        .build();
+
+		DeleteObjectResponse response = s3Client.deleteObject( deleteObjectRequest );
+		return response;
+	}
 }

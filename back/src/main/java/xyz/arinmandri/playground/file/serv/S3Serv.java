@@ -3,6 +3,8 @@ package xyz.arinmandri.playground.file.serv;
 import xyz.arinmandri.playground.apps.a.serv.exception.Wth;
 import xyz.arinmandri.util.S3Actions;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -62,5 +64,27 @@ public class S3Serv
 		        .key( keyBase + type.uploadPath + '/' + key ) );
 
 		return url;
+	}
+
+	public void delete ( String url ) {
+
+		URI uri;
+		try{
+			uri = new URI( url );
+		}
+		catch( URISyntaxException e ){
+			// TODO Auto-generated catch block
+			throw new RuntimeException( e );
+		}
+
+		String fullKey = uri.getPath().substring( 1 );
+
+		try{
+			s3Actions.deleteObjectFromBucket( awsBucketName, fullKey );
+		}
+		catch( S3Exception e ){
+			logger.info( "S3 error occurred: Error message: {}, Error code {}", e.getMessage(), e.awsErrorDetails().errorCode() );
+			throw new Wth( e );
+		}
 	}
 }
