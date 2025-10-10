@@ -18,7 +18,21 @@
 
 
 
-## Github 올라간 것 말고
+
+
+
+
+## 업데이트
+
+1. 작업한 걸 커밋하고 깃허브에 푸시한다.
+2. 서버에서 `~/playground` 위치에서 관리중.
+3. 설정 등 git에서 제외한 변경사항은 직접 갖다넣기.  
+   지금은 DB 변경사항도 손수 넣어야 함.
+4. `update.sh`를 수정했으면 한 번 직접 git pull 
+5. `update.sh` 를 실행한다.
+
+
+### Github 올라간 것 말고
 
 루트 디렉토리의 `.gitignore` 파일을 보라.
 
@@ -72,11 +86,7 @@ public static final String AWS_SECRET_ACCESS_KEY = "...";
 
 ### 소스 위치
 
-전체 소스를 한 git 저장소로 관리한다.
-
-* 프론트엔드: `front/`
-* 백엔드: `back/`
-* DB: `dbsetting.sql`
+전체 소스를 한 git 저장소로 관리한다. 대체로 구성요소별 디렉토리.
 
 ### 실행
 
@@ -109,24 +119,20 @@ java -jar .\target\playground-0.0.1-SNAPSHOT.jar > ..\back.log
 
 
 
-
-
-## 업데이트
-
-1. 작업한 걸 커밋하고 깃허브에 푸시한다.
-2. 서버에서 `~/playground` 위치에서 관리중.
-3. 설정 등 git에서 제외한 변경사항은 직접 갖다넣기.
-4. `update.sh` 를 실행한다.
-
-
-
-
-
 ## 서버 확인
 
 ##### 백엔드
 
 로그 파일 `back.log`
+
+그냥 직접 실행
+
+```
+/usr/lib/jvm/java-21-openjdk-amd64/bin/java -jar ./back/target/playground-0.0.1-SNAPSHOT.jar --debug
+```
+
+sudo lsof -i TCP:포트번호
+sudo kill -9 PID
 
 ##### ...
 

@@ -2,7 +2,7 @@
 -- created_at 컬럼에 DEFAULT CURRENT_TIMESTAMP 대신 jpa에서
 
 -- DB: arinmandri
--- ALTER SCHEMA playground RENAME TO playground_trash
+-- ALTER SCHEMA playground RENAME TO playground_trash;
 CREATE SCHEMA playground;
 
 -- DROP USER "{ 사용자 }";
