@@ -64,23 +64,12 @@ public class PostServ extends PersistenceServ
 	 * @return 생성된 게시글의 id
 	 */
 	@Transactional
-	public Long add ( Z_PostAdd addPostReq , List<Z_PAttachmentAdd> addAttachmentsReq , Long authorId ) {
+	public Long add ( Z_PostAdd addPostReq , Long authorId ) {
 
 		PAuthor author = PAuthor.from(
 		        members.findById( Member.class, authorId ) );
 
 		Post p = addPostReq.toEntity( author );
-
-		if( addAttachmentsReq != null ){
-			List<PAttachment> atts = new ArrayList<>();
-
-			for( Z_PAttachmentAdd reqAtt : addAttachmentsReq ){
-				PAttachment att = reqAtt.toEntity();
-				atts.add( att );
-			}
-
-			p.setAttachments( atts );
-		}
 
 		return posts.add( p );
 	}

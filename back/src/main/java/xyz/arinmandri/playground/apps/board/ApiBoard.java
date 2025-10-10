@@ -3,6 +3,8 @@ package xyz.arinmandri.playground.apps.board;
 import xyz.arinmandri.playground.apps.a.api.ApiA;
 import xyz.arinmandri.playground.apps.a.serv.CursorPage;
 import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
+import xyz.arinmandri.playground.apps.board.model.post.PAuthor;
+import xyz.arinmandri.playground.apps.board.model.post.Post;
 import xyz.arinmandri.playground.apps.board.serv.PostServ;
 import xyz.arinmandri.playground.apps.board.serv.Y_PostDetail;
 import xyz.arinmandri.playground.apps.board.serv.Y_PostListItem;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +77,7 @@ public class ApiBoard extends ApiA
 	public ResponseEntity<Y_PostDetail> apiPostAdd (
 	        @AuthenticationPrincipal User user ,
 	        @RequestBody
-	        @Valid Z_PostAdd req
+	        @Valid ReqBody_apiPostAdd req
 	) {
 
 		Long myId = myIdAsMember( user );
@@ -106,7 +109,12 @@ public class ApiBoard extends ApiA
 			}
 		}
 
-		Long id = pServ.add( req, addAttachmentsReq, myId );
+		Z_PostAdd z = new Z_PostAdd(
+		        req.content(),
+		        addAttachmentsReq
+		);
+
+		Long id = pServ.add( z, myId );
 
 		Y_PostDetail p;
 		try{
@@ -118,6 +126,20 @@ public class ApiBoard extends ApiA
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( p );
+	}
+
+	public record ReqBody_apiPostAdd (
+	        String content ,
+	        List<@NotNull Z_PAttachmentNew> attachments
+	) {
+
+		Post toEntity ( PAuthor author ) {
+
+			return Post.builder()
+			        .author( author )
+			        .content( content )
+			        .build();
+		}
 	}
 
 	@PostMapping( "/post/{post-id}/edit" )
