@@ -129,6 +129,9 @@ public class PostServ extends PersistenceServ
 	public void del ( Long id ) throws NoSuchEntity {
 
 		Post p = posts.del( id );
+		if( p == null )
+		    throw new NoSuchEntity();
+
 		// TODO 첨부파일 파일서버에서 삭제
 	}
 

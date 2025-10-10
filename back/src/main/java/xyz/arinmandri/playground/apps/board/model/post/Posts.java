@@ -51,7 +51,10 @@ public class Posts
 
 	@Transactional
 	public Post del ( Long id ) {
+
 		Post p = pRepo.findById( Post.class, id );
+		if( p == null ) return null;
+
 		pRepo.delete( p );
 		return p;
 	}
