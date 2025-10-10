@@ -100,7 +100,7 @@ public class ApiBoard extends ApiA
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
-						        String uploadedUrl = s3Serv.s3Upload( FileType.PAttachment, ltf.path() ).toString();
+						        String uploadedUrl = s3Serv.upload( FileType.PAttachment, ltf.path() ).toString();
 						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
 						        return null;
@@ -177,7 +177,7 @@ public class ApiBoard extends ApiA
 					uploadFileField( attFile,
 					        ( r )-> r.getUrl(),
 					        ( r , ltf )-> {
-						        String uploadedUrl = s3Serv.s3Upload( FileType.PAttachment, ltf.path() ).toString();
+						        String uploadedUrl = s3Serv.upload( FileType.PAttachment, ltf.path() ).toString();
 						        r.setUrl( uploadedUrl );
 						        attFile.setSize( ltf.size() );
 						        return null;

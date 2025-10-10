@@ -107,7 +107,7 @@ public class ApiTesting extends ApiA
 
 		LocalTempFile ltf = ltfSer.createTempFile( file );
 
-		URL url = s3Ser.s3Upload( FileType.Temp, ltf.path() );
+		URL url = s3Ser.upload( FileType.Temp, ltf.path() );
 		logger.info( "url = {}", url );
 
 		return ResponseEntity.status( HttpStatus.CREATED )

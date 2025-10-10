@@ -41,7 +41,7 @@ public class S3Serv
 	 * @param path
 	 * @return
 	 */
-	public URL s3Upload ( FileType type , Path path ) {
+	public URL upload ( FileType type , Path path ) {
 
 		String key = path.getFileName().toString();
 

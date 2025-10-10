@@ -137,7 +137,7 @@ public abstract class ApiA
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Serv.s3Upload( fileType, ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.upload( fileType, ltf.path() ).toString();
 			        afterUploadWithUrl.accept( r, uploadedUrl );
 			        return null;
 		        } );
@@ -157,7 +157,7 @@ public abstract class ApiA
 		        reqDTO,
 		        fileFieldGetter,
 		        ( r , ltf )-> {
-			        String uploadedUrl = s3Serv.s3Upload( fileType, ltf.path() ).toString();
+			        String uploadedUrl = s3Serv.upload( fileType, ltf.path() ).toString();
 			        return afterUploadWithUrl.apply( r, uploadedUrl );
 		        } );
 	}
