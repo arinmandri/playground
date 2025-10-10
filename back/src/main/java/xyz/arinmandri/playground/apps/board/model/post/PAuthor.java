@@ -1,7 +1,7 @@
-package xyz.arinmandri.playground.apps.board.domain.post;
+package xyz.arinmandri.playground.apps.board.model.post;
 
-import xyz.arinmandri.playground.apps.a.domain.BaseEntityWithoutId;
-import xyz.arinmandri.playground.apps.member.domain.Member;
+import xyz.arinmandri.playground.apps.a.model.BaseEntityWithoutId;
+import xyz.arinmandri.playground.apps.member.model.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Immutable
 @Table( name = "member" )
 /**
- * @see xyz.arinmandri.playground.apps.member.domain.Member
+ * @see xyz.arinmandri.playground.apps.member.model.Member
  *      read-only
  */
 @NoArgsConstructor

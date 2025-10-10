@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.apps.board.serv;
 
-import xyz.arinmandri.playground.apps.board.domain.post.PAuthor;
 import xyz.arinmandri.playground.apps.a.serv.VPagable;
+import xyz.arinmandri.playground.apps.board.model.post.PAuthor;
 
 import java.time.Instant;
 import java.util.List;

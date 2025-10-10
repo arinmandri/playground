@@ -3,4 +3,4 @@
  * \@Entity
  * \@Table( name = "table_name" )
  */
-package xyz.arinmandri.playground.apps.a.domain;
+package xyz.arinmandri.playground.apps.a.model;

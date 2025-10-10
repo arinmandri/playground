@@ -1,7 +1,7 @@
 package xyz.arinmandri.playground.apps.member.serv;
 
 import xyz.arinmandri.playground.apps.a.serv.Temp;
-import xyz.arinmandri.playground.apps.member.domain.Member;
+import xyz.arinmandri.playground.apps.member.model.Member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

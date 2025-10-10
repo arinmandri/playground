@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.board.domain.post;
+package xyz.arinmandri.playground.apps.board.model.post;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,23 +8,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
-@Table( name = "p_attachment_image" )
+@Table( name = "p_attachment_file" )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class PAttachmentImage extends PAttachment
+public class PAttachmentFile extends PAttachment
 {
-	public static final String TYPE = "image";
+	public static final String TYPE = "file";
 
 	@Override
 	public String getType () {
-		return "image";
+		return "file";
 	}
 
 	@Column( nullable = false )
 	String url;
+
+	@Column( nullable = false )
+	@Setter
+	Integer size;
 }

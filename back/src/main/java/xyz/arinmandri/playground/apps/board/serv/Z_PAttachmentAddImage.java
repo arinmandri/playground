@@ -1,6 +1,6 @@
 package xyz.arinmandri.playground.apps.board.serv;
 
-import xyz.arinmandri.playground.apps.board.domain.post.PAttachmentImage;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentImage;
 
 import lombok.Getter;
 import lombok.Setter;

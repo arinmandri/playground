@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.a.domain;
+package xyz.arinmandri.playground.apps.a.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;

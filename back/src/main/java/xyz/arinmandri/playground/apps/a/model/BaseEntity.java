@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.a.domain;
+package xyz.arinmandri.playground.apps.a.model;
 
 import java.time.Instant;
 

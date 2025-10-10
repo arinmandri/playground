@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.member.domain;
+package xyz.arinmandri.playground.apps.member.model;
 
 import java.util.Optional;
 

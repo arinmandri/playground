@@ -1,8 +1,8 @@
 package xyz.arinmandri.playground.apps.board.serv;
 
-import xyz.arinmandri.playground.apps.board.domain.post.PAttachment;
-import xyz.arinmandri.playground.apps.board.domain.post.PAttachmentFile;
-import xyz.arinmandri.playground.apps.board.domain.post.PAttachmentImage;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachment;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentFile;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentImage;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

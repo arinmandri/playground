@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.member.domain;
+package xyz.arinmandri.playground.apps.member.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

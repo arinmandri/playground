@@ -1,6 +1,6 @@
-package xyz.arinmandri.playground.apps.member.domain;
+package xyz.arinmandri.playground.apps.member.model;
 
-import xyz.arinmandri.playground.apps.a.domain.BaseEntityWithId;
+import xyz.arinmandri.playground.apps.a.model.BaseEntityWithId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

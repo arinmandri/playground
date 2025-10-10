@@ -4,12 +4,12 @@ import xyz.arinmandri.playground.apps.a.serv.CursorPage;
 import xyz.arinmandri.playground.apps.a.serv.PersistenceServ;
 import xyz.arinmandri.playground.apps.a.serv.exception.ImaDumb;
 import xyz.arinmandri.playground.apps.a.serv.exception.NoSuchEntity;
-import xyz.arinmandri.playground.apps.board.domain.post.PAttachment;
-import xyz.arinmandri.playground.apps.board.domain.post.PAuthor;
-import xyz.arinmandri.playground.apps.board.domain.post.Post;
-import xyz.arinmandri.playground.apps.board.domain.post.Posts;
-import xyz.arinmandri.playground.apps.member.domain.Member;
-import xyz.arinmandri.playground.apps.member.domain.Members;
+import xyz.arinmandri.playground.apps.board.model.post.PAttachment;
+import xyz.arinmandri.playground.apps.board.model.post.PAuthor;
+import xyz.arinmandri.playground.apps.board.model.post.Post;
+import xyz.arinmandri.playground.apps.board.model.post.Posts;
+import xyz.arinmandri.playground.apps.member.model.Member;
+import xyz.arinmandri.playground.apps.member.model.Members;
 
 import java.util.ArrayList;
 import java.util.List;

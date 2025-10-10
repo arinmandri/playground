@@ -1,6 +1,6 @@
-package xyz.arinmandri.playground.apps.board.domain.post;
+package xyz.arinmandri.playground.apps.board.model.post;
 
-import xyz.arinmandri.playground.apps.a.domain.BaseEntityWithId;
+import xyz.arinmandri.playground.apps.a.model.BaseEntityWithId;
 
 import java.util.List;
 

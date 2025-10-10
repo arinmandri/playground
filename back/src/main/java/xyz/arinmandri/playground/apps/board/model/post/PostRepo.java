@@ -1,4 +1,4 @@
-package xyz.arinmandri.playground.apps.board.domain.post;
+package xyz.arinmandri.playground.apps.board.model.post;
 
 import java.util.List;
 

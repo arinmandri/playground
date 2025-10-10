@@ -1,6 +1,6 @@
-package xyz.arinmandri.playground.apps.board.domain.post;
+package xyz.arinmandri.playground.apps.board.model.post;
 
-import xyz.arinmandri.playground.apps.a.domain.BaseEntityWithoutId;
+import xyz.arinmandri.playground.apps.a.model.BaseEntityWithoutId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
