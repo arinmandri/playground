@@ -21,14 +21,14 @@ const routes = Object.keys(vueFiles).map((filePath) => {
   const temp = filePath
     .replace('/src/views/', '')      // 상대경로로
     .replace(/View\.vue$/, '')       // 파일명 끝 "View.vue" 제거
-    .replace(/\(([^)]+)\)/g, "/:$1") // 괄호로 경로 파라미터 지정: '(param)' --> '/:param'
+    .replace(/\(([^)]+)\)/g, ':$1')  // 괄호로 경로 파라미터 지정: '(param)' --> ':param'
     .replace(/\/$/, '')              // "/" 제거 (파일명이 View.vue 인 경우)
     .toLowerCase();
 
   const name = temp === '' ? 'home' : temp.replace(/\//g, '-');
   const path = '/' + temp;
   const requiresAuth = authRequiredRoutes.includes(path);
-  console.log(`★router - register: ${name} --> ${path}`);
+  console.log(`★router-register: ${name} == ${path}`);
 
   return {
     name,
@@ -56,8 +56,7 @@ const router = createRouter({
 // 전역 가드
 router.beforeEach((to, from) => {
 
-  // TEST
-  console.log(`★router: ${from.fullPath} --> ${to.fullPath}`);
+  console.log(`★router: ${String(from.name)}\n　   -->: ${String(to.name)}`);
 
   const authStore = useAuthStore();
 
