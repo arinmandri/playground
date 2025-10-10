@@ -109,10 +109,11 @@ function attemptRequestOf(
 ) {
   const attemptRequest = (retryCount = 0) => {
     const msgStore = useMsgStore();
-    msgStore.addMsg(MsgClass.DEBUG, `API: ${url}\n` + JSON.stringify(data, null, 2));
+    msgStore.addMsg(
+      MsgClass.DEBUG,
+      `API: ${url}${retryCount === 0 ? '' : ` (retry ${retryCount})`}\n` + JSON.stringify(data, null, 2));
     if (retryCount > 0) {
-      console.log(url, '재시도: ' + retryCount);
-      msgStore.addMsg(MsgClass.DEBUG, `API: ${url} (retry ${retryCount})\n` + JSON.stringify(data, null, 2));
+      console.log('○ API ' + url, '재시도(' + retryCount + ')');
     }
 
     axAction(url, data, options)
