@@ -5,9 +5,11 @@ import xyz.arinmandri.util.MyPasswordEncoder;
 import java.security.SecureRandom;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +24,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 
@@ -67,10 +68,10 @@ public class ConfigWebSecurity
 	// XXX accessDeniedHandler는 뭐 되지도 않음.
 
 	@Bean
-	@Profile( "lodev" )
+	@Primary
 	public CorsConfigurationSource corsConfigurationSource () {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins( List.of( "http://localhost:5173" ) );
+		configuration.setAllowedOrigins( List.of( "http://localhost:5173", "https://playground.arinmandri.xyz" ) );// XXX 저것도 설정에 넣나
 		configuration.setAllowedMethods( List.of( "GET", "POST", "PUT", "DELETE" ) );
 		configuration.setAllowedHeaders( List.of( "*" ) );
 		configuration.setAllowCredentials( true );
