@@ -16,6 +16,8 @@ import xyz.arinmandri.playground.file.serv.S3Serv;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,11 +82,37 @@ public class PostServ extends PersistenceServ
 
 	@Transactional
 	public void edit ( Long originalId , Z_PostEdit req ) {
+		List<PAttachment> attsOrg;
+		List<Z_PAttachmentOld> attRemainings;
 
 		Post org = posts.get( originalId );
+		attsOrg = List.copyOf( org.getAttachments() );
 		Post newOne = Z_PostEdit_toEntity( req, org );
 		posts.edit( originalId, newOne );
-		// TODO 없어진 첨부파일 파일서버에서 삭제
+
+		attRemainings = req.attachments().stream()
+		        .filter( noo-> noo.getType().equals( Z_PAttachmentOld.TYPE ) )
+		        .map( noo-> (Z_PAttachmentOld) noo )
+		        .toList();
+
+		//// 없어진 첨부파일 파일서버에서 삭제
+		Set<Integer> remainingIndexes = attRemainings.stream()
+		        .map( Z_PAttachmentOld::getOriginalOrder )
+		        .collect( Collectors.toSet() );
+		List<PAttachment> attsToDel = new ArrayList<>();
+		for( int i = 0 ; i < attsOrg.size() ; i++ ){
+			if( !remainingIndexes.contains( i ) ){
+				attsToDel.add( attsOrg.get( i ) );
+			}
+		}
+		for( PAttachment att : attsToDel ){
+			if( att instanceof PAttachmentImage atti ){
+				s3Serv.delete( atti.getUrl() );
+			}
+			if( att instanceof PAttachmentFile attf ){
+				s3Serv.delete( attf.getUrl() );
+			}
+		}
 	}
 
 	private Post Z_PostEdit_toEntity ( Z_PostEdit req , Post org ) {

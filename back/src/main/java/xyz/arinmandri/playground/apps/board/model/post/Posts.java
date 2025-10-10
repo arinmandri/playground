@@ -40,10 +40,12 @@ public class Posts
 	}
 
 	@Transactional
-	public void edit ( Long id , Post data ) {
+	public Post edit ( Long id , Post data ) {
 
 		data.setId( id );
 		pRepo.save( data );
+
+		return data;
 	}
 
 	@Transactional
