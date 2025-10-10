@@ -15,6 +15,7 @@
 - postgresql
 - maven
 
+백엔드 설정 `server.tomcat.basedir` 참조. 임시파일 디렉토리 만들고 소유권 설정.
 
 
 
