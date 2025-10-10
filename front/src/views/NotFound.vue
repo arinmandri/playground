@@ -1,7 +1,10 @@
 <template>
   <div>
     없는 페이지입니다. 주소를 다시 확인하세요.
-    <button @click="goBack">이전 페이지로</button>
+    <div>
+      <button @click="router.back()">이전 페이지로</button>
+      <router-link to="/">홈으로</router-link>
+    </div>
   </div>
 </template>
 
@@ -10,7 +13,4 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-function goBack() {
-  router.back();
-}
 </script>
