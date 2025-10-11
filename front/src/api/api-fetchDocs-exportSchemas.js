@@ -1,7 +1,20 @@
 const REF_PREFIX = '#/components/schemas/';
 
-export default function exportSchemas(schemas) {
+/**
+ * {
+ *   "enumType1": ['val1', 'val2', 'val3', ...],
+ *   "enumType2": ['val4', 'val5', 'val6', ...],
+ *   ...
+ * }
+ */
+let predefinedEnums;
+
+export default function exportSchemas(schemas, predefinedEnums_) {
+  predefinedEnums = predefinedEnums_;
+
   let result = '';
+
+  result += exportPredefinedEnums();
 
   for (let schemaName in schemas) {
     const schema = schemas[schemaName];
@@ -42,10 +55,18 @@ function extractExtedType(extendedType) {
 function getTsType(schema) {
   const directType = schema.type;
 
-  //// 말단 원시 타입
+  //// 말단 타입
   if (directType === 'number') return 'number';
   if (directType === 'integer') return 'number';
-  if (directType === 'string') return 'string';
+  if (directType === 'string') {
+    //// enum or string
+    const enumv = schema['enum'];
+    if (enumv !== undefined) {
+      return extractEnumType(enumv);
+    }
+
+    return 'string';
+  }
 
   //// 배열
   if (directType === 'array') {
@@ -75,6 +96,37 @@ function getTsType(schema) {
   }
 
   throw new Error('모르는 필드 타입 ' + JSON.stringify(schema));
+}
+
+/**
+ * enumv ['e1', 'e2', ...]
+ */
+function extractEnumType(enumv) {
+  const found = findEnumType(enumv);
+  return found || enumv.map(e => `'${e}'`).join(' | ');
+}
+
+function findEnumType(enumv) {
+  //// 순서대로 모든 요소 맞으면 같은 enum이다.
+  for (let eName in predefinedEnums) {
+    const predefinedEnum = predefinedEnums[eName];
+
+    //// 값 개수 일치 확인
+    if (enumv.length !== predefinedEnum.length)
+      return null;
+
+    //// 각 항목 일치 확인
+    let good = true;
+    for (let i = 0; i < enumv.length; i++) {
+      if (enumv[i] !== predefinedEnum[i]) {
+        good = false;
+        break;
+      }
+    }
+    if (good === true)
+      return eName;
+  }
+  return null;
 }
 
 function extractObjType(schema) {
@@ -107,4 +159,19 @@ function extractRefType(refType) {
 
 function extractUnionType(unionType) {
   return unionType.map((unionItem) => getTsType(unionItem)).join(' | ');
+}
+
+function exportPredefinedEnums() {
+  let result = '';
+
+  for (let eName in predefinedEnums) {
+    const predefinedEnum = predefinedEnums[eName];
+    result += 'export enum ' + eName + ' {\n';
+    for (let eVal of predefinedEnum) {
+      result += `  ${eVal} = '${eVal}',\n`;
+    }
+    result += '}\n\n';
+  }
+
+  return result;
 }

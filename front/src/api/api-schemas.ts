@@ -2,6 +2,11 @@
 npm run api 자동생성
 */
 
+export enum PAttachmentType {
+  image = 'image',
+  file = 'file',
+}
+
 export interface Z_PAttachmentAdd {
   type: string,
 }
@@ -40,15 +45,24 @@ export interface PAuthor {
 
 export interface Y_PAttachment {
   id: number,
-  type: string,
+  type: PAttachmentType,
   order: number,
+}
+
+export interface Y_PAttachmentFile extends Y_PAttachment {
+  size: number,
+  url: string,
+}
+
+export interface Y_PAttachmentImage extends Y_PAttachment {
+  url: string,
 }
 
 export interface Y_PostDetail {
   id: number,
   content: string,
-  attachments: (Y_PAttachment)[],
   author: PAuthor,
+  attachments: (Y_PAttachmentFile | Y_PAttachmentImage)[],
   createdAt: string,
 }
 
@@ -95,8 +109,8 @@ export interface CursorPageY_PostListItem {
 export interface Y_PostListItem {
   id: number,
   content: string,
-  attachments: (Y_PAttachment)[],
   author: PAuthor,
+  attachments: (Y_PAttachmentFile | Y_PAttachmentImage)[],
   createdAt: string,
 }
 

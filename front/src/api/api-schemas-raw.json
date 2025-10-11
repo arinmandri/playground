@@ -134,19 +134,60 @@
   },
   "Y_PAttachment": {
     "type": "object",
+    "discriminator": {
+      "propertyName": "type"
+    },
     "properties": {
       "id": {
         "type": "integer",
         "format": "int64"
       },
       "type": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "image",
+          "file"
+        ]
       },
       "order": {
         "type": "integer",
         "format": "int32"
       }
     }
+  },
+  "Y_PAttachmentFile": {
+    "allOf": [
+      {
+        "$ref": "#/components/schemas/Y_PAttachment"
+      },
+      {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    ]
+  },
+  "Y_PAttachmentImage": {
+    "allOf": [
+      {
+        "$ref": "#/components/schemas/Y_PAttachment"
+      },
+      {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    ]
   },
   "Y_PostDetail": {
     "type": "object",
@@ -158,14 +199,21 @@
       "content": {
         "type": "string"
       },
+      "author": {
+        "$ref": "#/components/schemas/PAuthor"
+      },
       "attachments": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/Y_PAttachment"
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Y_PAttachmentFile"
+            },
+            {
+              "$ref": "#/components/schemas/Y_PAttachmentImage"
+            }
+          ]
         }
-      },
-      "author": {
-        "$ref": "#/components/schemas/PAuthor"
       },
       "createdAt": {
         "type": "string",
@@ -298,14 +346,21 @@
       "content": {
         "type": "string"
       },
+      "author": {
+        "$ref": "#/components/schemas/PAuthor"
+      },
       "attachments": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/Y_PAttachment"
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Y_PAttachmentFile"
+            },
+            {
+              "$ref": "#/components/schemas/Y_PAttachmentImage"
+            }
+          ]
         }
-      },
-      "author": {
-        "$ref": "#/components/schemas/PAuthor"
       },
       "createdAt": {
         "type": "string",

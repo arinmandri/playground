@@ -1,10 +1,12 @@
 package xyz.arinmandri.playground.apps.board.serv;
 
+import xyz.arinmandri.playground.apps.board.model.post.PAttachmentType;
+
 public interface Y_PAttachmentImage extends Y_PAttachment
 {
 	@Override
-	default String getType () {
-		return "image";
+	default PAttachmentType getType () {
+		return PAttachmentType.image;
 	}
 
 	String getUrl ();

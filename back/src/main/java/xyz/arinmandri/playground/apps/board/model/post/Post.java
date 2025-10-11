@@ -51,7 +51,7 @@ public class Post extends BaseEntityWithId
 	@Column
 	public List<PAttachmentImage> getAttachmentsImage () {
 		return attachments.stream()
-		        .filter( p-> p.getType().equals( PAttachmentImage.TYPE ) )
+		        .filter( p-> p.getType().equals( PAttachmentType.image ) )
 		        .map( p-> (PAttachmentImage) p )
 		        .toList();
 	}
@@ -59,7 +59,7 @@ public class Post extends BaseEntityWithId
 	@Column
 	public List<PAttachmentFile> getAttachmentsFile () {
 		return attachments.stream()
-		        .filter( p-> p.getType().equals( PAttachmentFile.TYPE ) )
+		        .filter( p-> p.getType().equals( PAttachmentType.file ) )
 		        .map( p-> (PAttachmentFile) p )
 		        .toList();
 	}

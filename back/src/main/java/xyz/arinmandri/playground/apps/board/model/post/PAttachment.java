@@ -42,5 +42,5 @@ public abstract class PAttachment extends BaseEntityWithoutId
 	@Setter
 	private Integer order;
 
-	public abstract String getType ();
+	public abstract PAttachmentType getType ();
 }

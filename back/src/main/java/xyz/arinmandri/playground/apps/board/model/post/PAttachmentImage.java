@@ -18,11 +18,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class PAttachmentImage extends PAttachment
 {
-	public static final String TYPE = "image";
-
 	@Override
-	public String getType () {
-		return "image";
+	public PAttachmentType getType () {
+		return PAttachmentType.image;
 	}
 
 	@Column( nullable = false )

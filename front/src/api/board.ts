@@ -4,7 +4,8 @@ const getAPI_POST_GET = (post_id: number) => `/post/${post_id}`;
 const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
-import { type PAuthor, ATT_TYPE } from "@/views/board/services/types";
+import { ATT_TYPE } from "@/views/board/services/types";
+import type { Y_PostDetail, Y_PostListItem, Z_PostEdit } from "./api-schemas";
 
 import api from "@/api/api";
 
@@ -19,13 +20,13 @@ export async function apiPostGet(post_id: number): Promise<Y_PostDetail> {
 }
 
 //// 게시판 데이터 가져오기
-export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem>): Promise<void> {
+export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem_pretty>): Promise<void> {
   try {
     const response = await api.get(API_POST_LIST, {
       cursor: listPack.cursor,
     });
     const resData = response.data;
-    const newPosts = getPostListFromRawList(resData.list as Y_PostListItem_raw[]);
+    const newPosts = getPostListFromRawList(resData.list as Y_PostListItem[]);
     listPack.list.push(...newPosts);
     listPack.cursor = resData.nextCursor;
     listPack.isEnd = listPack.cursor == null;
@@ -37,10 +38,10 @@ export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem>): P
 /**
  * post 목록 응답 API 형식 --> pretty
  */
-function getPostListFromRawList(rawList: Y_PostListItem_raw[]): Y_PostListItem[] {
+function getPostListFromRawList(rawList: Y_PostListItem[]): Y_PostListItem_pretty[] {
   return rawList.map(rawItem => ({
     ...rawItem,
-    createdAt: new Date(rawItem.createdAt) as Date,
+    createdAt_: new Date(rawItem.createdAt) as Date,
     get createdAtPretty(): string {
       const date = new Date(this.createdAt);
       const year = date.getFullYear();
@@ -65,27 +66,9 @@ export async function apiPostDel(post_id: number) {
 }
 
 
-export interface Y_PostDetail {
-  author: PAuthor;
-  content: string;
-  createdAt: string;
-  attachments: Y_PAttachment[];
-}
 
-export interface Y_PostListItem_raw {
-  id: number;
-  content: string;
-  author: PAuthor;
-  attachments: Y_PAttachment[];
-  createdAt: string;
-}
-
-export interface Y_PostListItem {
-  id: number;
-  content: string;
-  author: PAuthor;
-  attachments: Y_PAttachment[];
-  createdAt: Date;
+export interface Y_PostListItem_pretty extends Y_PostListItem {
+  createdAt_: Date;
   createdAtPretty: string;
 }
 
@@ -95,21 +78,7 @@ export interface Y_PAttachment {
   order: number;
 }
 
-export interface Y_PAttachmentImage extends Y_PAttachment {
-  url: string;
-}
-
-export interface Y_PAttachmentFile extends Y_PAttachment {
-  url: string;
-  size: number;
-}
-
 export interface Z_PostAdd {
-  content: string;
-  attachments: Z_PAttachmentNoo[] | null;
-}
-
-export interface Z_PostEdit {
   content: string;
   attachments: Z_PAttachmentNoo[] | null;
 }
