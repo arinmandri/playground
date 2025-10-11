@@ -18,7 +18,7 @@ export default function exportSchemas(schemas, predefinedEnums_, indent_) {
 
   result += exportPredefinedEnums();
 
-  for (let schemaName in schemas) {
+  for (const schemaName of Object.keys(schemas).sort((a, b) => a.localeCompare(b))) {// for(let schemaName in schemas) 대신 알파벳순
     const schema = schemas[schemaName];
 
     try {
@@ -136,7 +136,7 @@ function extractObjType(schema) {
 
   const properties = schema.properties;
   const required = schema.required;
-  for (let pName in properties) {
+  for (let pName of Object.keys(properties).sort((a, b) => a.localeCompare(b))) {// for(let pName in properties) 대신 알파벳순
     const property = properties[pName];
     const tsType = getTsType(property);
 

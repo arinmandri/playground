@@ -7,13 +7,94 @@ export enum PAttachmentType {
   file = 'file',
 }
 
+export interface apiWhoamiRes {
+  id: number,
+  nick: string,
+  propic: string,
+  type: string,
+}
+
+export interface CursorPageY_PostListItem {
+  list: (Y_PostListItem)[],
+  nextCursor: number,
+  size: number,
+}
+
+export interface PAuthor {
+  id: number,
+  nick: string,
+  propic: string,
+}
+
+export interface ReqBody_apiPostAdd {
+  attachments: (Z_PAttachmentNew)[],
+  content: string,
+}
+
+export interface ReqBody_MemberAddBasic {
+  key: Z_MKeyBasicAdd,
+  member: Z_MemberAdd,
+}
+
+export interface Y_MemberForMe {
+  email: string,
+  id: number,
+  nick: string,
+  propic: string,
+}
+
+export interface Y_MemberForPublic {
+  id: number,
+  nick: string,
+  propic: string,
+}
+
+export interface Y_PAttachment {
+  id: number,
+  order: number,
+  type: PAttachmentType,
+}
+
+export interface Y_PostDetail {
+  attachments: (Y_PAttachment)[],
+  author: PAuthor,
+  content: string,
+  createdAt: string,
+  id: number,
+}
+
+export interface Y_PostListItem {
+  attachments: (Y_PAttachment)[],
+  author: PAuthor,
+  content: string,
+  createdAt: string,
+  id: number,
+}
+
+export interface Z_MemberAdd {
+  email?: string,
+  nick: string,
+  propic?: string,
+}
+
+export interface Z_MemberEdit {
+  email: string,
+  nick: string,
+  propic: string,
+}
+
+export interface Z_MKeyBasicAdd {
+  keyname: string,
+  password: string,
+}
+
 export interface Z_PAttachmentAdd {
   type: string,
 }
 
 export interface Z_PAttachmentAddFile extends Z_PAttachmentAdd {
-  url: string,
   size: number,
+  url: string,
 }
 
 export interface Z_PAttachmentAddImage extends Z_PAttachmentAdd {
@@ -33,97 +114,7 @@ export interface Z_PAttachmentOld extends Z_PAttachmentNoo {
 }
 
 export interface Z_PostEdit {
-  content: string,
   attachments: (Z_PAttachmentNew | Z_PAttachmentOld)[],
-}
-
-export interface PAuthor {
-  id: number,
-  nick: string,
-  propic: string,
-}
-
-export interface Y_PAttachment {
-  id: number,
-  type: PAttachmentType,
-  order: number,
-}
-
-export interface Y_PAttachmentFile extends Y_PAttachment {
-  size: number,
-  url: string,
-}
-
-export interface Y_PAttachmentImage extends Y_PAttachment {
-  url: string,
-}
-
-export interface Y_PostDetail {
-  id: number,
   content: string,
-  author: PAuthor,
-  attachments: (Y_PAttachmentFile | Y_PAttachmentImage)[],
-  createdAt: string,
-}
-
-export interface ReqBody_apiPostAdd {
-  content: string,
-  attachments: (Z_PAttachmentNew)[],
-}
-
-export interface Z_MemberEdit {
-  nick: string,
-  email: string,
-  propic: string,
-}
-
-export interface Y_MemberForMe {
-  email: string,
-  id: number,
-  nick: string,
-  propic: string,
-}
-
-export interface ReqBody_MemberAddBasic {
-  member: Z_MemberAdd,
-  key: Z_MKeyBasicAdd,
-}
-
-export interface Z_MKeyBasicAdd {
-  keyname: string,
-  password: string,
-}
-
-export interface Z_MemberAdd {
-  nick: string,
-  email?: string,
-  propic?: string,
-}
-
-export interface CursorPageY_PostListItem {
-  list: (Y_PostListItem)[],
-  nextCursor: number,
-  size: number,
-}
-
-export interface Y_PostListItem {
-  id: number,
-  content: string,
-  author: PAuthor,
-  attachments: (Y_PAttachmentFile | Y_PAttachmentImage)[],
-  createdAt: string,
-}
-
-export interface Y_MemberForPublic {
-  id: number,
-  nick: string,
-  propic: string,
-}
-
-export interface apiWhoamiRes {
-  type: string,
-  id: number,
-  nick: string,
-  propic: string,
 }
 
