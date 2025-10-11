@@ -5,6 +5,9 @@
 -- ALTER SCHEMA playground RENAME TO playground_trash;
 CREATE SCHEMA playground;
 
+-- drop 처리 접속 DB: postgres
+-- REASSIGN OWNED BY "{ 사용자 }" TO postgres;
+-- DROP OWNED BY "{ 사용자 }";
 -- DROP USER "{ 사용자 }";
 CREATE USER "{ 사용자 }" WITH PASSWORD '{ 비번 }';
 GRANT USAGE ON SCHEMA "playground" TO "{ 사용자 }";
@@ -27,7 +30,7 @@ CREATE TABLE "playground"."mkey_basic"(
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"belongs_to__m" INT NOT NULL
         UNIQUE
-        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+        REFERENCES "playground"."member"
     ,"keyname" VARCHAR(50) NOT NULL
         UNIQUE
     ,"password" CHAR(160) NOT NULL
@@ -41,7 +44,7 @@ DROP TABLE IF EXISTS "playground"."post" CASCADE;
 CREATE TABLE "playground"."post"(-- p
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"author__m" INT NOT NULL
-        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+        REFERENCES "playground"."member"
     ,"content" VARCHAR(500) NOT NULL
     -- TODO 첨부물 수?
     ,"updated_at" TIMESTAMPTZ NULL
@@ -86,7 +89,7 @@ DROP TABLE IF EXISTS "playground"."refresh_token";
 CREATE TABLE "playground"."refresh_token"(
     "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
     ,"belongs_to__m" INT NOT NULL
-        -- REFERENCES "playground"."member" -- TODO 테스트 끝나고
+        REFERENCES "playground"."member"
     ,"refresh_token" VARCHAR(90) NOT NULL
     ,"expires_at" TIMESTAMPTZ NOT NULL
 );
