@@ -57,6 +57,12 @@ function handleClick(msg_id: number) {
   align-items: right;
   justify-content: flex-end;
   gap: 10px;
+  font-size: 60%;
+  color: grey;
+}
+
+#globalMsgSettings.dev input {
+  height: 12px;
 }
 
 #globalMsgBox {
