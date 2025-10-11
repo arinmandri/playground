@@ -15,9 +15,11 @@
 - postgresql
 - maven
 
-백엔드 설정 `server.tomcat.basedir` 참조. 임시파일 디렉토리 만들고 소유권 설정.
-
-
+백엔드 설정 `server.tomcat.basedir` 참조. 임시파일 디렉토리 만들기(소유권 확인)
+이 디렉토리가 없으면 엉뚱하게도 이 오류가 남.
+```
+Caused by: org.springframework.util.PlaceholderResolutionException: Could not resolve placeholder 'aws.s3.key-base' in value "${aws.s3.key-base}"
+```
 
 
 
@@ -125,6 +127,7 @@ java -jar .\target\playground-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod >
 ##### 백엔드
 
 로그 파일 `back.log`
+로그 파일 `back/logs/(날짜별)`
 
 그냥 직접 실행
 

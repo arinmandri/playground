@@ -5,7 +5,7 @@
 -- ALTER SCHEMA playground RENAME TO playground_trash;
 CREATE SCHEMA playground;
 
--- drop 처리 접속 DB: postgres
+-- drop 처리 접속 DB: postgres, arinmandri 둘 다에서
 -- REASSIGN OWNED BY "{ 사용자 }" TO postgres;
 -- DROP OWNED BY "{ 사용자 }";
 -- DROP USER "{ 사용자 }";

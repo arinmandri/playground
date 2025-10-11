@@ -45,6 +45,8 @@ nohup $JAVA_HOME/bin/java -jar "$JAR_PATH" --spring.profiles.active=prod > "$BAC
 
 echo "UPDATE DONE !"
 
+cd "$PROJECT_DIR"
+tail back.log -f
 
 # -----------------[ 메모 ]
 
