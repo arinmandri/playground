@@ -1,0 +1,24 @@
+/*
+TODO 아직 모가몬지 몰겟고 그냥 챗지피티 답변 복붙임
+pip install grpcio grpcio-tools
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hello.proto
+protoc --java_out=src/main/java --grpc-java_out=src/main/java -I=. proto/hello.proto
+
+sudo apt install -y protobuf-compiler
+*/
+
+syntax = "proto3";
+
+package hello;
+
+service HelloService {
+  rpc SayHello(HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}

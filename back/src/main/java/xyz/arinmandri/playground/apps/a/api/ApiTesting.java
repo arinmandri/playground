@@ -19,12 +19,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hello.Hello;
+import hello.HelloServiceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -112,5 +117,20 @@ public class ApiTesting extends ApiA
 
 		return ResponseEntity.status( HttpStatus.CREATED )
 		        .body( url.toString() );
+	}
+
+	@GetMapping( "/grpc" )
+	public String callPythonService ( @RequestParam( defaultValue = "World" ) String name ) {
+		ManagedChannel channel = ManagedChannelBuilder.forAddress( "localhost", 50051 )
+		        .usePlaintext()
+		        .build();
+
+		HelloServiceGrpc.HelloServiceBlockingStub stub = HelloServiceGrpc.newBlockingStub( channel );
+		Hello.HelloReply reply = stub.sayHello(
+		        Hello.HelloRequest.newBuilder().setName( name ).build()
+		);
+
+		channel.shutdown();
+		return reply.getMessage();
 	}
 }

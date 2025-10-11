@@ -3,47 +3,57 @@
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export PATH=$JAVA_HOME/bin:$PATH
 PROJECT_DIR=~/playground
+PROTO_DIR="$PROJECT_DIR/proto"
+FRONTEND_DIR="$PROJECT_DIR/front"
 FRONTEND_BUILD_DIR=/var/www/playground
 BACKEND_DIR="$PROJECT_DIR/back"
 BACKEND_JAR_NAME="playground-backend.jar"
 BACKEND_LOG="$PROJECT_DIR/back.log"
+HELLOPY_DIR="$PROJECT_DIR/hellopy"
 
 # 최신 코드 가져오기
 cd "$PROJECT_DIR" || exit
-echo "GIT PULLING..."
-git pull origin main || { echo "Git Pull 실패"; exit 1; }
+echo "(^_^) PULLING"
+git pull origin main || { echo "(-_-) Git Pull 실패"; exit 1; }
+
+# RPC
+echo "(^_^) RPC"
+cp -f "$PROTO_DIR/*.proto" "$HELLOPY_DIR/"
+cp -f "$PROTO_DIR/*.proto" "$BACKEND_DIR/src/main/proto/"
+cd "$HELLOPY_DIR" || exit
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./*.proto
 
 # 프론트엔드 빌드 & 복사
-echo "BUILDING FRONTEND..."
-cd "$PROJECT_DIR/front" || exit
+echo "(^_^) FRONTEND"
+cd "$FRONTEND_DIR" || exit
 npm install
-npm run build || { echo "프론트엔드 빌드 실패"; exit 1; }
-sudo cp -r dist/* "$FRONTEND_BUILD_DIR" || { echo "FAILED TO DEPLOY FRONTEND"; exit 1; }
+npm run build || { echo "(-_-) 프론트엔드 빌드 실패"; exit 1; }
+sudo cp -r dist/* "$FRONTEND_BUILD_DIR" || { echo "(-_-) FAILED TO DEPLOY FRONTEND"; exit 1; }
 
 # 백엔드 재시작
-echo "BUILDING BACKEND..."
+echo "(^_^) BACKEND"
 cd "$BACKEND_DIR" || exit
 # Maven 빌드
-./mvnw clean package -P prod -DskipTests || { echo "FAILED TO BUILD BACKEND"; exit 1; }
+./mvnw clean package -P prod -DskipTests || { echo "(-_-) FAILED TO BUILD BACKEND"; exit 1; }
 # jar 파일 찾기
 JAR_PATH=$(find target -maxdepth 1 -type f -name "*.jar" | head -n 1)
 if [ -z "$JAR_PATH" ]; then
-  echo "JAR 파일을 찾을 수 없습니다."
+  echo "JAR 파일을 못 찾았습니다."
   exit 1
 fi
 # 백엔드 실행 중이면 종료
 PID=$(pgrep -f "$(basename "$JAR_PATH")")
 if [ -n "$PID" ]; then
   echo "STOPPING EXISTING BACKEND PROCESS (PID: $PID)..."
-  kill "$PID" || { echo "기존 백엔드 종료 실패"; exit 1; }
+  kill "$PID" || { echo "(-_-) 기존 백엔드 종료 실패"; exit 1; }
   sleep 3
 fi
 # 새 백엔드 실행
-echo "STARTING BACKEND SERVER..."
+echo "(^_^) STARTING BACKEND SERVER"
 chmod u+x "$JAR_PATH"
 nohup $JAVA_HOME/bin/java -jar "$JAR_PATH" --spring.profiles.active=prod > "$BACKEND_LOG" 2>&1 &
 
-echo "UPDATE DONE !"
+echo "(^_^) UPDATE DONE !"
 
 cd "$PROJECT_DIR"
 tail back.log -f

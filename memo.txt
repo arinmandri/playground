@@ -1,4 +1,6 @@
 
+proto
+
 로딩시 비활성화 컴포넌트 분리
 
 첨부파일 필드 +original_name
@@ -22,3 +24,5 @@ key도 수정 기능 해야지.
 도커도 해봐야지....
 
 jakarta.servlet.ServletException: Circular view path [error]: would dispatch back to the current handler URL [/error] again. Check your ViewResolver setup! (Hint: This may be the result of an unspecified view, due to default view name generation.)
+
+api 버전 헤더?
