@@ -16,13 +16,13 @@
 
 import Y_PostListItemComp from "./post/comp/PostListItemComp.vue";
 
-import type { Y_PostListItem } from "@/api/board";
+import type { Y_PostListItem_pretty } from "@/api/board";
 import type { SimpleListPack } from "@/types/index";
 import { fetchNextPage } from "@/api/board"
 
 import { ref, onMounted } from "vue";
 
-const postListPack = ref<SimpleListPack<Y_PostListItem>>({
+const postListPack = ref<SimpleListPack<Y_PostListItem_pretty>>({
   list: [],
   cursor: null,
   isEnd: false,

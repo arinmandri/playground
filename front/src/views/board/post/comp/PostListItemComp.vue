@@ -25,7 +25,7 @@
 
 import PAttachmentComp from "@/views/board/post/comp/PAttachmentComp.vue";
 
-import { apiPostDel, type Y_PostListItem } from "@/api/board";
+import { apiPostDel, type Y_PostListItem_pretty } from "@/api/board";
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 
@@ -34,7 +34,7 @@ import { storeToRefs } from "pinia";
 const myId = storeToRefs(authStore).user.value.id;
 
 const props = defineProps<{
-  post: Y_PostListItem;
+  post: Y_PostListItem_pretty;
 }>();
 
 const emit = defineEmits<{

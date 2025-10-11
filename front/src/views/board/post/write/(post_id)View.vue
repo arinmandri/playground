@@ -11,7 +11,8 @@ import { PostWriteData } from './types';
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import { apiPostEdit, type Z_PostAdd } from "@/api/board";
+import { apiPostEdit } from "@/api/board";
+import type { ReqBody_apiPostAdd } from "@/api/api-schemas";
 
 import { apiPostGet } from "@/api/board";
 import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
@@ -36,7 +37,7 @@ onMounted(async () => {
   postWriteForm.value.setFormData(postWriteData);
 });
 
-async function submitPost(data: Z_PostAdd) {
+async function submitPost(data: ReqBody_apiPostAdd) {
   try {
     await apiPostEdit(post_id, data);
     msgStore.addMsg(MsgClass.INFO, '게시글 수정됨.');

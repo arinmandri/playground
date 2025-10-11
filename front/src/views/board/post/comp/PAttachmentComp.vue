@@ -1,6 +1,6 @@
 <template>
-  <img v-if="props.attachment.type == ATT_TYPE.image" :src="(props.attachment as Y_PAttachmentImage).url" />
-  <p v-if="props.attachment.type == ATT_TYPE.file">
+  <img v-if="props.attachment.type == PAttachmentType.image" :src="(props.attachment as Y_PAttachmentImage).url" />
+  <p v-if="props.attachment.type == PAttachmentType.file">
     <a :href="(props.attachment as Y_PAttachmentFile).url" download>
       파일 {{ (props.attachment as Y_PAttachmentFile).size }}KB
     </a>
@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 
-import { type Y_PAttachment, type Y_PAttachmentImage, type Y_PAttachmentFile } from "@/api/board";
-import { ATT_TYPE } from "@/views/board/services/types";
+import type { Y_PAttachment, Y_PAttachmentImage, Y_PAttachmentFile } from "@/api/api-schemas";
+import { PAttachmentType } from "@/views/board/services/types";
 
 const props = defineProps<{
   attachment: Y_PAttachment;

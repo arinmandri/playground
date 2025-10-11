@@ -5,7 +5,7 @@ export interface PAuthor {
   propic: string | null;
 }
 
-export enum ATT_TYPE {
+export enum PAttachmentType {
   image = 'image',
   file = 'file',
 }

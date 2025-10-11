@@ -14,12 +14,12 @@ import type { PostWriteData } from './types';
 import PAttachmentNooListForm from '@/views/board/post/comp/PAttachmentNooListForm.vue';
 
 import { PAttachmentNooData } from "@/views/board/post/comp/types";
-import { type Z_PAttachmentNoo, type Z_PostAdd } from "@/api/board";
+import type { Z_PAttachmentNew, ReqBody_apiPostAdd } from "@/api/api-schemas";
 
 import { ref, type Ref, defineExpose } from 'vue'
 
 const emit = defineEmits<{
-  (e: 'submit', exportProps: Z_PostAdd): void;
+  (e: 'submit', exportProps: ReqBody_apiPostAdd): void;
 }>();
 
 defineExpose({
@@ -47,10 +47,10 @@ function setFormData(data: PostWriteData) {
 async function submitPost() {
   await pAttachmentNooListForm.value.uploadFiles();
 
-  const attsToSend = [] as Z_PAttachmentNoo[];
+  const attsToSend = [] as Z_PAttachmentNew[];
   for (let attRaw of formData.value.attachments) {
     const temp = attRaw.toZForm();
-    if (temp != null) attsToSend.push(temp);
+    if (temp != null) attsToSend.push(temp as Z_PAttachmentNew);
   }
 
   emit('submit', {

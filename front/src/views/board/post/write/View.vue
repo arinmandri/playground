@@ -10,7 +10,8 @@
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import { apiPostAdd, type Z_PostAdd } from "@/api/board";
+import { apiPostAdd } from "@/api/board";
+import type { ReqBody_apiPostAdd } from "@/api/api-schemas";
 import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import { ref, type Ref } from 'vue'
@@ -19,7 +20,7 @@ import { useRouter } from 'vue-router'; const router = useRouter();
 const loading = ref(false)
 const error = ref('')
 
-async function submitPost(data: Z_PostAdd) {
+async function submitPost(data: ReqBody_apiPostAdd) {
   error.value = ''
   loading.value = true
   try {

@@ -14,7 +14,7 @@
     </div>
 
     <div v-if="props.attachment.attType != null">
-      <img class="image-preview" v-if="props.attachment.attType == ATT_TYPE.image"
+      <img class="image-preview" v-if="props.attachment.attType == PAttachmentType.image"
         :src="props.attachment.attData.typeImage?.preview" alt="이미지 미리보기" />
       <p class="hidden">선택된 파일: {{ props.attachment.attData.typeFile?.name }}</p>
     </div>
@@ -24,11 +24,11 @@
     </button>
 
     <div class="hidden">
-      <div v-if="props.attachment.attType == ATT_TYPE.image">
+      <div v-if="props.attachment.attType == PAttachmentType.image">
         <p><b>fieldValue</b>: {{ props.attachment.attData.typeImage?.fieldValue }}</p>
         <p><b>preview</b>: {{ props.attachment.attData.typeImage?.preview }}</p>
       </div>
-      <div v-if="props.attachment.attType == ATT_TYPE.file">
+      <div v-if="props.attachment.attType == PAttachmentType.file">
         <p><b>fieldValue</b>: {{ props.attachment.attData.typeFile?.fieldValue }}</p>
         <p><b>preview</b>: {{ props.attachment.attData.typeFile?.preview }}</p>
       </div>
@@ -39,7 +39,7 @@
 <script setup lang="ts">
 
 import { PAttachmentAddData } from "@/views/board/post/comp/types";
-import { ATT_TYPE } from "@/views/board/services/types";
+import { PAttachmentType } from "@/views/board/services/types";
 
 const props = defineProps<{
   attachment: PAttachmentAddData;

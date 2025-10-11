@@ -4,8 +4,7 @@ const getAPI_POST_GET = (post_id: number) => `/post/${post_id}`;
 const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
-import { ATT_TYPE } from "@/views/board/services/types";
-import type { Y_PostDetail, Y_PostListItem, Z_PostEdit } from "./api-schemas";
+import type { ReqBody_apiPostAdd, Y_PostDetail, Y_PostListItem, Z_PostEdit } from "./api-schemas";
 
 import api from "@/api/api";
 
@@ -53,7 +52,7 @@ function getPostListFromRawList(rawList: Y_PostListItem[]): Y_PostListItem_prett
 }
 
 
-export async function apiPostAdd(data: Z_PostAdd) {
+export async function apiPostAdd(data: ReqBody_apiPostAdd) {
   await api.post(API_POST_ADD, data);
 }
 
@@ -70,38 +69,4 @@ export async function apiPostDel(post_id: number) {
 export interface Y_PostListItem_pretty extends Y_PostListItem {
   createdAt_: Date;
   createdAtPretty: string;
-}
-
-export interface Y_PAttachment {
-  type: ATT_TYPE;
-  id: number;
-  order: number;
-}
-
-export interface Z_PostAdd {
-  content: string;
-  attachments: Z_PAttachmentNoo[] | null;
-}
-
-export interface Z_PAttachmentNoo {
-  type: string;
-}
-
-export interface Z_PAttachmentNew extends Z_PAttachmentNoo {
-  content: Z_PAttachmentAdd;
-}
-
-export interface Z_PAttachmentOld extends Z_PAttachmentNoo {
-  originalOrder: number;
-}
-
-export interface Z_PAttachmentAdd {
-}
-
-export interface Z_PAttachmentAddImage extends Z_PAttachmentAdd {
-  url: string;
-}
-
-export interface Z_PAttachmentAddFile extends Z_PAttachmentAdd {
-  url: string;
 }

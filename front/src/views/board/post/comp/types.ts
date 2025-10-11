@@ -1,6 +1,6 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentNew, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/board';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentAddFile, Z_PAttachmentAddImage, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/api-schemas';
 import { FileAndPreview } from '@/types/common';
-import { ATT_TYPE } from '@/views/board/services/types';
+import { PAttachmentType } from '@/views/board/services/types';
 
 
 export enum NOO_TYPE {
@@ -71,11 +71,11 @@ export class PAttachmentOldData extends PAttachmentNooData {
 }
 
 export class PAttachmentAddData {
-  private _attType: ATT_TYPE | null;// null: 첨부물 없음
+  private _attType: PAttachmentType | null;// null: 첨부물 없음
   private _attData: PAttachmentData;
 
   private constructor(
-    attType: ATT_TYPE | null = null,
+    attType: PAttachmentType | null = null,
     attData: PAttachmentData = PAttachmentData.newOne()
   ) {
     this._attType = attType;
@@ -86,12 +86,12 @@ export class PAttachmentAddData {
     return new PAttachmentAddData();
   }
 
-  static ofExisting(type: ATT_TYPE, data: any): PAttachmentAddData {
+  static ofExisting(type: PAttachmentType, data: any): PAttachmentAddData {
     // XXX type 불안 -_-
-    if (type == ATT_TYPE.image) {
+    if (type == PAttachmentType.image) {
       return new PAttachmentAddData(type, PAttachmentData.ofExistingImage(data));
     }
-    if (type == ATT_TYPE.file) {
+    if (type == PAttachmentType.file) {
       return new PAttachmentAddData(type, PAttachmentData.ofExistingFile(data));
     }
 
@@ -100,11 +100,11 @@ export class PAttachmentAddData {
 
   static fromY(dataRaw: Y_PAttachment): PAttachmentAddData {
     const type = dataRaw.type;
-    if (type == ATT_TYPE.image) {
+    if (type == PAttachmentType.image) {
       const dataImageRaw = dataRaw as Y_PAttachmentImage;
       return PAttachmentAddData.ofExisting(type, FileAndPreview.ofExisting(dataImageRaw.url));
     }
-    if (type == ATT_TYPE.file) {
+    if (type == PAttachmentType.file) {
       const dataFileRaw = dataRaw as Y_PAttachmentFile;
       return PAttachmentAddData.ofExisting(type, FileAndPreview.ofExisting(dataFileRaw.url));
     }
@@ -124,27 +124,27 @@ export class PAttachmentAddData {
   }
 
   setImage(file: File) {
-    this._attType = ATT_TYPE.image;
+    this._attType = PAttachmentType.image;
     this._attData.setImage(file);
   }
 
   setFile(file: File) {
-    this._attType = ATT_TYPE.file;
+    this._attType = PAttachmentType.file;
     this._attData.setFile(file);
   }
 
   getFileIfExists(): File | null {
-    if (this._attType == ATT_TYPE.image)
+    if (this._attType == PAttachmentType.image)
       return this._attData.typeImage?.file || null;
-    if (this._attType == ATT_TYPE.file)
+    if (this._attType == PAttachmentType.file)
       return this._attData.typeFile?.file || null;
     return null;
   }
 
   setFileIfSettable(tempFileId: string): void {
-    if (this._attType == ATT_TYPE.image)
+    if (this._attType == PAttachmentType.image)
       this._attData.typeImage?.setTempFileId(tempFileId);
-    if (this._attType == ATT_TYPE.file)
+    if (this._attType == PAttachmentType.file)
       this._attData.typeFile?.setTempFileId(tempFileId);
   }
 
@@ -157,7 +157,7 @@ export class PAttachmentAddData {
     return content;
   }
 
-  get attType(): ATT_TYPE | null {
+  get attType(): PAttachmentType | null {
     return this._attType;
   }
 
@@ -224,32 +224,32 @@ class PAttachmentData {
     this._typeFile.setFile(newFile);
   }
 
-  getData(type: ATT_TYPE): any {
+  getData(type: PAttachmentType): any {
 
-    if (type == ATT_TYPE.image)
+    if (type == PAttachmentType.image)
       return this._typeImage;
-    if (type == ATT_TYPE.file)
+    if (type == PAttachmentType.file)
       return this._typeFile;
 
     return null;
   }
 
-  toZForm(attType: ATT_TYPE): Z_PAttachmentAdd {
-    if (attType == ATT_TYPE.image) {
+  toZForm(attType: PAttachmentType): Z_PAttachmentAdd {
+    if (attType == PAttachmentType.image) {
       const url = this.typeImage?.fieldValue;
       if (url == null) throw new Error();// TODO exception
       return {
-        type: ATT_TYPE.image.toString(),
+        type: PAttachmentType.image.toString(),
         url,
-      }
+      } as Z_PAttachmentAddImage;
     }
-    if (attType == ATT_TYPE.file) {
+    if (attType == PAttachmentType.file) {
       const url = this.typeFile?.fieldValue;
       if (url == null) throw new Error();// TODO exception
       return {
-        type: ATT_TYPE.file.toString(),
+        type: PAttachmentType.file.toString(),
         url,
-      }
+      } as Z_PAttachmentAddFile;
     }
     throw new Error('')// TODO exception
   }
