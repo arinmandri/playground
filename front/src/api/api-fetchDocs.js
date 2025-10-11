@@ -1,5 +1,6 @@
 const API_DOCS_URL = 'http://localhost:3000/v3/api-docs/for-client';
 const EXPORT_PATH = 'src/api/';
+const INDENT = '  ';
 
 import fs from "fs";
 import exportSchemas from "./api-fetchDocs-exportSchemas.js";
@@ -22,7 +23,7 @@ async function main() {
 
     const schemas = data.components.schemas;
     fs.writeFileSync(EXPORT_PATH + "/api-schemas-raw.json", JSON.stringify(schemas, null, 2));
-    fs.writeFileSync(EXPORT_PATH + "/api-schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums));
+    fs.writeFileSync(EXPORT_PATH + "/api-schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums, INDENT));
 
     // TODO
     const paths = data.paths;

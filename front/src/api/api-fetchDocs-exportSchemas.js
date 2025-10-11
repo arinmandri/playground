@@ -8,9 +8,11 @@ const REF_PREFIX = '#/components/schemas/';
  * }
  */
 let predefinedEnums;
+let indent;
 
-export default function exportSchemas(schemas, predefinedEnums_) {
+export default function exportSchemas(schemas, predefinedEnums_, indent_) {
   predefinedEnums = predefinedEnums_;
+  indent = indent_;
 
   let result = '';
 
@@ -143,7 +145,7 @@ function extractObjType(schema) {
       : required.includes(pName) ? true : false
       ;
 
-    result += `  ${pName}${isRequired ? '' : '?'}: ${tsType},\n`;
+    result += `${indent}${pName}${isRequired ? '' : '?'}: ${tsType},\n`;
   }
 
   return result + '}';
