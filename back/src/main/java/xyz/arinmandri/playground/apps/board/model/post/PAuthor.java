@@ -1,6 +1,5 @@
 package xyz.arinmandri.playground.apps.board.model.post;
 
-import xyz.arinmandri.playground.apps.a.model.BaseEntityWithoutId;
 import xyz.arinmandri.playground.apps.member.model.Member;
 
 import jakarta.persistence.Column;
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class PAuthor extends BaseEntityWithoutId
+public class PAuthor
 {
 	@Id
 	Long id;

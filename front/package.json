@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "api": "node src/api/api-fetchDocs.js",
     "dev": "vite --mode lodev",
     "prod": "vite --mode prod",
     "build": "run-p type-check \"build-only {@}\" --",
