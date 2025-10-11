@@ -108,12 +108,12 @@ STS4에서: 그 프로젝트 우클릭 > Run As > Spring Boot App
 윈도우 CMD에서 JAR 실행
 ```
 # 프로젝트 루트 디렉토리에서
-java -jar .\back\target\playground-0.0.1-SNAPSHOT.jar > .\back.log
+java -jar .\back\target\playground-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > .\back.log
 ```
 ```
 # 백엔드 디렉토리에서
 mvn clean package
-java -jar .\target\playground-0.0.1-SNAPSHOT.jar > ..\back.log
+java -jar .\target\playground-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > ..\back.log
 ```
 
 

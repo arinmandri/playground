@@ -24,7 +24,7 @@ sudo cp -r dist/* "$FRONTEND_BUILD_DIR" || { echo "FAILED TO DEPLOY FRONTEND"; e
 echo "BUILDING BACKEND..."
 cd "$BACKEND_DIR" || exit
 # Maven 빌드
-./mvnw clean package -DskipTests || { echo "FAILED TO BUILD BACKEND"; exit 1; }
+./mvnw clean package -P prod -DskipTests || { echo "FAILED TO BUILD BACKEND"; exit 1; }
 # jar 파일 찾기
 JAR_PATH=$(find target -maxdepth 1 -type f -name "*.jar" | head -n 1)
 if [ -z "$JAR_PATH" ]; then
@@ -41,7 +41,7 @@ fi
 # 새 백엔드 실행
 echo "STARTING BACKEND SERVER..."
 chmod u+x "$JAR_PATH"
-nohup $JAVA_HOME/bin/java -jar "$JAR_PATH" > "$BACKEND_LOG" 2>&1 &
+nohup $JAVA_HOME/bin/java -jar "$JAR_PATH" --spring.profiles.active=prod > "$BACKEND_LOG" 2>&1 &
 
 echo "UPDATE DONE !"
 
