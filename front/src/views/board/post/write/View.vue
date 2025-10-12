@@ -11,7 +11,7 @@
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
 import { apiPostAdd } from "@/views/board/services/serv";
-import type { ReqBody_apiPostAdd } from "@/api/api-schemas";
+import type { ReqBody_apiPostAdd } from "@/api/schemas";
 import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import { ref, type Ref } from 'vue'

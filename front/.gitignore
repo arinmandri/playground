@@ -1,5 +1,5 @@
-src/api/api-schemas-raw.json
-src/api/api-paths-raw.json
+src/api/schemas-raw.json
+src/api/paths-raw.json
 
 # Logs
 logs

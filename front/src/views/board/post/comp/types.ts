@@ -1,4 +1,4 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentAddFile, Z_PAttachmentAddImage, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/api-schemas';
+import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentAddFile, Z_PAttachmentAddImage, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/schemas';
 import { FileAndPreview } from '@/types/common';
 import { PAttachmentType } from '@/views/board/services/types';
 

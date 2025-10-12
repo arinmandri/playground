@@ -14,7 +14,7 @@ import type { PostWriteData } from './types';
 import PAttachmentNooListForm from '@/views/board/post/comp/PAttachmentNooListForm.vue';
 
 import { PAttachmentNooData } from "@/views/board/post/comp/types";
-import type { Z_PAttachmentNew, ReqBody_apiPostAdd } from "@/api/api-schemas";
+import type { Z_PAttachmentNew, ReqBody_apiPostAdd } from "@/api/schemas";
 
 import { ref, type Ref, defineExpose } from 'vue'
 

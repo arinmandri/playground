@@ -1,4 +1,4 @@
-import type { Y_PostDetail } from "@/api/api-schemas";
+import type { Y_PostDetail } from "@/api/schemas";
 import { PAttachmentOldData, type PAttachmentNooData } from "@/views/board/post/comp/types";
 
 

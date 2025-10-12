@@ -4,7 +4,7 @@ const getAPI_POST_GET = (post_id: number) => `/post/${post_id}`;
 const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
-import type { ReqBody_apiPostAdd, Y_PostDetail, Y_PostListItem, Z_PostEdit } from "@/api/api-schemas";
+import type { ReqBody_apiPostAdd, Y_PostDetail, Y_PostListItem, Z_PostEdit } from "@/api/schemas";
 
 import api from "@/api/api";
 

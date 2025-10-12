@@ -3,7 +3,7 @@ const EXPORT_PATH = 'src/api/';
 const INDENT = '  ';
 
 import fs from "fs";
-import exportSchemas from "./api-fetchDocs-exportSchemas.js";
+import exportSchemas from "./fetchDocs-exportSchemas.js";
 
 const predefinedEnums = JSON.parse(fs.readFileSync('src/api/enums.json', 'utf8'));
 
@@ -22,13 +22,13 @@ async function main() {
     console.log('++++++++++++++++++++++++++++++++++++++++');
 
     const schemas = data.components.schemas;
-    fs.writeFileSync(EXPORT_PATH + "/api-schemas-raw.json", JSON.stringify(schemas, null, 2));
-    fs.writeFileSync(EXPORT_PATH + "/api-schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums, INDENT));
+    fs.writeFileSync(EXPORT_PATH + "/schemas-raw.json", JSON.stringify(schemas, null, 2));
+    fs.writeFileSync(EXPORT_PATH + "/schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums, INDENT));
 
     // TODO
     const paths = data.paths;
-    // fs.writeFileSync(EXPORT_PATH + "/api-paths-raw.json", JSON.stringify(paths, null, 2));
-    // fs.writeFileSync(EXPORT_PATH + "/api-paths.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportPaths(paths));
+    // fs.writeFileSync(EXPORT_PATH + "/paths-raw.json", JSON.stringify(paths, null, 2));
+    // fs.writeFileSync(EXPORT_PATH + "/paths.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportPaths(paths));
 
     console.log('\nFETCH API DOCS DONE.');
   } catch (err) {
