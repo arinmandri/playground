@@ -5,8 +5,6 @@ const INDENT = '  ';
 import fs from "fs";
 import exportSchemas from "./fetchDocs-exportSchemas.js";
 
-const predefinedEnums = JSON.parse(fs.readFileSync('src/api/enums.json', 'utf8'));
-
 async function main() {
   try {
     const response = await fetch(API_DOCS_URL);
@@ -22,6 +20,7 @@ async function main() {
     console.log('++++++++++++++++++++++++++++++++++++++++');
 
     const schemas = data.components.schemas;
+    const predefinedEnums = JSON.parse(fs.readFileSync('src/api/schemas-predefined-enums.json', 'utf8'));
     fs.writeFileSync(EXPORT_PATH + "/schemas-raw.json", JSON.stringify(schemas, null, 2));
     fs.writeFileSync(EXPORT_PATH + "/schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums, INDENT));
 
