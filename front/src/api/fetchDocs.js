@@ -22,7 +22,11 @@ async function main() {
     const schemas = data.components.schemas;
     const predefinedEnums = JSON.parse(fs.readFileSync('src/api/schemas-predefined-enums.json', 'utf8'));
     fs.writeFileSync(EXPORT_PATH + "/schemas-raw.json", JSON.stringify(schemas, null, 2));
-    fs.writeFileSync(EXPORT_PATH + "/schemas.ts", '/*\nnpm run api 자동생성\n*/\n\n' + exportSchemas(schemas, predefinedEnums, INDENT));
+    fs.writeFileSync(EXPORT_PATH + "/schemas.ts",
+        '/*\nnpm run api 자동생성\n*/\n\n'
+        + exportSchemas(schemas, predefinedEnums, INDENT)
+        + fs.readFileSync('src/api/schemas-additionals.ts', 'utf8')
+    );
 
     // TODO
     const paths = data.paths;
