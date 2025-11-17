@@ -3,7 +3,7 @@ const EXPORT_PATH = 'src/api/';
 const INDENT = '  ';
 
 import fs from "fs";
-import exportSchemas from "./fetchDocs-exportSchemas.js";
+import { init, exportSchemas } from "./fetchDocs-export.js";
 
 async function main() {
   try {
@@ -20,12 +20,14 @@ async function main() {
     console.log('★ BACKEND API: ' + JSON.stringify(data.info, null, 2));
     console.log('++++++++++++++++++++++++++++++++++++++++');
 
-    const schemas = data.components.schemas;
     const predefinedEnums = JSON.parse(fs.readFileSync('src/api/schemas-predefined-enums.json', 'utf8'));
+    init( predefinedEnums, INDENT );
+
+    const schemas = data.components.schemas;
     fs.writeFileSync(EXPORT_PATH + "/schemas-raw.json", JSON.stringify(schemas, null, 2));
     fs.writeFileSync(EXPORT_PATH + "/schemas.ts",
         '/*\nnpm run api 자동생성\n*/\n\n'
-        + exportSchemas(schemas, predefinedEnums, INDENT)
+        + exportSchemas( schemas )
         + fs.readFileSync('src/api/schemas-additionals.ts', 'utf8')
     );
 

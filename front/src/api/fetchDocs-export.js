@@ -10,9 +10,12 @@ const REF_PREFIX = '#/components/schemas/';
 let predefinedEnums;
 let indent;
 
-export default function exportSchemas( schemas , predefinedEnums_ , indent_ ){
+export function init( predefinedEnums_ , indent_ ){
   predefinedEnums = predefinedEnums_;
   indent = indent_;
+}
+
+export function exportSchemas( schemas ){
 
   let result = '';
 
