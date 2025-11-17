@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 
-import type { Y_PAttachment, Y_PAttachmentImage, Y_PAttachmentFile } from "@/api/schemas";// TODO Y_PAttachmentImage, Y_PAttachmentFile
+import type { Y_PAttachment, Y_PAttachmentImage, Y_PAttachmentFile } from "@/api/schemas";
 import { PAttachmentType } from "@/api/schemas";
 
 const props = defineProps<{

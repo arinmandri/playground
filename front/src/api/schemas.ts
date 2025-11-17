@@ -118,13 +118,11 @@ export interface Z_PostEdit {
   content: string,
 }
 
-
-export interface TestIntf {
-  name: string,
-  age: number,
+export interface Y_PAttachmentImage extends Y_PAttachment {
+  url: string,
 }
 
-export type TestType = {
-  name: string,
-  age: number,
+export interface Y_PAttachmentFile extends Y_PAttachment {
+  url: string,
+  size: number,
 }
