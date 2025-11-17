@@ -15,6 +15,7 @@ async function main() {
     const data = await response.json();
 
     console.log('++++++++++++++++++++++++++++++++++++++++');
+    console.log( API_DOCS_URL );
     console.log('★ OPENAPI ' + data.openapi);
     console.log('★ BACKEND API: ' + JSON.stringify(data.info, null, 2));
     console.log('++++++++++++++++++++++++++++++++++++++++');
