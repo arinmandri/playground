@@ -8,11 +8,12 @@ const REF_PREFIX = '#/components/schemas/';
  * }
  */
 let predefinedEnums;
-let indent;
+let ____;// indent string
+const allCustomTypes = [];// TODO additionals
 
-export function init( predefinedEnums_ , indent_ ){
+export function init( predefinedEnums_ , indent ){
   predefinedEnums = predefinedEnums_;
-  indent = indent_;
+  ____ = indent;
 }
 
 export function exportSchemas( schemas ){
@@ -22,6 +23,7 @@ export function exportSchemas( schemas ){
   result += exportPredefinedEnums();
 
   for( const schemaName of Object.keys(schemas).sort((a, b) => a.localeCompare(b)) ){// for(let schemaName in schemas) 대신 알파벳순
+    allCustomTypes.push( schemaName );
     const schema = schemas[schemaName];
 
     try {
@@ -147,7 +149,7 @@ function extractObjType(schema ){
       : required.includes(pName) ? true : false
       ;
 
-    result += `${indent}${pName}${isRequired ? '' : '?'}: ${tsType},\n`;
+    result += `${____}${pName}${isRequired ? '' : '?'}: ${tsType},\n`;
   }
 
   return result + '}';
@@ -155,7 +157,8 @@ function extractObjType(schema ){
 
 function extractRefType( refType ){
   if( refType.startsWith( REF_PREFIX ) ){
-    return refType.slice( REF_PREFIX.length );
+    const customType = refType.slice( REF_PREFIX.length );// '#/components/schemas/MyType' --> 'MyType'
+    return customType;
   }else{
     throw new Error(`이상한 참조필드 타입: '${refType}'이가 '${REF_PREFIX}'로 시작을 안 함.`);
   }
@@ -174,10 +177,161 @@ function exportPredefinedEnums(){
     const predefinedEnum = predefinedEnums[eName];
     result += 'export enum ' + eName + ' {\n';
     for( let eVal of predefinedEnum ){
-      result += `${indent}${eVal} = '${eVal}',\n`;
+      result += `${____}${eVal} = '${eVal}',\n`;
     }
     result += '}\n\n';
   }
 
   return result;
+}
+
+//// ****************************************************************************
+//// ****************************************************************************
+//// ****************************************************************************
+
+const opIdMap = new Map();
+
+export function exportPaths( paths ) {
+
+  let result = '';
+  result += 'import api from "@/api/api";\n';
+  result += `import type { ${allCustomTypes.join(', ')} } from "@/api/schemas";\n`;
+  result += '\n\n\n';
+
+  for( const path in paths ){
+    const methods = paths[path];
+    for( const method in methods ){
+      result += `// [${method.toUpperCase()}] ${path}\n`;// [POST] /api/example
+      const op = methods[method];
+
+      const opId = op.operationId;
+      if( opIdMap.has(opId) )
+        throw new Error('operationId 중복 :' + opId);// TODO test
+
+      //// response type
+      const responses = op.responses;
+      const response200 = responses['200'];
+      const returnType = ( response200.content !== undefined )
+          ? getTsType( response200.content['application/json;charset=UTF-8'].schema )// 나는 모든 API를 이 형식으로 통일함.
+          : 'void';
+
+      if( method === 'get' ){
+        result += createGetFunctionStr( opId, path, returnType, op.parameters );
+      }
+      else if( method === 'post' ){
+        result += createPostFunctionStr( opId, path, returnType, op.parameters, op.requestBody );
+      }
+    }
+  }
+
+  return result;
+}
+
+function createGetFunctionStr( opId, path, returnType, parameters ){
+  let result = '';
+
+  //// Parameters
+  const [ pathParams, queryParams ] = classifyParams(parameters);
+  const functionParams = createParamStrs( parameters );
+  const pathStr = createPathStr( path, pathParams );
+
+  result += `export async function ${opId}( ${functionParams.join(' , ')} )`
+  result += `: Promise<${returnType}> {\n`;
+  result += ____ + 'const params = {\n';
+  for( const qp of queryParams ){
+    result += ____ + ____ + `${qp.name},\n`;
+  }
+  result += ____ + '};\n';
+  result += ____ + 'const response = await api.get('
+                 + `\`${pathStr}\`, params`
+                 + ');\n';
+  result += ____ + `return response.data;\n`;
+  result += '}\n\n';
+  return result;
+}
+
+function createPostFunctionStr( opId, path, returnType, parameters, requestBody ){
+  let result = '';
+
+  //// Parameters
+  const [ pathParams, _ ] = classifyParams( parameters );
+  const functionParams = createParamStrs( parameters );
+  const pathStr = createPathStr( path, pathParams );
+
+  //// Request Body
+  let hasDataParam = false;
+  if( requestBody !== undefined ){
+    hasDataParam = true;
+    const reqBodyType = getTsType( requestBody.content['application/json;charset=UTF-8'].schema );// 나는 모든 API를 이 형식으로 통일함.
+    functionParams.push( `data: ${reqBodyType}` );
+  }
+
+  result += `export async function ${opId}( ${functionParams.join(' , ')} )`
+  result += `: Promise<${returnType}> {\n`;
+  result += ____ + 'const response = await api.post('
+                 + `\`${pathStr}\`${hasDataParam ? ', data':''}`
+                 + ');\n';
+  result += ____ + `return response.data;\n`;
+  result += '}\n\n';
+  return result;
+}
+
+/**
+ * @param parameters OpenAPI parameters
+ * @returns [ in 값에 따라 분리, ... ]
+ */
+function classifyParams( parameters ){
+  const pathParams = [];
+  const queryParams = [];
+  if( Array.isArray(parameters) ){
+    for( const p of parameters ){
+      if( p.in == 'path' )
+        pathParams.push( p );
+      else if( p.in == 'query' )
+        queryParams.push( p );
+      else
+        console.warn('파라미터 위치 ' + p.in + '이가 뭐임?');
+    }
+  }
+  return [ pathParams, queryParams ];
+}
+
+/**
+ * @param params OpenAPI parameters
+ * @returns 예: ["param1: type1", "member_id: number"]
+ */
+function createParamStrs( params ){
+  if( params == null ) return [];
+
+  const result = [];
+
+  for( const param of params ){
+    const paramName1 = param.name.replaceAll('-', '_');
+    const paramType = getTsType( param.schema );
+    if( param.required ){
+      result.push(`${paramName1}: ${paramType}`);
+    }else{
+      result.push(`${paramName1}: (${paramType})|null`);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * @param path       operation path (예: "/path1/{param1}/{membe-id}")
+ * @param pathParams OpenAPI parameters 중에 in="paths"인 것들만.
+ * @returns 예: "/path1/${param1}/${membe_id}"
+ */
+function createPathStr( path , pathParams ){
+
+  for( const param of pathParams ){
+    const paramName0 = param.name;
+    const paramName1 = param.name.replaceAll('-', '_');
+    path = path.replaceAll(
+      '{' + paramName0 + '}',
+      '${' + paramName1 + '}'
+    );
+  }
+  return path;
 }
