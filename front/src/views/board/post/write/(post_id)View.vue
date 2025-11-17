@@ -13,7 +13,7 @@ import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
 import type { ReqBody_apiPostAdd } from "@/api/schemas";
 
-import { apiPostGet, apiPostEdit } from "@/views/board/services/serv";
+import { apiPostGet, apiPostEdit } from "@/api/operations";
 import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 
 import { ref, type Ref, onMounted } from "vue";

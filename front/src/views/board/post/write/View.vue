@@ -10,7 +10,7 @@
 
 import PostWriteForm from "@/views/board/post/write/PostWriteForm.vue"
 
-import { apiPostAdd } from "@/views/board/services/serv";
+import { apiPostAdd } from "@/api/operations";
 import type { ReqBody_apiPostAdd } from "@/api/schemas";
 import { MsgClass, useMsgStore } from '@/stores/globalMsg'; const msgStore = useMsgStore();
 

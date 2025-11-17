@@ -25,7 +25,8 @@
 
 import PAttachmentComp from "@/views/board/post/comp/PAttachmentComp.vue";
 
-import { apiPostDel, type Y_PostListItem_pretty } from "@/views/board/services/serv";
+import { type Y_PostListItem_pretty } from "@/views/board/services/serv";
+import { apiPostDel } from "@/api/operations";
 
 import { useAuthStore } from '@/stores/auth'; const authStore = useAuthStore();
 

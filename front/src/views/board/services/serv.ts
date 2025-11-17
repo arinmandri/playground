@@ -1,30 +1,17 @@
-const API_POST_ADD = '/post/add';
-const getAPI_POST_EDIT = (post_id: number) => `/post/${post_id}/edit`;
-const getAPI_POST_GET = (post_id: number) => `/post/${post_id}`;
-const API_POST_LIST = '/post/list';
 
 import type { SimpleListPack } from "@/types/index";
-import type { ReqBody_apiPostAdd, Y_PostDetail, Y_PostListItem, Z_PostEdit } from "@/api/schemas";
-
-import api from "@/api/api";
+import type { Y_PostListItem } from "@/api/schemas";
+import { apiPostList } from "@/api/operations";
 
 /* XXX
 - 아주 많이 가져온 다음엔; 오래된 항목은 삭제하고; 다음페이지 말고 이전페이지 더보기가 있어야?
 - 페이지당 항목 수는 백이 아니라 프론트에? 백에선 페이지 크기 필수로 받고?
 */
 
-export async function apiPostGet(post_id: number): Promise<Y_PostDetail> {
-  const data = (await api.get(getAPI_POST_GET(post_id))).data as Y_PostDetail;
-  return data;
-}
-
 //// 게시판 데이터 가져오기
 export async function fetchNextPage(listPack: SimpleListPack<Y_PostListItem_pretty>): Promise<void> {
   try {
-    const response = await api.get(API_POST_LIST, {
-      cursor: listPack.cursor,
-    });
-    const resData = response.data;
+    const resData = await apiPostList( listPack.cursor );
     const newPosts = getPostListFromRawList(resData.list as Y_PostListItem[]);
     listPack.list.push(...newPosts);
     listPack.cursor = resData.nextCursor;
@@ -50,21 +37,6 @@ function getPostListFromRawList(rawList: Y_PostListItem[]): Y_PostListItem_prett
     }
   }));
 }
-
-
-export async function apiPostAdd(data: ReqBody_apiPostAdd) {
-  await api.post(API_POST_ADD, data);
-}
-
-export async function apiPostEdit(post_id: number, data: Z_PostEdit) {
-  await api.post(getAPI_POST_EDIT(post_id), data);
-}
-
-export async function apiPostDel(post_id: number) {
-  await api.post(`/post/${post_id}/del`);
-}
-
-
 
 export interface Y_PostListItem_pretty extends Y_PostListItem {
   createdAt_: Date;
