@@ -1,6 +1,6 @@
-import type { Y_PAttachment, Y_PAttachmentFile, Y_PAttachmentImage, Z_PAttachmentAdd, Z_PAttachmentAddFile, Z_PAttachmentAddImage, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/schemas';
+import type { Y_PAttachment, Y_PAttachmentImage, Y_PAttachmentFile, Z_PAttachmentAdd, Z_PAttachmentAddFile, Z_PAttachmentAddImage, Z_PAttachmentNoo, Z_PAttachmentOld } from '@/api/schemas';// TODO Y_PAttachmentImage, Y_PAttachmentFile
 import { FileAndPreview } from '@/types/common';
-import { PAttachmentType } from '@/views/board/services/types';
+import { PAttachmentType } from '@/api/schemas';
 
 
 export enum NOO_TYPE {

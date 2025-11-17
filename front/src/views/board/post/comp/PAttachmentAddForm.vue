@@ -39,7 +39,7 @@
 <script setup lang="ts">
 
 import { PAttachmentAddData } from "@/views/board/post/comp/types";
-import { PAttachmentType } from "@/views/board/services/types";
+import { PAttachmentType } from "@/api/schemas";
 
 const props = defineProps<{
   attachment: PAttachmentAddData;
