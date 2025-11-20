@@ -50,6 +50,7 @@ public class ConfigWebSecurity
 		        .sessionManagement( session-> session.sessionCreationPolicy( SessionCreationPolicy.STATELESS ) )
 		        .authorizeHttpRequests( auth-> auth
 		                .requestMatchers( "/auth/**" ).permitAll()
+		                .requestMatchers( "/file/download" ).permitAll()
 		                .requestMatchers( "/error" ).permitAll()
 		                //// docs
 		                .requestMatchers( docUrlPermitted ).permitAll()

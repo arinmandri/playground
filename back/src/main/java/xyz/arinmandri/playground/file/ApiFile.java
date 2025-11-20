@@ -1,17 +1,25 @@
 package xyz.arinmandri.playground.file;
 
+import xyz.arinmandri.playground.apps.a.api.ApiA.ExceptionalTask;
 import xyz.arinmandri.playground.apps.a.api.excption.BlameClient;
 import xyz.arinmandri.playground.file.serv.LocalFileServ;
 import xyz.arinmandri.playground.file.serv.LocalTempFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,6 +75,28 @@ public class ApiFile
 		        .body( ltfs.stream()
 		                .map( ltf-> new apiFileAddResBody( ltf.id() ) )
 		                .toList() );
+	}
+
+	@GetMapping("/download")
+	public ResponseEntity<Resource> downloadFile(
+			@RequestParam(name="file-id") String fileId
+	) throws IOException {
+		
+		LocalTempFile ltf = ltfServ.getTempFile( fileId );
+
+		if( ltf == null)
+			throw new ExceptionalTask(HttpStatus.NOT_FOUND, fileId + " 파일이 없습니다.");
+		
+		Path filePath = ltf.path();
+		Resource resource = new UrlResource(filePath.toUri());
+
+		// HTTP 헤더 설정 (다운로드 유도)
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileId + "\"");
+
+		return ResponseEntity.ok()
+				.headers(headers)
+				.body(resource);
 	}
 
 	public static record apiFileAddResBody(
